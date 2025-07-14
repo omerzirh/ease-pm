@@ -11,7 +11,7 @@ const getApi = () => {
 
 export interface GitLabService {
   fetchLabels(projectId: string | number): Promise<Array<{ id: number; name: string; description: string }>>;
-  fetchMilestones(groupId: string | number): Promise<Array<{ id: number; title: string; description: string }>>;
+  fetchMilestones(projectId: string | number): Promise<Array<{ id: number; title: string; description: string }>>;
   fetchIssuesByMilestone(projectId: string | number, milestone: string): Promise<Array<{ id: number; iid: number; title: string; web_url: string; state: string }>>;
   createIssue(
     projectId: string | number,
@@ -76,9 +76,9 @@ export const gitlabService: GitLabService = {
     return epics.map((e: any) => ({ id: e.id, iid: e.iid, title: e.title, web_url: e.web_url }));
   },
 
-  async fetchMilestones(groupId) {
+  async fetchMilestones(projectId) {
     const api = getApi();
-    const milestones = await api.GroupMilestones.all(groupId);
+    const milestones = await api.ProjectMilestones.all(projectId);
     return milestones.map(milestone => ({
       id: (milestone as any).id,
       title: (milestone as any).title,

@@ -10,7 +10,6 @@ interface Milestone {
 }
 
 const MilestoneReport = () => {
-  const groupId = import.meta.env.VITE_GITLAB_GROUP_ID as string;
   const projectId = import.meta.env.VITE_GITLAB_PROJECT_ID as string;
   const [milestones, setMilestones] = useState<Milestone[]>([]);
   const [selectedMilestone, setSelectedMilestone] = useState<Milestone | null>(null);
@@ -22,14 +21,14 @@ const MilestoneReport = () => {
 
 
   const loadMilestones = async () => {
-    if (!groupId) {
-      setMessage('Missing VITE_GITLAB_GROUP_ID');
+    if (!projectId) {
+      setMessage('Missing VITE_GITLAB_PROJECT_ID');
       return;
     }
     setLoading(true);
     setMessage(null);
     try {
-      const data = await gitlabService.fetchMilestones(groupId);
+      const data = await gitlabService.fetchMilestones(projectId);
       setMilestones(data);
     } catch (err: any) {
       setMessage(err.message || 'Failed to load milestones');
