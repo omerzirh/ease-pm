@@ -7,8 +7,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { generateEpic } from '../services/aiService';
 import { useSettingsStore } from '../store/useSettingsStore';
+import { usePrefixStore } from '../store/usePrefixStore';
 
-const TITLE_PREFIXES = ['iOS | Biometrics |', 'Web | PIN |'];
 
 const EpicCreator = () => {
   const { labels, setLabels } = useLabelStore();
@@ -27,6 +27,7 @@ const EpicCreator = () => {
   const [prompt, setPrompt] = useState('');
   const [enableEpic, setEnableEpic] = useState(false);
   const { aiBackend, groupId } = useSettingsStore();
+  const { prefixes } = usePrefixStore();
 
   useEffect(() => {
     const fetch = async () => {
@@ -141,7 +142,7 @@ const EpicCreator = () => {
           onChange={e => setTitlePrefix(e.target.value)}
         >
           <option value="">Select prefix</option>
-          {TITLE_PREFIXES.map(p => (
+          {prefixes.map(p => (
             <option key={p} value={p}>
               {p}
             </option>

@@ -10,8 +10,8 @@ import { useEpicStore } from '../store/useEpicStore';
 import remarkGfm from 'remark-gfm';
 import debounce from 'lodash.debounce';
 import { useGitlabAuth } from '../store/useGitlabAuth';
+import { usePrefixStore } from '../store/usePrefixStore';
 
-const TITLE_PREFIXES = ['iOS | Biometrics |', 'Web | PIN |'];
 
 const IssueGenerator = () => {
   const [prompt, setPrompt] = useState('');
@@ -29,6 +29,7 @@ const IssueGenerator = () => {
   const [searchingEpics, setSearchingEpics] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const { aiBackend, projectId, groupId } = useSettingsStore();
+  const { prefixes } = usePrefixStore();
 
   useEffect(() => {
     if (projectId && labels.length === 0) {
@@ -77,15 +78,15 @@ const IssueGenerator = () => {
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
-  
+
     setLoading(true);
     setMessage(null);
-  
+
     try {
       const res = await generateIssue(prompt, aiBackend);
 
       const { title, description, acceptanceCriteria, dependencies } = res;
-  
+
       let fullDescription = description;
       if (acceptanceCriteria) {
         fullDescription += `\n\n### Acceptance Criteria\n${acceptanceCriteria}`;
@@ -93,7 +94,7 @@ const IssueGenerator = () => {
       if (dependencies) {
         fullDescription += `\n\n### Dependencies\n${dependencies}`;
       }
-  
+
       setDraftTitle(title);
       setDraftDescription(fullDescription);
     } catch (err: any) {
@@ -102,7 +103,7 @@ const IssueGenerator = () => {
       setLoading(false);
     }
   };
-  
+
 
   const fetchLabels = async () => {
     if (labels.length > 0) return; // already have labels
@@ -132,19 +133,19 @@ const IssueGenerator = () => {
     setMessage(null);
     try {
       const res = await gitlabService.createIssue(projectId, draftTitle, draftDescription, selectedLabels);
-    console.log(res)
+      console.log(res)
 
-    if (enableEpic && selectedEpic) {
-      try {
-        await gitlabService.addIssueToEpic(groupId, selectedEpic.iid!, projectId, res.id);
-      } catch (err: any) {
-        console.error(err);
-        setMessage(`Issue created but failed to link epic: ${err.message}`);
-        return;
+      if (enableEpic && selectedEpic) {
+        try {
+          await gitlabService.addIssueToEpic(groupId, selectedEpic.iid!, projectId, res.id);
+        } catch (err: any) {
+          console.error(err);
+          setMessage(`Issue created but failed to link epic: ${err.message}`);
+          return;
+        }
       }
-    }
       setMessage(`Issue created: ${res.web_url}`);
-    setCreatedIssue({ iid: res.iid, url: res.web_url });
+      setCreatedIssue({ iid: res.iid, url: res.web_url });
     } catch (err: any) {
       setMessage(err.message || 'Failed to create issue');
     } finally {
@@ -189,7 +190,7 @@ const IssueGenerator = () => {
             }}
           >
             <option value="">Select prefix</option>
-            {TITLE_PREFIXES.map(p => (
+            {prefixes.map(p => (
               <option key={p} value={p}>
                 {p}
               </option>
@@ -226,62 +227,62 @@ const IssueGenerator = () => {
                 return kws.some(k => l.name.toLowerCase().includes(k));
               })
               .map(l => (
-              <label key={l.id} className="flex items-center gap-1">
-                <input
-                  type="checkbox"
-                  checked={selectedLabels.includes(l.name)}
-                  onChange={e => {
-                    if (e.target.checked) {
-                      setSelectedLabels(prev => [...prev, l.name]);
-                    } else {
-                      setSelectedLabels(prev => prev.filter(name => name !== l.name));
-                    }
-                  }}
-                />
-                {l.name}
-              </label>
-            ))}
+                <label key={l.id} className="flex items-center gap-1">
+                  <input
+                    type="checkbox"
+                    checked={selectedLabels.includes(l.name)}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedLabels(prev => [...prev, l.name]);
+                      } else {
+                        setSelectedLabels(prev => prev.filter(name => name !== l.name));
+                      }
+                    }}
+                  />
+                  {l.name}
+                </label>
+              ))}
           </div>
 
-        <div className="mt-4">
-          <label className="flex items-center gap-2">
-            <input type="checkbox" checked={enableEpic} onChange={e => setEnableEpic(e.target.checked)} />
-            Link Epic
-          </label>
-          {enableEpic && (
-            <div className="mt-2">
-              <input
-                value={epicQuery}
-                onChange={e => {
-                  setEpicQuery(e.target.value);
-                }}
-                placeholder="Paste epic URL or search title..."
-                className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800 mb-2"
-              />
-              {searchingEpics && <p className="text-sm">Searching...</p>}
-              {epicResults.length > 0 && (
-                <div className="border max-h-48 overflow-y-auto rounded-md bg-white dark:bg-gray-900">
-                  {epicResults.map(er => (
-                    <div
-                      key={er.id}
-                      className="px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer text-sm"
-                      onClick={() => {
-                        setEpic(er);
-                        setEpicQuery(er.title);
-                        setEpicResults([]);
-                      }}
-                    >
-                      {er.title}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {selectedEpic && (
-                <p className="text-sm mt-1 text-green-600">Selected: {selectedEpic.title}</p>
-              )}
-            </div>
-          )}
-        </div>
+          <div className="mt-4">
+            <label className="flex items-center gap-2">
+              <input type="checkbox" checked={enableEpic} onChange={e => setEnableEpic(e.target.checked)} />
+              Link Epic
+            </label>
+            {enableEpic && (
+              <div className="mt-2">
+                <input
+                  value={epicQuery}
+                  onChange={e => {
+                    setEpicQuery(e.target.value);
+                  }}
+                  placeholder="Paste epic URL or search title..."
+                  className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800 mb-2"
+                />
+                {searchingEpics && <p className="text-sm">Searching...</p>}
+                {epicResults.length > 0 && (
+                  <div className="border max-h-48 overflow-y-auto rounded-md bg-white dark:bg-gray-900">
+                    {epicResults.map(er => (
+                      <div
+                        key={er.id}
+                        className="px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer text-sm"
+                        onClick={() => {
+                          setEpic(er);
+                          setEpicQuery(er.title);
+                          setEpicResults([]);
+                        }}
+                      >
+                        {er.title}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {selectedEpic && (
+                  <p className="text-sm mt-1 text-green-600">Selected: {selectedEpic.title}</p>
+                )}
+              </div>
+            )}
+          </div>
           <button
             className="mt-2 px-3 py-1 bg-gray-300 dark:bg-gray-600 rounded-md text-sm"
             onClick={() => setTab('settings')}
@@ -291,23 +292,23 @@ const IssueGenerator = () => {
         </div>
 
         {createdIssue ? (
-            <a
-              href={createdIssue.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 bg-green-700 text-white rounded-md inline-block"
-            >
-              Issue #{createdIssue.iid} created
-            </a>
-          ) : (
-            <button
-              className="px-4 py-2 bg-green-600 text-white rounded-md disabled:opacity-50"
-              onClick={handleCreateIssue}
-              disabled={loading}
-            >
-              {loading ? 'Creating...' : 'Create Issue in GitLab'}
-            </button>
-          )}
+          <a
+            href={createdIssue.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-green-700 text-white rounded-md inline-block"
+          >
+            Issue #{createdIssue.iid} created
+          </a>
+        ) : (
+          <button
+            className="px-4 py-2 bg-green-600 text-white rounded-md disabled:opacity-50"
+            onClick={handleCreateIssue}
+            disabled={loading}
+          >
+            {loading ? 'Creating...' : 'Create Issue in GitLab'}
+          </button>
+        )}
 
         {message && (
           <p className="mt-2 text-sm text-center {message.startsWith('Issue created') ? 'text-green-600' : 'text-red-600'}">

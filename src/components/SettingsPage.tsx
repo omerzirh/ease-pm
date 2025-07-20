@@ -2,9 +2,11 @@ import { useState } from 'react';
 import LabelsSettings from './settings/LabelsSettings';
 import AISettings from './settings/AISettings';
 import GroupProjectSettings from './settings/GroupProjectSettings';
+import PrefixesSettings from './settings/PrefixesSettings';
 
 const tabs = [
   { id: 'labels', label: 'Labels' },
+  { id: 'prefixes', label: 'Prefixes' },
   { id: 'ai', label: 'AI Provider' },
   { id: 'gitlab', label: 'GitLab' },
 ];
@@ -16,6 +18,8 @@ const SettingsPage = () => {
     switch (active) {
       case 'labels':
         return <LabelsSettings />;
+      case 'prefixes':
+        return <PrefixesSettings />;
       case 'ai':
         return <AISettings />;
       case 'gitlab':
