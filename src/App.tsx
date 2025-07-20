@@ -3,12 +3,14 @@ import IssueGenerator from './components/IssueGenerator';
 import MilestoneReport from './components/MilestoneReport';
 import EpicCreator from './components/EpicCreator';
 import ThemeToggle from './components/ThemeToggle';
+import { useGitlabAuth } from './store/useGitlabAuth';
 import SettingsPage from './components/SettingsPage';
 import { useTabStore } from './store/useTabStore';
 
 import { useThemeStore } from './store/useThemeStore';
 
 const App = () => {
+  const { token, login, logout } = useGitlabAuth();
   const { tab, setTab } = useTabStore();
   const { dark } = useThemeStore();
 
@@ -61,7 +63,15 @@ const App = () => {
             </button>
           </nav>
         
-          <ThemeToggle />
+          <button
+              className={`ml-2 px-3 py-1 rounded-md ${
+                token ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+              }`}
+              onClick={token ? logout : login}
+            >
+              {token ? 'Logout GitLab' : 'Login GitLab'}
+            </button>
+            <ThemeToggle />
         </div>
       </header>
 

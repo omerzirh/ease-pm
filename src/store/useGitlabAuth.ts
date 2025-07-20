@@ -13,9 +13,12 @@ interface GitlabAuthState {
   logout: () => void;
 }
 
+const storedToken = localStorage.getItem('gitlab_token');
+
 export const useGitlabAuth = create<GitlabAuthState>((set, get) => ({
-  token: localStorage.getItem('gitlab_token'),
-  api: null,
+  token: storedToken,
+  api: storedToken ? new Gitlab({ oauthToken: storedToken, host: HOST }) : null,
+  
   login: async () => {
     const generateRandom = (length: number) => {
       const array = new Uint32Array(length);
