@@ -10,8 +10,10 @@ const getApi = () => {
 };
 
 export interface GitLabService {
+  fetchProjects(groupId: string | number): Promise<Array<{ id: number; name: string; path_with_namespace: string }>>;
   fetchLabels(projectId: string | number): Promise<Array<{ id: number; name: string; description: string }>>;
   fetchMilestones(projectId: string | number): Promise<Array<{ id: number; title: string; description: string }>>;
+  fetchGroupMilestones(groupId: string | number): Promise<Array<{ id: number; title: string; description: string }>>;
   fetchIssuesByMilestone(projectId: string | number, milestone: string): Promise<Array<{ id: number; iid: number; title: string; web_url: string; state: string }>>;
   createIssue(
     projectId: string | number,
@@ -39,6 +41,11 @@ export interface GitLabService {
 }
 
 export const gitlabService: GitLabService = {
+  async fetchProjects(groupId) {
+    const api = getApi();
+    const projects = await api.Groups.projects(groupId);
+    return projects.map((p: any) => ({ id: p.id, name: p.name, path_with_namespace: p.path_with_namespace }));
+  },
   async fetchLabels(projectId) {
     const api = getApi();
     const labels = await api.Labels.all(projectId);
@@ -79,6 +86,16 @@ export const gitlabService: GitLabService = {
   async fetchMilestones(projectId) {
     const api = getApi();
     const milestones = await api.ProjectMilestones.all(projectId);
+    return milestones.map(milestone => ({
+      id: (milestone as any).id,
+      title: (milestone as any).title,
+      description: (milestone as any).description || '',
+    }));
+  },
+
+  async fetchGroupMilestones(groupId) {
+    const api = getApi();
+    const milestones = await api.GroupMilestones.all(groupId);
     return milestones.map(milestone => ({
       id: (milestone as any).id,
       title: (milestone as any).title,

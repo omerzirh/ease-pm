@@ -17,7 +17,6 @@ const IssueGenerator = () => {
   const [prompt, setPrompt] = useState('');
   const [draftTitle, setDraftTitle] = useState('');
   const [draftDescription, setDraftDescription] = useState('');
-  const projectId = import.meta.env.VITE_GITLAB_PROJECT_ID as string;
   const { labels, setLabels, keywords, setKeywords } = useLabelStore();
   const { selectedEpic, setEpic } = useEpicStore();
   const { setTab } = useTabStore();
@@ -28,9 +27,8 @@ const IssueGenerator = () => {
   const [epicQuery, setEpicQuery] = useState('');
   const [epicResults, setEpicResults] = useState<{ id: number; iid: number; title: string; web_url: string }[]>([]);
   const [searchingEpics, setSearchingEpics] = useState(false);
-  const groupId = import.meta.env.VITE_GITLAB_GROUP_ID as string;
   const [message, setMessage] = useState<string | null>(null);
-  const { aiBackend } = useSettingsStore();
+  const { aiBackend, projectId, groupId } = useSettingsStore();
 
   useEffect(() => {
     if (projectId && labels.length === 0) {
@@ -160,7 +158,6 @@ const IssueGenerator = () => {
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
-      <button onClick={login}>Login with GitLab</button>
 
         <div>
           <label className="block text-sm font-medium mb-1">Prompt</label>

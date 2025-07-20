@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import gitlabService from '../../services/gitlabService';
 import { useLabelStore } from '../../store/useLabelStore';
+import { useSettingsStore } from '../../store/useSettingsStore';
 
 const LabelsSettings = () => {
-  const projectId = import.meta.env.VITE_GITLAB_PROJECT_ID as string;
   const { labels, setLabels, keywords, setKeywords } = useLabelStore();
   const [preview, setPreview] = useState<typeof labels>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+
+  const projectId = useSettingsStore.getState().projectId;
 
   const handleFetch = async () => {
     if (!projectId) {

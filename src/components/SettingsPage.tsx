@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import LabelsSettings from './settings/LabelsSettings';
 import AISettings from './settings/AISettings';
+import GroupProjectSettings from './settings/GroupProjectSettings';
 
 const tabs = [
   { id: 'labels', label: 'Labels' },
   { id: 'ai', label: 'AI Provider' },
+  { id: 'gitlab', label: 'GitLab' },
 ];
 
 const SettingsPage = () => {
@@ -16,6 +18,8 @@ const SettingsPage = () => {
         return <LabelsSettings />;
       case 'ai':
         return <AISettings />;
+      case 'gitlab':
+        return <GroupProjectSettings />;
       default:
         return null;
     }

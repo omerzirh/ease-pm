@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import gitlabService from '../services/gitlabService';
+import { useSettingsStore } from '../store/useSettingsStore';
 
 
 
@@ -10,7 +11,6 @@ interface Milestone {
 }
 
 const MilestoneReport = () => {
-  const projectId = import.meta.env.VITE_GITLAB_PROJECT_ID as string;
   const [milestones, setMilestones] = useState<Milestone[]>([]);
   const [selectedMilestone, setSelectedMilestone] = useState<Milestone | null>(null);
   const [summary, setSummary] = useState('');
@@ -19,6 +19,7 @@ const MilestoneReport = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [createdReport, setCreatedReport] = useState<{ iid: number; url: string } | null>(null);
 
+  const {projectId, groupId} = useSettingsStore.getState();
 
   const loadMilestones = async () => {
     if (!projectId) {
@@ -28,7 +29,11 @@ const MilestoneReport = () => {
     setLoading(true);
     setMessage(null);
     try {
-      const data = await gitlabService.fetchMilestones(projectId);
+      let data = await gitlabService.fetchMilestones(projectId!);
+      if(data.length === 0) {
+        setMessage('No milestones found');
+        data = await gitlabService.fetchGroupMilestones(groupId!);
+      }
       setMilestones(data);
     } catch (err: any) {
       setMessage(err.message || 'Failed to load milestones');
@@ -42,7 +47,7 @@ const MilestoneReport = () => {
     setLoading(true);
     setMessage(null);
     try {
-      const issues = await gitlabService.fetchIssuesByMilestone(projectId, milestone.title);
+      const issues = await gitlabService.fetchIssuesByMilestone(projectId!, milestone.title);
       const listMarkdown = issues
         .map(i => `- ${i.state === 'closed' ? '✅' : '🟢'} ${i.title}`)
         .join('\n');

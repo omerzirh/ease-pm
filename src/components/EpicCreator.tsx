@@ -11,7 +11,6 @@ import { useSettingsStore } from '../store/useSettingsStore';
 const TITLE_PREFIXES = ['iOS | Biometrics |', 'Web | PIN |'];
 
 const EpicCreator = () => {
-  const groupId = import.meta.env.VITE_GITLAB_GROUP_ID as string;
   const { labels, setLabels } = useLabelStore();
   const { selectedEpic: parentEpic, setEpic: setParentEpic } = useEpicStore();
 
@@ -27,7 +26,7 @@ const EpicCreator = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
   const [enableEpic, setEnableEpic] = useState(false);
-  const { aiBackend } = useSettingsStore();
+  const { aiBackend, groupId } = useSettingsStore();
 
   useEffect(() => {
     const fetch = async () => {
