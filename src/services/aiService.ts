@@ -69,9 +69,22 @@ async function callLLM(
   }
 }
 
+function getStoredApiKey(service: 'openai' | 'gemini'): string | null {
+  try {
+    const raw = localStorage.getItem('ease-gitlab-settings');
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { state?: any };
+    // zustand persist stores under {state: {...}}
+    const st = parsed.state ?? parsed;
+    return service === 'openai' ? st.openaiApiKey ?? null : st.geminiApiKey ?? null;
+  } catch {
+    return null;
+  }
+}
+
 async function callGemini(prompt: string): Promise<string> {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
-  if (!apiKey) throw new Error('Missing VITE_GEMINI_API_KEY');
+  const apiKey = getStoredApiKey('gemini') || (import.meta.env.VITE_GEMINI_API_KEY as string | undefined);
+  if (!apiKey) throw new Error('Missing Gemini API key');
 
   const genAI = new GoogleGenAI({ apiKey });
   const result = await genAI.models.generateContent({
@@ -82,8 +95,8 @@ async function callGemini(prompt: string): Promise<string> {
 }
 
 async function callOpenAI(prompt: string, temperature: number): Promise<string> {
-  const apiKey = import.meta.env.VITE_OPENAI_API_KEY as string | undefined;
-  if (!apiKey) throw new Error('Missing VITE_OPENAI_API_KEY');
+  const apiKey = getStoredApiKey('openai') || (import.meta.env.VITE_OPENAI_API_KEY as string | undefined);
+  if (!apiKey) throw new Error('Missing OpenAI API key');
 
   const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
     method: 'POST',

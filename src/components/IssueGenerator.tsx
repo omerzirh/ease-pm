@@ -158,7 +158,7 @@ const IssueGenerator = () => {
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
-      <div className="max-w-3xl mx-auto flex flex-col gap-6">
+     <div className="max-w-3xl flex flex-col gap-6">
 
         <div>
           <label className="block text-sm font-medium mb-1">Prompt</label>

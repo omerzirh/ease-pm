@@ -7,6 +7,12 @@ interface SettingsState {
   aiBackend: AIBackend;
   setBackend: (b: AIBackend) => void;
 
+  // optional API keys stored in localStorage (null if not set)
+  openaiApiKey: string | null;
+  geminiApiKey: string | null;
+  setOpenaiApiKey: (key: string | null) => void;
+  setGeminiApiKey: (key: string | null) => void;
+
   groupId: string | null;
   groupName: string | null;
   projectId: string | null;
@@ -22,6 +28,11 @@ export const useSettingsStore = create<SettingsState>()(
     (set) => ({
       aiBackend: 'openai',
       setBackend: (aiBackend) => set({ aiBackend }),
+
+      openaiApiKey: null,
+      geminiApiKey: null,
+      setOpenaiApiKey: (openaiApiKey) => set({ openaiApiKey }),
+      setGeminiApiKey: (geminiApiKey) => set({ geminiApiKey }),
 
       groupId: null,
       groupName: null,
