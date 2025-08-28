@@ -21,6 +21,13 @@ interface SettingsState {
   setGroupName: (name: string) => void;
   setProjectId: (id: string) => void;
   setProjectName: (name: string) => void;
+
+  gitlabHost: string | null;
+  gitlabAppId: string | null;
+  gitlabCallbackUrl: string | null;
+  setGitlabHost: (host: string | null) => void;
+  setGitlabAppId: (id: string | null) => void;
+  setGitlabCallbackUrl: (url: string | null) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -42,6 +49,13 @@ export const useSettingsStore = create<SettingsState>()(
       setGroupName: (groupName) => set({ groupName }),
       setProjectId: (projectId) => set({ projectId }),
       setProjectName: (projectName) => set({ projectName }),
+
+      gitlabHost: null,
+      gitlabAppId: null,
+      gitlabCallbackUrl: null,
+      setGitlabHost: (gitlabHost) => set({ gitlabHost }),
+      setGitlabAppId: (gitlabAppId) => set({ gitlabAppId }),
+      setGitlabCallbackUrl: (gitlabCallbackUrl) => set({ gitlabCallbackUrl }),
     }),
     {
       name: 'ease-gitlab-settings',

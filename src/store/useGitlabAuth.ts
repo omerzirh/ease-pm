@@ -1,9 +1,10 @@
 import { create } from 'zustand';
 import { Gitlab } from '@gitbeaker/browser';
+import { useSettingsStore } from './useSettingsStore';
 
-const HOST = import.meta.env.VITE_GITLAB_HOST || 'https://gitlab.com';
-const CLIENT_ID = import.meta.env.VITE_GITLAB_APPLICATION_ID as string;
-const REDIRECT_URI = import.meta.env.VITE_GITLAB_CALLBACK as string;
+const getGitlabHost = () => useSettingsStore.getState().gitlabHost || import.meta.env.VITE_GITLAB_HOST || 'https://gitlab.com';
+const getGitlabAppId = () => useSettingsStore.getState().gitlabAppId || import.meta.env.VITE_GITLAB_APPLICATION_ID as string;
+const getGitlabCallbackUrl = () => useSettingsStore.getState().gitlabCallbackUrl || import.meta.env.VITE_GITLAB_CALLBACK as string;
 
 interface GitlabAuthState {
   token: string | null;
@@ -17,7 +18,7 @@ const storedToken = localStorage.getItem('gitlab_token');
 
 export const useGitlabAuth = create<GitlabAuthState>((set, get) => ({
   token: storedToken,
-  api: storedToken ? new Gitlab({ oauthToken: storedToken, host: HOST }) : null,
+  api: storedToken ? new Gitlab({ oauthToken: storedToken, host: getGitlabHost() }) : null,
   
   login: async () => {
     const generateRandom = (length: number) => {
@@ -44,8 +45,8 @@ export const useGitlabAuth = create<GitlabAuthState>((set, get) => ({
     const codeChallenge = await sha256(codeVerifier);
     sessionStorage.setItem('gitlab_pkce_verifier', codeVerifier);
 
-    const authUrl = `${HOST}/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(
-      REDIRECT_URI,
+    const authUrl = `${getGitlabHost()}/oauth/authorize?client_id=${getGitlabAppId()}&redirect_uri=${encodeURIComponent(
+      getGitlabCallbackUrl(),
     )}&response_type=code&scope=api&code_challenge_method=S256&code_challenge=${codeChallenge}`;
 
     const width = 500;
@@ -66,21 +67,21 @@ export const useGitlabAuth = create<GitlabAuthState>((set, get) => ({
       }
       try {
         const popupUrl = popup.location.href;
-        if (popupUrl && popupUrl.startsWith(REDIRECT_URI)) {
+        if (popupUrl && popupUrl.startsWith(getGitlabCallbackUrl())) {
           const urlObj = new URL(popupUrl);
           const code = urlObj.searchParams.get('code');
           if (code) {
             const codeVerifier = sessionStorage.getItem('gitlab_pkce_verifier') || '';
             try {
-              const res = await fetch(`${HOST}/oauth/token`, {
+              const res = await fetch(`${getGitlabHost()}/oauth/token`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({
-                  client_id: CLIENT_ID,
+                  client_id: getGitlabAppId(),
                   grant_type: 'authorization_code',
                   code,
                   code_verifier: codeVerifier,
-                  redirect_uri: REDIRECT_URI,
+                  redirect_uri: getGitlabCallbackUrl(),
                 }),
               });
               if (!res.ok) throw new Error('Token exchange failed');
@@ -101,7 +102,7 @@ export const useGitlabAuth = create<GitlabAuthState>((set, get) => ({
     localStorage.setItem('gitlab_token', token);
     set({
       token,
-      api: new Gitlab({ oauthToken: token, host: HOST }),
+      api: new Gitlab({ oauthToken: token, host: getGitlabHost() }),
     });
   },
   logout: () => {

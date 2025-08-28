@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type MainTab = 'issue' | 'epic' | 'milestone' | 'settings';
+export type MainTab = 'issue' | 'epic' | 'milestone' | 'iteration' | 'settings';
 
 interface TabState {
   tab: MainTab;

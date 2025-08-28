@@ -32,6 +32,20 @@ export async function generateEpic(
   return generateDraft<EpicDraft>({ backend, systemPrompt, userPrompt: prompt });
 }
 
+export async function generateAssigneeSummary(
+  assigneeName: string,
+  issueTitles: string[],
+  backend: AIBackend = 'openai'
+): Promise<string> {
+  const systemPrompt = 
+    'You are a helpful assistant that creates concise work summaries. Based on the issue titles provided, create a brief 2-3 sentence summary of what this person worked on. Focus on the main themes and accomplishments. Respond with plain text, no JSON.';
+  
+  const userPrompt = `Assignee: ${assigneeName}\n\nIssue titles:\n${issueTitles.map(title => `- ${title}`).join('\n')}`;
+  
+  const fullPrompt = buildPrompt(systemPrompt, userPrompt);
+  return await callLLM(backend, fullPrompt, 0.3);
+}
+
 async function generateDraft<T>({
   backend,
   systemPrompt,

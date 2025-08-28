@@ -137,7 +137,7 @@ const IssueGenerator = () => {
 
       if (enableEpic && selectedEpic) {
         try {
-          await gitlabService.addIssueToEpic(groupId, selectedEpic.iid!, projectId, res.id);
+          await gitlabService.addIssueToEpic(groupId!, selectedEpic.iid!, projectId, res.id);
         } catch (err: any) {
           console.error(err);
           setMessage(`Issue created but failed to link epic: ${err.message}`);
@@ -153,7 +153,6 @@ const IssueGenerator = () => {
     }
   };
 
-  const login = useGitlabAuth(state => state.login);
 
 
   return (

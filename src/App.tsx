@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import IssueGenerator from './components/IssueGenerator';
 import MilestoneReport from './components/MilestoneReport';
+import IterationReport from './components/IterationReport';
 import EpicCreator from './components/EpicCreator';
 import ThemeToggle from './components/ThemeToggle';
 import { useGitlabAuth } from './store/useGitlabAuth';
@@ -55,6 +56,14 @@ const App = () => {
             </button>
             <button
               className={`ml-2 px-3 py-1 rounded-md ${
+                tab === 'iteration' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'
+              }`}
+              onClick={() => setTab('iteration')}
+            >
+              Iteration Reports
+            </button>
+            <button
+              className={`ml-2 px-3 py-1 rounded-md ${
                 tab === 'settings' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'
               }`}
               onClick={() => setTab('settings')}
@@ -79,6 +88,7 @@ const App = () => {
         {tab === 'issue' && <IssueGenerator />}
         {tab === 'epic' && <EpicCreator />}
         {tab === 'milestone' && <MilestoneReport />}
+        {tab === 'iteration' && <IterationReport />}
         {tab === 'settings' && <SettingsPage />}
       </main>
       <footer className="p-4 border-t border-gray-200 dark:border-gray-700 text-center text-sm">
