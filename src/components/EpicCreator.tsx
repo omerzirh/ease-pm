@@ -11,7 +11,7 @@ import { usePrefixStore } from '../store/usePrefixStore';
 
 
 const EpicCreator = () => {
-  const { labels, setLabels } = useLabelStore();
+  const { labels, setLabels, keywords } = useLabelStore();
   const { selectedEpic: parentEpic, setEpic: setParentEpic } = useEpicStore();
 
   const [titlePrefix, setTitlePrefix] = useState('');
@@ -114,7 +114,7 @@ const EpicCreator = () => {
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
-      <div className="max-w-3xl mx-auto flex flex-col gap-6">
+     <div className="max-w-3xl flex flex-col gap-6">
 
 
       <div>
@@ -126,8 +126,8 @@ const EpicCreator = () => {
           onChange={e => setPrompt(e.target.value)}
         />
         <button
-          className="mt-2 px-3 py-1 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
-          disabled={loading}
+            className="mt-4 px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
+            disabled={loading}
           onClick={handleGenerate}
         >
           {loading ? 'Generating...' : 'Generate with AI'}
@@ -160,9 +160,9 @@ const EpicCreator = () => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Description</label>
-        <textarea
-          rows={6}
+      <label className="block text-sm font-medium mb-1">Description (Markdown)</label>
+      <textarea
+          rows={8}
           className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
           value={description}
           onChange={e => setDescription(e.target.value)}
@@ -172,12 +172,28 @@ const EpicCreator = () => {
       <div>
         <label className="block text-sm font-medium mb-1">Labels</label>
         <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto border p-2 rounded-md">
-          {labels.map(l => (
-            <label key={l.name} className="text-sm flex items-center gap-1">
-              <input type="checkbox" checked={selectedLabels.includes(l.name)} onChange={() => toggleLabel(l.name)} />
-              {l.name}
-            </label>
-          ))}
+        {labels
+              .filter(l => {
+                if (!keywords.trim()) return true;
+                const kws = keywords.toLowerCase().split(',').map(k => k.trim()).filter(Boolean);
+                return kws.some(k => l.name.toLowerCase().includes(k));
+              })
+              .map(l => (
+                <label key={l.id} className="flex items-center gap-1">
+                  <input
+                    type="checkbox"
+                    checked={selectedLabels.includes(l.name)}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setSelectedLabels(prev => [...prev, l.name]);
+                      } else {
+                        setSelectedLabels(prev => prev.filter(name => name !== l.name));
+                      }
+                    }}
+                  />
+                  {l.name}
+                </label>
+              ))}
         </div>
       </div>
 
