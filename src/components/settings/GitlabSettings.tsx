@@ -18,10 +18,10 @@ const GitlabSettings: React.FC = () => {
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold">GitLab Settings</h2>
-          <button onClick={() => setIsModalOpen(true)} className="text-sm text-blue-600 hover:underline">How to find this information?</button>
+          <button onClick={() => setIsModalOpen(true)} className="text-sm text-app-semantic-info hover:underline">How to find this information?</button>
         </div>
         <div>
-          <label htmlFor="gitlabHost" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="gitlabHost" className="block text-sm font-medium text-app-text-secondary">
             GitLab Host
           </label>
           <input
@@ -29,12 +29,12 @@ const GitlabSettings: React.FC = () => {
             id="gitlabHost"
             value={gitlabHost || ''}
             onChange={(e) => setGitlabHost(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block w-full px-3 py-2 bg-app-surface-primary border border-app-border-primary rounded-md shadow-sm placeholder:text-app-text-tertiary focus:outline-none focus:ring-2 focus:ring-app-border-focus focus:border-app-border-focus text-app-text-primary sm:text-sm transition-colors"
             placeholder="https://gitlab.com"
           />
         </div>
         <div>
-          <label htmlFor="gitlabAppId" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="gitlabAppId" className="block text-sm font-medium text-app-text-secondary">
             Application ID
           </label>
           <input
@@ -42,11 +42,11 @@ const GitlabSettings: React.FC = () => {
             id="gitlabAppId"
             value={gitlabAppId || ''}
             onChange={(e) => setGitlabAppId(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block w-full px-3 py-2 bg-app-surface-primary border border-app-border-primary rounded-md shadow-sm placeholder:text-app-text-tertiary focus:outline-none focus:ring-2 focus:ring-app-border-focus focus:border-app-border-focus text-app-text-primary sm:text-sm transition-colors"
           />
         </div>
         <div>
-          <label htmlFor="gitlabCallbackUrl" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="gitlabCallbackUrl" className="block text-sm font-medium text-app-text-secondary">
             Callback URL
           </label>
           <input
@@ -54,7 +54,7 @@ const GitlabSettings: React.FC = () => {
             id="gitlabCallbackUrl"
             value={gitlabCallbackUrl || ''}
             onChange={(e) => setGitlabCallbackUrl(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1 block w-full px-3 py-2 bg-app-surface-primary border border-app-border-primary rounded-md shadow-sm placeholder:text-app-text-tertiary focus:outline-none focus:ring-2 focus:ring-app-border-focus focus:border-app-border-focus text-app-text-primary sm:text-sm transition-colors"
           />
         </div>
       </div>

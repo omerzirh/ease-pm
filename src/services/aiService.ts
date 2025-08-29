@@ -88,7 +88,6 @@ function getStoredApiKey(service: 'openai' | 'gemini'): string | null {
     const raw = localStorage.getItem('ease-gitlab-settings');
     if (!raw) return null;
     const parsed = JSON.parse(raw) as { state?: any };
-    // zustand persist stores under {state: {...}}
     const st = parsed.state ?? parsed;
     return service === 'openai' ? st.openaiApiKey ?? null : st.geminiApiKey ?? null;
   } catch {

@@ -1,0 +1,106 @@
+/* Utility Classes - Consistent component styling */
+
+/* Button Utilities */
+.btn-primary {
+  @apply bg-app-interactive-primary hover:bg-app-interactive-primary-hover 
+         text-app-text-inverse px-4 py-2 rounded-md transition-colors 
+         disabled:bg-app-interactive-disabled disabled:opacity-50
+         focus:ring-2 focus:ring-app-border-focus focus:outline-none;
+}
+
+.btn-secondary {
+  @apply bg-app-interactive-secondary hover:bg-app-interactive-secondary-hover 
+         text-app-text-primary px-4 py-2 rounded-md transition-colors 
+         disabled:bg-app-interactive-disabled disabled:opacity-50
+         focus:ring-2 focus:ring-app-border-focus focus:outline-none;
+}
+
+.btn-outline {
+  @apply border border-app-border-primary hover:bg-app-surface-secondary 
+         text-app-text-primary px-4 py-2 rounded-md transition-colors 
+         disabled:bg-app-interactive-disabled disabled:opacity-50
+         focus:ring-2 focus:ring-app-border-focus focus:outline-none;
+}
+
+/* Form Element Utilities */
+.input-field {
+  @apply w-full border border-app-border-primary rounded-md p-2 
+         bg-app-surface-primary text-app-text-primary
+         focus:ring-2 focus:ring-app-border-focus focus:border-app-border-focus
+         placeholder:text-app-text-tertiary transition-colors;
+}
+
+.select-field {
+  @apply w-full border border-app-border-primary rounded-md p-2 
+         bg-app-surface-primary text-app-text-primary
+         focus:ring-2 focus:ring-app-border-focus focus:border-app-border-focus
+         transition-colors;
+}
+
+.textarea-field {
+  @apply w-full border border-app-border-primary rounded-md p-2 
+         bg-app-surface-primary text-app-text-primary
+         focus:ring-2 focus:ring-app-border-focus focus:border-app-border-focus
+         placeholder:text-app-text-tertiary transition-colors resize-y;
+}
+
+.checkbox-field {
+  @apply rounded border-app-border-primary text-app-interactive-primary 
+         focus:ring-app-border-focus focus:ring-2 focus:ring-offset-0
+         bg-app-surface-primary;
+}
+
+.label-field {
+  @apply text-app-text-secondary font-medium mb-1 block;
+}
+
+/* Semantic Message Utilities */
+.message-success {
+  @apply bg-app-surface-secondary border-l-4 border-app-semantic-success 
+         text-app-text-primary p-4 rounded-r-md;
+}
+
+.message-error {
+  @apply bg-app-surface-secondary border-l-4 border-app-semantic-error 
+         text-app-text-primary p-4 rounded-r-md;
+}
+
+.message-warning {
+  @apply bg-app-surface-secondary border-l-4 border-app-semantic-warning 
+         text-app-text-primary p-4 rounded-r-md;
+}
+
+.message-info {
+  @apply bg-app-surface-secondary border-l-4 border-app-semantic-info 
+         text-app-text-primary p-4 rounded-r-md;
+}
+
+/* Surface and Layout Utilities */
+.surface-primary {
+  @apply bg-app-surface-primary text-app-text-primary;
+}
+
+.surface-secondary {
+  @apply bg-app-surface-secondary text-app-text-primary;
+}
+
+.surface-tertiary {
+  @apply bg-app-surface-tertiary text-app-text-primary;
+}
+
+.border-primary {
+  @apply border-app-border-primary;
+}
+
+.border-secondary {
+  @apply border-app-border-secondary;
+}
+
+/* Interactive State Utilities */
+.hover-surface {
+  @apply hover:bg-app-surface-secondary transition-colors;
+}
+
+.focus-ring {
+  @apply focus:ring-2 focus:ring-app-border-focus focus:outline-none;
+}

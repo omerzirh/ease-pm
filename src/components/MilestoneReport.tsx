@@ -49,7 +49,11 @@ const MilestoneReport = () => {
     try {
       const issues = await gitlabService.fetchIssuesByMilestone(projectId!, milestone.title);
       const listMarkdown = issues
-        .map(i => `- ${i.state === 'closed' ? '✅' : '🟢'} ${i.title}`)
+        .map(i => {
+          const statusIcon = i.state === 'closed' ? '✅' : '🟢';
+          const titleText = i.web_url ? `[${i.title}](${i.web_url})` : i.title;
+          return `- ${statusIcon} ${titleText}`;
+        })
         .join('\n');
       setSelectedMilestone(milestone);
       setSummary(listMarkdown);
@@ -109,7 +113,7 @@ const MilestoneReport = () => {
         <div>
           <label className="block text-sm font-medium mb-1">Select Milestone</label>
           <select
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
+            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary transition-colors"
             onChange={e => {
               const m = milestones.find(mil => mil.id === Number(e.target.value));
               if (m) loadIssuesAndSummary(m);
@@ -129,7 +133,7 @@ const MilestoneReport = () => {
         <div>
           <label className="block text-sm font-medium mb-1">Existing Report IID (optional)</label>
           <input
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 mb-4 bg-white dark:bg-gray-800"
+            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 mb-4 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
             value={existingReportId}
             onChange={e => setExistingReportId(e.target.value)}
             placeholder="e.g. 123"
@@ -139,20 +143,20 @@ const MilestoneReport = () => {
             value={summary}
             onChange={e => setSummary(e.target.value)}
             rows={10}
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
+            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
           />
           {createdReport ? (
             <a
               href={createdReport.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 px-4 py-2 bg-green-700 text-white rounded-md inline-block"
+              className="mt-2 px-4 py-2 bg-app-surface-secondary border-l-4 border-app-semantic-success text-app-semantic-success rounded-md inline-block"
             >
               Report #{createdReport.iid} created
             </a>
           ) : (
             <button
-              className="mt-2 px-4 py-2 bg-green-600 text-white rounded-md disabled:opacity-50"
+              className="mt-2 px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
               onClick={handleCreateOrUpdate}
               disabled={loading}
             >
@@ -163,7 +167,7 @@ const MilestoneReport = () => {
       )}
 
       {message && (
-        <p className="mt-2 text-sm text-center {message.startsWith('Report issue') ? 'text-green-600' : 'text-red-600'}">
+        <p className={`mt-2 text-sm text-center ${message.startsWith('Report issue') ? 'text-app-semantic-success' : 'text-app-semantic-error'}`}>
           {message}
         </p>
       )}

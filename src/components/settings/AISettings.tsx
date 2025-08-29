@@ -13,7 +13,7 @@ const AISettings = () => {
       <select
         value={aiBackend}
         onChange={e => setBackend(e.target.value as any)}
-        className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
+        className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary transition-colors"
       >
         <option value="openai">OpenAI</option>
         <option value="gemini">Google Gemini</option>
@@ -28,7 +28,7 @@ const AISettings = () => {
               value={openaiApiKey ?? ''}
               onChange={e => setOpenaiApiKey(e.target.value.trim() || null)}
               placeholder="sk-..."
-              className="w-full pr-10 border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
+              className="w-full pr-10 border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
             />
             <button
               type="button"
@@ -39,7 +39,7 @@ const AISettings = () => {
               {showOpenai ? '🙈' : '👁️'}
             </button>
           </div>
-          <p className="text-xs text-gray-500 mt-1">Don't worry about clicking the eye button. Pasting the key is enough.</p>
+          <p className="text-xs text-app-text-tertiary mt-1">Don't worry about clicking the eye button. Pasting the key is enough.</p>
         </div>
       )}
 
@@ -52,7 +52,7 @@ const AISettings = () => {
               value={geminiApiKey ?? ''}
               onChange={e => setGeminiApiKey(e.target.value.trim() || null)}
               placeholder="AIza..."
-              className="w-full pr-10 border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
+              className="w-full pr-10 border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
             />
             <button
               type="button"
@@ -63,7 +63,7 @@ const AISettings = () => {
               {showGemini ? '🙈' : '👁️'}
             </button>
           </div>
-          <p className="text-xs text-gray-500 mt-1">Don't worry about clicking the eye button. Pasting the key is enough.</p>
+          <p className="text-xs text-app-text-tertiary mt-1">Don't worry about clicking the eye button. Pasting the key is enough.</p>
         </div>
       )}
     </div>

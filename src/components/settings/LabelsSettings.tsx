@@ -42,20 +42,20 @@ const LabelsSettings = () => {
       <input
         value={keywords}
         onChange={e => setKeywords(e.target.value)}
-        className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 mb-4 bg-white dark:bg-gray-800"
+        className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 mb-4 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
         placeholder="bug,frontend,urgent"
       />
 
       <button
         onClick={handleFetch}
-        className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50 mr-2"
+        className="px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 mr-2 transition-colors"
         disabled={loading}
       >
         Fetch & Preview
       </button>
       <button
         onClick={handleSave}
-        className="px-4 py-2 bg-green-600 text-white rounded-md disabled:opacity-50"
+        className="px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
         disabled={preview.length === 0}
       >
         Save

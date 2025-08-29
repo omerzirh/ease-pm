@@ -1,0 +1,96 @@
+/* Color System - Consistent slate-based color scheme */
+
+:root {
+  /* Light mode colors */
+  --color-surface-primary: 255 255 255; /* white */
+  --color-surface-secondary: 248 250 252; /* slate-100 */
+  --color-surface-tertiary: 241 245 249; /* slate-50 */
+  
+  --color-interactive-primary: 51 65 85; /* slate-700 */
+  --color-interactive-primary-hover: 71 85 105; /* slate-600 */
+  --color-interactive-secondary: 203 213 225; /* slate-300 */
+  --color-interactive-secondary-hover: 148 163 184; /* slate-400 */
+  --color-interactive-disabled: 148 163 184; /* slate-400 */
+  
+  --color-text-primary: 30 41 59; /* slate-800 */
+  --color-text-secondary: 71 85 105; /* slate-600 */
+  --color-text-tertiary: 100 116 139; /* slate-500 */
+  --color-text-inverse: 255 255 255; /* white */
+  
+  --color-border-primary: 226 232 240; /* slate-200 */
+  --color-border-secondary: 203 213 225; /* slate-300 */
+  --color-border-focus: 100 116 139; /* slate-500 */
+  
+  /* Semantic accent colors (same for both modes) */
+  --color-semantic-success: 74 222 128; /* green-400 */
+  --color-semantic-error: 248 113 113; /* red-400 */
+  --color-semantic-warning: 250 204 21; /* yellow-400 */
+  --color-semantic-info: 96 165 250; /* blue-400 */
+}
+
+.dark {
+  /* Dark mode colors */
+  --color-surface-primary: 30 41 59; /* slate-800 */
+  --color-surface-secondary: 51 65 85; /* slate-700 */
+  --color-surface-tertiary: 71 85 105; /* slate-600 */
+  
+  --color-interactive-primary: 51 65 85; /* slate-700 */
+  --color-interactive-primary-hover: 71 85 105; /* slate-600 */
+  --color-interactive-secondary: 71 85 105; /* slate-600 */
+  --color-interactive-secondary-hover: 100 116 139; /* slate-500 */
+  --color-interactive-disabled: 148 163 184; /* slate-400 */
+  
+  --color-text-primary: 241 245 249; /* slate-100 */
+  --color-text-secondary: 203 213 225; /* slate-300 */
+  --color-text-tertiary: 148 163 184; /* slate-400 */
+  --color-text-inverse: 30 41 59; /* slate-800 */
+  
+  --color-border-primary: 51 65 85; /* slate-700 */
+  --color-border-secondary: 71 85 105; /* slate-600 */
+  --color-border-focus: 100 116 139; /* slate-500 */
+}
+
+/* Utility classes for semantic messages */
+.message-success {
+  @apply bg-app-surface-secondary border-l-4 border-app-semantic-success text-app-semantic-success p-3 rounded-md;
+}
+
+.message-error {
+  @apply bg-app-surface-secondary border-l-4 border-app-semantic-error text-app-semantic-error p-3 rounded-md;
+}
+
+.message-warning {
+  @apply bg-app-surface-secondary border-l-4 border-app-semantic-warning text-app-semantic-warning p-3 rounded-md;
+}
+
+.message-info {
+  @apply bg-app-surface-secondary border-l-4 border-app-semantic-info text-app-semantic-info p-3 rounded-md;
+}
+
+/* Utility classes for buttons */
+.btn-primary {
+  @apply bg-app-interactive-primary hover:bg-app-interactive-primary-hover 
+         text-app-text-inverse px-4 py-2 rounded-md transition-colors 
+         disabled:bg-app-interactive-disabled disabled:opacity-50;
+}
+
+.btn-secondary {
+  @apply bg-app-interactive-secondary hover:bg-app-interactive-secondary-hover 
+         text-app-text-primary px-4 py-2 rounded-md transition-colors 
+         disabled:bg-app-interactive-disabled disabled:opacity-50;
+}
+
+/* Utility classes for form elements */
+.input-field {
+  @apply w-full border border-app-border-primary rounded-md p-2 
+         bg-app-surface-primary text-app-text-primary
+         focus:ring-2 focus:ring-app-border-focus focus:border-app-border-focus
+         placeholder:text-app-text-tertiary transition-colors;
+}
+
+.select-field {
+  @apply w-full border border-app-border-primary rounded-md p-2 
+         bg-app-surface-primary text-app-text-primary
+         focus:ring-2 focus:ring-app-border-focus focus:border-app-border-focus
+         transition-colors;
+}

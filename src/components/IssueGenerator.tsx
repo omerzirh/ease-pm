@@ -165,10 +165,10 @@ const IssueGenerator = () => {
             value={prompt}
             onChange={e => setPrompt(e.target.value)}
             rows={3}
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
+            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
           />
           <button
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50"
+            className="mt-4 px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
             disabled={loading}
             onClick={handleGenerate}
           >
@@ -180,7 +180,7 @@ const IssueGenerator = () => {
         <div>
           <label className="block text-sm font-medium mb-1">Title Prefix</label>
           <select
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
+            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary transition-colors"
             onChange={e => {
               const prefix = e.target.value;
               if (prefix) {
@@ -202,7 +202,7 @@ const IssueGenerator = () => {
           <input
             value={draftTitle}
             onChange={e => setDraftTitle(e.target.value)}
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
+            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
           />
         </div>
 
@@ -212,7 +212,7 @@ const IssueGenerator = () => {
             value={draftDescription}
             onChange={e => setDraftDescription(e.target.value)}
             rows={8}
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
+            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
           />
         </div>
 
@@ -256,15 +256,15 @@ const IssueGenerator = () => {
                     setEpicQuery(e.target.value);
                   }}
                   placeholder="Paste epic URL or search title..."
-                  className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800 mb-2"
+                  className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary mb-2 transition-colors"
                 />
                 {searchingEpics && <p className="text-sm">Searching...</p>}
                 {epicResults.length > 0 && (
-                  <div className="border max-h-48 overflow-y-auto rounded-md bg-white dark:bg-gray-900">
+                  <div className="border border-app-border-primary max-h-48 overflow-y-auto rounded-md bg-app-surface-primary">
                     {epicResults.map(er => (
                       <div
                         key={er.id}
-                        className="px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer text-sm"
+                        className="px-2 py-1 hover:bg-app-surface-secondary cursor-pointer text-sm"
                         onClick={() => {
                           setEpic(er);
                           setEpicQuery(er.title);
@@ -277,13 +277,13 @@ const IssueGenerator = () => {
                   </div>
                 )}
                 {selectedEpic && (
-                  <p className="text-sm mt-1 text-green-600">Selected: {selectedEpic.title}</p>
+                  <p className="text-sm mt-1 text-app-semantic-success">Selected: {selectedEpic.title}</p>
                 )}
               </div>
             )}
           </div>
           <button
-            className="mt-2 px-3 py-1 bg-gray-300 dark:bg-gray-600 rounded-md text-sm"
+            className="mt-2 px-3 py-1 bg-app-interactive-secondary hover:bg-app-interactive-secondary-hover text-app-text-primary rounded-md text-sm transition-colors"
             onClick={() => setTab('settings')}
           >
             Edit Labels
@@ -295,13 +295,13 @@ const IssueGenerator = () => {
             href={createdIssue.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 bg-green-700 text-white rounded-md inline-block"
+            className="px-4 py-2 bg-app-surface-secondary border-l-4 border-app-semantic-success text-app-semantic-success rounded-md inline-block"
           >
             Issue #{createdIssue.iid} created
           </a>
         ) : (
           <button
-            className="px-4 py-2 bg-green-600 text-white rounded-md disabled:opacity-50"
+            className="px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
             onClick={handleCreateIssue}
             disabled={loading}
           >
@@ -310,7 +310,7 @@ const IssueGenerator = () => {
         )}
 
         {message && (
-          <p className="mt-2 text-sm text-center {message.startsWith('Issue created') ? 'text-green-600' : 'text-red-600'}">
+          <p className={`mt-2 text-sm text-center ${message.startsWith('Issue created') ? 'text-app-semantic-success' : 'text-app-semantic-error'}`}>
             {message}
           </p>
         )}
@@ -318,7 +318,7 @@ const IssueGenerator = () => {
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
         <h2 className="text-lg font-medium">Preview</h2>
         {draftTitle && draftDescription && (
-          <div className="bg-white dark:bg-gray-800 rounded-md p-4">
+          <div className="bg-app-surface-primary rounded-md p-4">
             <h3 className="text-lg font-medium">{draftTitle}</h3>
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {draftDescription}

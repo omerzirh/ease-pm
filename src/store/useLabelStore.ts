@@ -9,7 +9,7 @@ export interface Label {
 
 interface LabelState {
   labels: Label[];
-  keywords: string; // comma-separated filter keywords
+  keywords: string;
   setLabels: (labels: Label[]) => void;
   setKeywords: (kw: string) => void;
 }
@@ -23,7 +23,7 @@ export const useLabelStore = create<LabelState>()(
       setKeywords: (keywords) => set({ keywords }),
     }),
     {
-      name: 'label-store', // localStorage key
+      name: 'label-store',
     },
   ),
 );

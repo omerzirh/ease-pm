@@ -27,7 +27,6 @@ const GroupProjectSettings = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
 
-  // Fetch projects when stored groupId exists on mount
   useEffect(() => {
     if (groupId && token && editing) {
       handleFetchProjects(groupId);
@@ -97,7 +96,7 @@ const GroupProjectSettings = () => {
             <span className="font-medium">Project ID:</span> {projectId || 'Not set'}
           </p>
           <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-md"
+            className="px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md transition-colors"
             onClick={() => setEditing(true)}
           >
             Edit
@@ -109,11 +108,11 @@ const GroupProjectSettings = () => {
           <input
             value={groupInput}
             onChange={e => setGroupInput(e.target.value)}
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 mb-2 bg-white dark:bg-gray-800"
+            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 mb-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
             placeholder="e.g. 123456 or my-group"
           />
           <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50 mb-4"
+            className="px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 mb-4 transition-colors"
             onClick={handleSaveGroup}
             disabled={!groupInput.trim() || loading}
           >
@@ -126,7 +125,7 @@ const GroupProjectSettings = () => {
               <select
                 value={selectedProject}
                 onChange={e => setSelectedProject(e.target.value)}
-                className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
+                className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary transition-colors"
               >
                 <option value="">-- choose a project --</option>
                 {projectOptions.map(p => (
@@ -136,7 +135,7 @@ const GroupProjectSettings = () => {
                 ))}
               </select>
               <button
-                className="mt-2 px-4 py-2 bg-green-600 text-white rounded-md disabled:opacity-50"
+                className="mt-2 px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
                 onClick={handleSaveProject}
                 disabled={!selectedProject}
               >
@@ -145,7 +144,7 @@ const GroupProjectSettings = () => {
             </div>
           )}
           <button
-            className="px-4 py-2 bg-gray-500 text-white rounded-md"
+            className="px-4 py-2 bg-app-interactive-secondary text-app-text-primary rounded-md hover:bg-app-interactive-secondary-hover transition-colors"
             onClick={() => setEditing(false)}
           >
             Cancel

@@ -1,19 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import IssueGenerator from './components/IssueGenerator';
 import MilestoneReport from './components/MilestoneReport';
 import IterationReport from './components/IterationReport';
 import EpicCreator from './components/EpicCreator';
-import ThemeToggle from './components/ThemeToggle';
+import Sidebar from './components/Sidebar';
+import { useSidebarStore } from './store/useSidebarStore';
 import { useGitlabAuth } from './store/useGitlabAuth';
 import SettingsPage from './components/SettingsPage';
 import { useTabStore } from './store/useTabStore';
-
 import { useThemeStore } from './store/useThemeStore';
 
 const App = () => {
   const { token, login, logout } = useGitlabAuth();
   const { tab, setTab } = useTabStore();
   const { dark } = useThemeStore();
+  const { isCollapsed } = useSidebarStore();
+  const [isMobile, setIsMobile] = useState(false);
+  const [activeSettingsTab, setActiveSettingsTab] = useState('labels');
 
   useEffect(() => {
     const root = document.documentElement;
@@ -24,84 +27,58 @@ const App = () => {
     }
   }, [dark]);
 
-  return (
-    <div className="flex flex-col h-full">
-      <header className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-        <h1 className="text-xl font-semibold cursor-pointer" onClick={() => setTab('issue')}>Ease GitLab</h1>
-        <div className="flex items-center gap-4">
-          <nav>
-            <button
-              className={`mr-2 px-3 py-1 rounded-md ${
-                tab === 'issue' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'
-              }`}
-              onClick={() => setTab('issue')}
-            >
-              Issue Generator
-            </button>
-            <button
-              className={`px-3 py-1 rounded-md ${
-                tab === 'epic' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'
-              }`}
-              onClick={() => setTab('epic')}
-            >
-              Epic Creator
-            </button>
-            <button
-              className={`ml-2 px-3 py-1 rounded-md ${
-                tab === 'milestone' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'
-              }`}
-              onClick={() => setTab('milestone')}
-            >
-              Milestone Reports
-            </button>
-            <button
-              className={`ml-2 px-3 py-1 rounded-md ${
-                tab === 'iteration' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'
-              }`}
-              onClick={() => setTab('iteration')}
-            >
-              Iteration Reports
-            </button>
-            <button
-              className={`ml-2 px-3 py-1 rounded-md ${
-                tab === 'settings' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'
-              }`}
-              onClick={() => setTab('settings')}
-            >
-              Settings
-            </button>
-          </nav>
-        
-          <button
-              className={`ml-2 px-3 py-1 rounded-md ${
-                token ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
-              }`}
-              onClick={token ? logout : login}
-            >
-              {token ? 'Logout GitLab' : 'Login GitLab'}
-            </button>
-            <ThemeToggle />
-        </div>
-      </header>
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-      <main className="flex-1 overflow-y-auto p-6">
-        {tab === 'issue' && <IssueGenerator />}
-        {tab === 'epic' && <EpicCreator />}
-        {tab === 'milestone' && <MilestoneReport />}
-        {tab === 'iteration' && <IterationReport />}
-        {tab === 'settings' && <SettingsPage />}
-      </main>
-      <footer className="p-4 border-t border-gray-200 dark:border-gray-700 text-center text-sm">
-        Created with <span className="text-black">❤</span> by{' '}
-        <a
-          href="https://github.com/omerzirh"
-          className="text-gray-500 hover:underline"
-          target="_blank"
-          rel="noopener noreferrer"
+  return (
+    <div className="flex h-full">
+      <Sidebar
+        currentTab={tab}
+        onTabChange={setTab}
+        isAuthenticated={!!token}
+        onAuthToggle={token ? logout : login}
+        onTitleClick={() => setTab('issue')}
+        activeSettingsTab={activeSettingsTab}
+        onSettingsTabChange={setActiveSettingsTab}
+      />
+
+      <div 
+        className={`
+          flex flex-col flex-1 transition-all duration-250 ease-in-out
+          ${isMobile ? 'ml-0' : (isCollapsed ? 'ml-16' : 'ml-60')}
+        `}
+      >
+        <main className="flex-1 overflow-y-auto p-6">
+          {tab === 'issue' && <IssueGenerator />}
+          {tab === 'epic' && <EpicCreator />}
+          {tab === 'milestone' && <MilestoneReport />}
+          {tab === 'iteration' && <IterationReport />}
+          {tab === 'settings' && <SettingsPage activeTab={activeSettingsTab} />}
+        </main>
+        
+        <footer 
+          className={`
+            p-4 border-t border-app-border-primary text-center text-sm transition-all duration-250 ease-in-out
+          `}
         >
-          Omer Zirh
-        </a>
-      </footer>
+          Created with <span className="text-black">❤</span> by{' '}
+          <a
+            href="https://github.com/omerzirh"
+            className="text-app-text-tertiary hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Omer Zirh
+          </a>
+        </footer>
+      </div>
     </div>
   );
 };

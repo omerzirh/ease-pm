@@ -121,12 +121,12 @@ const EpicCreator = () => {
         <label className="block text-sm font-medium mb-1">Prompt</label>
         <textarea
           rows={3}
-          className="w-full border rounded-md p-2 bg-white dark:bg-gray-800"
+          className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
           value={prompt}
           onChange={e => setPrompt(e.target.value)}
         />
         <button
-          className="mt-2 px-3 py-1 bg-blue-600 text-white rounded-md disabled:opacity-50"
+          className="mt-2 px-3 py-1 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
           disabled={loading}
           onClick={handleGenerate}
         >
@@ -137,7 +137,7 @@ const EpicCreator = () => {
       <div>
         <label className="block text-sm font-medium mb-1">Title Prefix</label>
         <select
-          className="w-full border rounded-md p-2 bg-white dark:bg-gray-800"
+          className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary transition-colors"
           value={titlePrefix}
           onChange={e => setTitlePrefix(e.target.value)}
         >
@@ -153,7 +153,7 @@ const EpicCreator = () => {
       <div>
         <label className="block text-sm font-medium mb-1">Title</label>
         <input
-          className="w-full border rounded-md p-2 bg-white dark:bg-gray-800"
+          className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
           value={title}
           onChange={e => setTitle(e.target.value)}
         />
@@ -163,7 +163,7 @@ const EpicCreator = () => {
         <label className="block text-sm font-medium mb-1">Description</label>
         <textarea
           rows={6}
-          className="w-full border rounded-md p-2 bg-white dark:bg-gray-800"
+          className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
           value={description}
           onChange={e => setDescription(e.target.value)}
         />
@@ -189,18 +189,18 @@ const EpicCreator = () => {
 {enableEpic && (      <div>
         <label className="block text-sm font-medium mb-1">Parent Epic (optional)</label>
         <input
-          className="w-full border rounded-md p-2 bg-white dark:bg-gray-800"
+          className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
           placeholder="Search parent epic by title..."
           value={parentQuery}
           onChange={e => setParentQuery(e.target.value)}
         />
         {searching && <p className="text-sm">Searching...</p>}
         {parentResults.length > 0 && (
-          <div className="border max-h-48 overflow-y-auto rounded-md bg-white dark:bg-gray-900 mt-1">
+          <div className="border border-app-border-primary max-h-48 overflow-y-auto rounded-md bg-app-surface-primary mt-1">
             {parentResults.map(ep => (
               <div
                 key={ep.id}
-                className="px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer text-sm"
+                className="px-2 py-1 hover:bg-app-surface-secondary cursor-pointer text-sm"
                 onClick={() => {
                   setParentEpic(ep);
                   setParentQuery(ep.title);
@@ -212,7 +212,7 @@ const EpicCreator = () => {
             ))}
           </div>
         )}
-        {parentEpic && <p className="text-sm mt-1 text-green-600">Selected: {parentEpic.title}</p>}
+        {parentEpic && <p className="text-sm mt-1 text-app-semantic-success">Selected: {parentEpic.title}</p>}
       </div>)}
 
       {createdEpic ? (
@@ -220,13 +220,13 @@ const EpicCreator = () => {
           href={createdEpic.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="px-4 py-2 bg-green-700 text-white rounded-md inline-block"
+          className="px-4 py-2 bg-app-surface-secondary border-l-4 border-app-semantic-success text-app-semantic-success rounded-md inline-block"
         >
           Epic #{createdEpic.iid} created
         </a>
       ) : (
         <button
-          className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50"
+          className="px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
           disabled={loading}
           onClick={handleCreateEpic}
         >

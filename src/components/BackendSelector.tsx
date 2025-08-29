@@ -10,7 +10,7 @@ const BackendSelector = () => {
 
   return (
     <select
-      className="border border-gray-300 dark:border-gray-700 rounded-md p-1 bg-white dark:bg-gray-800 text-sm"
+      className="border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-1 bg-app-surface-primary text-app-text-primary text-sm transition-colors"
       value={aiBackend}
       onChange={(e) => setBackend(e.target.value as AIBackend)}
     >
