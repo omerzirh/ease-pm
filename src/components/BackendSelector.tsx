@@ -1,4 +1,5 @@
 import { useSettingsStore, AIBackend } from '../store/useSettingsStore';
+import { Select } from './ui/select';
 
 const BackendSelector = () => {
   const { aiBackend, setBackend } = useSettingsStore();
@@ -9,8 +10,8 @@ const BackendSelector = () => {
   ];
 
   return (
-    <select
-      className="border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-1 bg-app-surface-primary text-app-text-primary text-sm transition-colors"
+    <Select
+      className="text-sm"
       value={aiBackend}
       onChange={(e) => setBackend(e.target.value as AIBackend)}
     >
@@ -19,7 +20,7 @@ const BackendSelector = () => {
           {o.label}
         </option>
       ))}
-    </select>
+    </Select>
   );
 };
 

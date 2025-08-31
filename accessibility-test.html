@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessibility Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .focus-visible { outline: 2px solid blue; outline-offset: 2px; }
+    </style>
+</head>
+<body>
+    <h1>UI Components Accessibility Test</h1>
+    
+    <div class="test-section">
+        <h2>Keyboard Navigation Test</h2>
+        <p>Use Tab key to navigate through these elements:</p>
+        <button>Button 1</button>
+        <input type="text" placeholder="Text input" />
+        <select>
+            <option>Option 1</option>
+            <option>Option 2</option>
+        </select>
+        <textarea placeholder="Textarea"></textarea>
+        <input type="checkbox" id="checkbox1" />
+        <label for="checkbox1">Checkbox</label>
+        <button>Button 2</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Screen Reader Test</h2>
+        <p>These elements should be properly announced by screen readers:</p>
+        <label for="name">Name (required):</label>
+        <input type="text" id="name" required aria-describedby="name-help" />
+        <div id="name-help">Enter your full name</div>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" aria-invalid="true" aria-describedby="email-error" />
+        <div id="email-error" role="alert">Please enter a valid email address</div>
+    </div>
+    
+    <script>
+        // Test keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                console.log('Tab navigation working');
+            }
+        });
+        
+        // Test focus management
+        document.addEventListener('focusin', function(e) {
+            console.log('Focus on:', e.target.tagName, e.target.type || '');
+        });
+    </script>
+</body>
+</html>

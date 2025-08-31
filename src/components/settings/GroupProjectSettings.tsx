@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import gitlabService from '../../services/gitlabService';
 import { useSettingsStore } from '../../store/useSettingsStore';
 import { useGitlabAuth } from '../../store/useGitlabAuth';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Select } from '../ui/select';
+import { Label } from '../ui/label';
 
 interface GitlabProject {
   id: number;
@@ -56,7 +60,7 @@ const GroupProjectSettings = () => {
     try {
       const projects = await gitlabService.fetchProjects(gid);
       setProjectOptions(projects);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setMessage(err.message || 'Failed to fetch projects');
     } finally {
       setLoading(false);
@@ -95,37 +99,38 @@ const GroupProjectSettings = () => {
           <p className="mb-4 text-sm">
             <span className="font-medium">Project ID:</span> {projectId || 'Not set'}
           </p>
-          <button
-            className="px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md transition-colors"
+          <Button
+            variant="primary"
             onClick={() => setEditing(true)}
           >
             Edit
-          </button>
+          </Button>
         </>
       ) : (
         <>
-          <label className="block text-sm font-medium mb-1">Group ID / Path</label>
-          <input
+          <Label required>Group ID / Path</Label>
+          <Input
             value={groupInput}
             onChange={e => setGroupInput(e.target.value)}
-            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 mb-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
             placeholder="e.g. 123456 or my-group"
+            className="mb-2"
           />
-          <button
-            className="px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 mb-4 transition-colors"
+          <Button
+            variant="primary"
+            className="mb-4"
             onClick={handleSaveGroup}
             disabled={!groupInput.trim() || loading}
+            loading={loading}
           >
             Save Group & Fetch Projects
-          </button>
+          </Button>
 
           {projectOptions.length > 0 && (
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Select Project</label>
-              <select
+              <Label required>Select Project</Label>
+              <Select
                 value={selectedProject}
                 onChange={e => setSelectedProject(e.target.value)}
-                className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary transition-colors"
               >
                 <option value="">-- choose a project --</option>
                 {projectOptions.map(p => (
@@ -133,22 +138,23 @@ const GroupProjectSettings = () => {
                     {p.path_with_namespace}
                   </option>
                 ))}
-              </select>
-              <button
-                className="mt-2 px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
+              </Select>
+              <Button
+                variant="primary"
+                className="mt-2"
                 onClick={handleSaveProject}
                 disabled={!selectedProject}
               >
                 Save Project
-              </button>
+              </Button>
             </div>
           )}
-          <button
-            className="px-4 py-2 bg-app-interactive-secondary text-app-text-primary rounded-md hover:bg-app-interactive-secondary-hover transition-colors"
+          <Button
+            variant="secondary"
             onClick={() => setEditing(false)}
           >
             Cancel
-          </button>
+          </Button>
         </>
       )}
 

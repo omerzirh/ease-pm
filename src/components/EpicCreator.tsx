@@ -8,10 +8,18 @@ import remarkGfm from 'remark-gfm';
 import { generateEpic } from '../services/aiService';
 import { useSettingsStore } from '../store/useSettingsStore';
 import { usePrefixStore } from '../store/usePrefixStore';
+import { buttonVariants } from './ui/button';
+import { cn } from '../lib/utils';
+import { Select } from './ui/select';
+import { Textarea } from './ui/textarea';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Checkbox } from './ui/checkbox';
 
 
 const EpicCreator = () => {
-  const { labels, setLabels, keywords } = useLabelStore();
+  const { labels, setLabels } = useLabelStore();
   const { selectedEpic: parentEpic, setEpic: setParentEpic } = useEpicStore();
 
   const [titlePrefix, setTitlePrefix] = useState('');
@@ -118,26 +126,26 @@ const EpicCreator = () => {
 
 
       <div>
-        <label className="block text-sm font-medium mb-1">Prompt</label>
-        <textarea
+        <Label>Prompt</Label>
+        <Textarea
           rows={3}
-          className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
           value={prompt}
           onChange={e => setPrompt(e.target.value)}
         />
-        <button
-            className="mt-4 px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
-            disabled={loading}
+        <Button
+          className="mt-2"
+          variant="primary"
+          size="sm"
+          loading={loading}
           onClick={handleGenerate}
         >
-          {loading ? 'Generating...' : 'Generate with AI'}
-        </button>
+          Generate with AI
+        </Button>
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Title Prefix</label>
-        <select
-          className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary transition-colors"
+        <Label>Title Prefix</Label>
+        <Select
           value={titlePrefix}
           onChange={e => setTitlePrefix(e.target.value)}
         >
@@ -147,76 +155,61 @@ const EpicCreator = () => {
               {p}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Title</label>
-        <input
-          className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
+        <Label required>Title</Label>
+        <Input
           value={title}
           onChange={e => setTitle(e.target.value)}
         />
       </div>
 
       <div>
-      <label className="block text-sm font-medium mb-1">Description (Markdown)</label>
-      <textarea
-          rows={8}
-          className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
+        <Label>Description</Label>
+        <Textarea
+          rows={6}
           value={description}
           onChange={e => setDescription(e.target.value)}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Labels</label>
+        <Label>Labels</Label>
         <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto border p-2 rounded-md">
-        {labels
-              .filter(l => {
-                if (!keywords.trim()) return true;
-                const kws = keywords.toLowerCase().split(',').map(k => k.trim()).filter(Boolean);
-                return kws.some(k => l.name.toLowerCase().includes(k));
-              })
-              .map(l => (
-                <label key={l.id} className="flex items-center gap-1">
-                  <input
-                    type="checkbox"
-                    checked={selectedLabels.includes(l.name)}
-                    onChange={e => {
-                      if (e.target.checked) {
-                        setSelectedLabels(prev => [...prev, l.name]);
-                      } else {
-                        setSelectedLabels(prev => prev.filter(name => name !== l.name));
-                      }
-                    }}
-                  />
-                  {l.name}
-                </label>
-              ))}
+          {labels.map(l => (
+            <Checkbox
+              key={l.name}
+              label={l.name}
+              checked={selectedLabels.includes(l.name)}
+              onChange={() => toggleLabel(l.name)}
+              size="sm"
+            />
+          ))}
         </div>
       </div>
 
-      <label className="flex items-center gap-2">
-            <input type="checkbox" checked={enableEpic} onChange={e => setEnableEpic(e.target.checked)} />
-            Link Epic
-          </label>
+      <Checkbox
+        label="Link Epic"
+        checked={enableEpic}
+        onChange={e => setEnableEpic(e.target.checked)}
+      />
           
 {enableEpic && (      <div>
-        <label className="block text-sm font-medium mb-1">Parent Epic (optional)</label>
-        <input
-          className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
+        <Label>Parent Epic (optional)</Label>
+        <Input
           placeholder="Search parent epic by title..."
           value={parentQuery}
           onChange={e => setParentQuery(e.target.value)}
         />
         {searching && <p className="text-sm">Searching...</p>}
         {parentResults.length > 0 && (
-          <div className="border border-app-border-primary max-h-48 overflow-y-auto rounded-md bg-app-surface-primary mt-1">
+          <div className="border border-border max-h-48 overflow-y-auto rounded-md bg-popover mt-1">
             {parentResults.map(ep => (
               <div
                 key={ep.id}
-                className="px-2 py-1 hover:bg-app-surface-secondary cursor-pointer text-sm"
+                className="px-2 py-1 hover:bg-accent hover:text-accent-foreground cursor-pointer text-sm"
                 onClick={() => {
                   setParentEpic(ep);
                   setParentQuery(ep.title);
@@ -236,18 +229,19 @@ const EpicCreator = () => {
           href={createdEpic.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="px-4 py-2 bg-app-surface-secondary border-l-4 border-app-semantic-success text-app-semantic-success rounded-md inline-block"
+          className={cn(buttonVariants({ variant: "success" }))}
         >
           Epic #{createdEpic.iid} created
         </a>
       ) : (
-        <button
-          className="px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
-          disabled={loading}
+        <Button
+          variant="primary"
+          size="md"
+          loading={loading}
           onClick={handleCreateEpic}
         >
-          {loading ? 'Creating...' : 'Create Epic'}
-        </button>
+          Create Epic
+        </Button>
       )}
 
       {message && <p className="mt-2 text-sm">{message}</p>}

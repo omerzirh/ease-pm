@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { usePrefixStore } from '../../store/usePrefixStore';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 const PrefixesSettings = () => {
   const { prefixes, addPrefix, removePrefix } = usePrefixStore();
@@ -27,33 +29,35 @@ const PrefixesSettings = () => {
           {prefixes.map(p => (
             <li key={p} className="flex items-center justify-between px-3 py-2">
               <span>{p}</span>
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 aria-label="Delete"
                 onClick={() => removePrefix(p)}
-                className="text-app-semantic-error hover:opacity-80"
+                className="text-destructive hover:text-destructive/80"
               >
                 &times;
-              </button>
+              </Button>
             </li>
           ))}
         </ul>
       )}
 
       <div className="flex items-center gap-2">
-        <input
+        <Input
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="new prefix"
-          className="flex-1 border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
+          className="flex-1"
         />
-        <button
+        <Button
           onClick={handleAdd}
-          className="px-3 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
+          variant="primary"
           disabled={!input.trim()}
         >
           Add
-        </button>
+        </Button>
       </div>
     </div>
   );

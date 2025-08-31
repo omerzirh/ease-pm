@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import gitlabService from '../services/gitlabService';
 import { useSettingsStore } from '../store/useSettingsStore';
+import { Select } from './ui/select';
+import { Textarea } from './ui/textarea';
+import { Button, buttonVariants } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { cn } from '../lib/utils';
 
 
 
@@ -35,7 +41,7 @@ const MilestoneReport = () => {
         data = await gitlabService.fetchGroupMilestones(groupId!);
       }
       setMilestones(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setMessage(err.message || 'Failed to load milestones');
     } finally {
       setLoading(false);
@@ -57,7 +63,7 @@ const MilestoneReport = () => {
         .join('\n');
       setSelectedMilestone(milestone);
       setSummary(listMarkdown);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setMessage(err.message || 'Failed to load issues / summary');
     } finally {
       setLoading(false);
@@ -93,7 +99,7 @@ const MilestoneReport = () => {
         }
       }
       setMessage(prev => `${prev ? prev + ' | ' : ''}Linked ${issues.length} issues to report #${reportIid}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setMessage(err.message || 'Failed to create report issue');
     } finally {
       setLoading(false);
@@ -111,9 +117,8 @@ const MilestoneReport = () => {
 
       {milestones.length > 0 && (
         <div>
-          <label className="block text-sm font-medium mb-1">Select Milestone</label>
-          <select
-            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary transition-colors"
+          <Label required>Select Milestone</Label>
+          <Select
             onChange={e => {
               const m = milestones.find(mil => mil.id === Number(e.target.value));
               if (m) loadIssuesAndSummary(m);
@@ -125,49 +130,50 @@ const MilestoneReport = () => {
                 {m.title}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       )}
 
       {summary && (
         <div>
-          <label className="block text-sm font-medium mb-1">Existing Report IID (optional)</label>
-          <input
-            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 mb-4 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
+          <Label>Existing Report IID (optional)</Label>
+          <Input
+            className="mb-4"
             value={existingReportId}
             onChange={e => setExistingReportId(e.target.value)}
             placeholder="e.g. 123"
           />
-          <label className="block text-sm font-medium mb-1">Generated Summary</label>
-          <textarea
+          <Label>Generated Summary</Label>
+          <Textarea
             value={summary}
             onChange={e => setSummary(e.target.value)}
             rows={10}
-            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
           />
           {createdReport ? (
             <a
               href={createdReport.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 px-4 py-2 bg-app-surface-secondary border-l-4 border-app-semantic-success text-app-semantic-success rounded-md inline-block"
+              className={cn("mt-2", buttonVariants({ variant: "success" }))}
             >
               Report #{createdReport.iid} created
             </a>
           ) : (
-            <button
-              className="mt-2 px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
+            <Button
+              className="mt-2"
+              variant="primary"
+              size="md"
+              loading={loading}
               onClick={handleCreateOrUpdate}
-              disabled={loading}
             >
-              {loading ? 'Creating...' : 'Create / Update Report'}
-            </button>
+              Create / Update Report
+            </Button>
           )}
         </div>
       )}
 
       {message && (
-        <p className={`mt-2 text-sm text-center ${message.startsWith('Report issue') ? 'text-app-semantic-success' : 'text-app-semantic-error'}`}>
+        <p className={`mt-2 text-sm text-center ${message.startsWith('Report issue') ? 'text-green-600' : 'text-destructive'}`}>
           {message}
         </p>
       )}

@@ -3,6 +3,12 @@ import gitlabService, { Iteration } from '../services/gitlabService';
 import { useSettingsStore } from '../store/useSettingsStore';
 import { generateAssigneeSummary } from '../services/aiService';
 import { formatIterationName } from '../utils/iterationUtils';
+import { Select } from './ui/select';
+import { Textarea } from './ui/textarea';
+import { Button, buttonVariants } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { cn } from '../lib/utils';
 
 interface AssigneeSummary {
   assignee: string;
@@ -260,24 +266,22 @@ const IterationReport = () => {
     <div className="max-w-4xl mx-auto flex flex-col gap-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Iteration State</label>
-          <select
-            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary transition-colors"
+          <Label>Iteration State</Label>
+          <Select
             value={iterationState}
             onChange={e => setIterationState(e.target.value as 'opened' | 'current' | 'closed')}
           >
             <option value="current">Current</option>
             <option value="opened">Open</option>
             <option value="closed">Closed</option>
-          </select>
+          </Select>
         </div>
       </div>
 
       {iterations.length > 0 && (
         <div>
-          <label className="block text-sm font-medium mb-1">Select Iteration</label>
-          <select
-            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary transition-colors"
+          <Label required>Select Iteration</Label>
+          <Select
             onChange={e => {
               const iter = iterations.find(it => it.id === Number(e.target.value));
               if (iter) loadIssuesAndSummary(iter);
@@ -289,7 +293,7 @@ const IterationReport = () => {
                 {formatIterationOption(iter)}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       )}
 
@@ -297,24 +301,25 @@ const IterationReport = () => {
         <div>
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium">Assignee Summaries</h3>
-            <button
-              className="px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
+            <Button
+              variant="primary"
+              size="md"
+              loading={generatingAI}
               onClick={() => generateAISummaries(assigneeSummaries)}
-              disabled={generatingAI}
             >
-              {generatingAI ? 'Generating AI Summaries...' : 'Generate AI Summaries'}
-            </button>
+              Generate AI Summaries
+            </Button>
           </div>
           
           <div className="space-y-4">
             {assigneeSummaries.map(({ assignee, issues, aiSummary }) => (
-              <div key={assignee} className="border border-app-border-primary rounded-md p-4 bg-app-surface-secondary">
-                <h4 className="font-medium text-lg mb-2">{assignee} ({issues.length} issues)</h4>
+              <div key={assignee} className="border border-border rounded-md p-4 bg-card">
+                <h4 className="font-medium text-lg mb-2 text-card-foreground">{assignee} ({issues.length} issues)</h4>
                 
                 {aiSummary && (
-                  <div className="mb-3 p-3 bg-app-surface-secondary border-l-4 border-app-semantic-info rounded-md">
-                    <p className="text-sm font-medium text-app-semantic-info mb-1">AI Summary:</p>
-                    <p className="text-app-text-primary">{aiSummary}</p>
+                  <div className="mb-3 p-3 bg-muted rounded-md">
+                    <p className="text-sm font-medium text-muted-foreground mb-1">AI Summary:</p>
+                    <p className="text-foreground">{aiSummary}</p>
                   </div>
                 )}
                 
@@ -326,7 +331,7 @@ const IterationReport = () => {
                         href={issue.web_url} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-app-semantic-info hover:underline"
+                        className="text-primary hover:underline"
                       >
                         {issue.title}
                       </a>
@@ -341,43 +346,44 @@ const IterationReport = () => {
 
       {summary && (
         <div>
-          <label className="block text-sm font-medium mb-1">Existing Report IID (optional)</label>
-          <input
-            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 mb-4 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
+          <Label>Existing Report IID (optional)</Label>
+          <Input
+            className="mb-4"
             value={existingReportId}
             onChange={e => setExistingReportId(e.target.value)}
             placeholder="e.g. 123"
           />
-          <label className="block text-sm font-medium mb-1">Generated Summary</label>
-          <textarea
+          <Label>Generated Summary</Label>
+          <Textarea
             value={summary}
             onChange={e => setSummary(e.target.value)}
             rows={12}
-            className="w-full border border-app-border-primary focus:border-app-border-focus focus:ring-2 focus:ring-app-border-focus rounded-md p-2 bg-app-surface-primary text-app-text-primary placeholder:text-app-text-tertiary transition-colors"
           />
           {createdReport ? (
             <a
               href={createdReport.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 px-4 py-2 bg-app-surface-secondary border-l-4 border-app-semantic-success text-app-semantic-success rounded-md inline-block"
+              className={cn("mt-2", buttonVariants({ variant: "success" }))}
             >
               Report #{createdReport.iid} created
             </a>
           ) : (
-            <button
-              className="mt-2 px-4 py-2 bg-app-interactive-primary hover:bg-app-interactive-primary-hover text-app-text-inverse rounded-md disabled:bg-app-interactive-disabled disabled:opacity-50 transition-colors"
+            <Button
+              className="mt-2"
+              variant="primary"
+              size="md"
+              loading={loading}
               onClick={handleCreateOrUpdate}
-              disabled={loading}
             >
-              {loading ? 'Creating...' : 'Create / Update Report'}
-            </button>
+              Create / Update Report
+            </Button>
           )}
         </div>
       )}
 
       {message && (
-        <p className={`mt-2 text-sm text-center ${message.startsWith('Report') ? 'text-app-semantic-success' : 'text-app-semantic-error'}`}>
+        <p className={`mt-2 text-sm text-center ${message.startsWith('Report') ? 'text-green-600' : 'text-destructive'}`}>
           {message}
         </p>
       )}
