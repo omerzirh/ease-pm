@@ -137,7 +137,8 @@ const IterationReport = () => {
             const aiSummary = await generateAssigneeSummary(
               summary.assignee,
               summary.issues.map(issue => issue.title),
-              aiBackend
+              aiBackend,
+              iterationState
             );
             updatedSummaries[i].aiSummary = aiSummary;
             setAssigneeSummaries([...updatedSummaries]); 

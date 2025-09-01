@@ -1,10 +1,12 @@
 import { useSettingsStore } from '../../store/useSettingsStore';
-import { Input } from '../ui/input';
-import { Select } from '../ui/select';
-import { Label } from '../ui/label';
+import { Input, Select, Label } from '../ui';
+
 
 const AISettings = () => {
-  const { aiBackend, setBackend, openaiApiKey, geminiApiKey, setOpenaiApiKey, setGeminiApiKey } = useSettingsStore();
+  const { aiBackend, setBackend, openaiApiKey, geminiApiKey, setOpenaiApiKey, setGeminiApiKey,
+    setGeminiModel,
+    setOpenaiModel, setOpenaiBaseUrl, openaiModel, geminiModel, openaiBaseUrl
+  } = useSettingsStore();
 
   return (
     <div className="max-w-md">
@@ -19,29 +21,65 @@ const AISettings = () => {
       </Select>
 
       {aiBackend === 'openai' && (
-        <div className="mt-4">
-          <Label required>OpenAI Compatible API Key</Label>
-          <Input
-            type="password"
-            value={openaiApiKey ?? ''}
-            onChange={e => setOpenaiApiKey(e.target.value.trim() || null)}
-            placeholder="sk-..."
-            helperText="Don't worry about clicking the eye button. Pasting the key is enough."
-          />
+        <div>
+          <div className="mt-4">
+            <Label required>OpenAI Compatible API Url</Label>
+            <Input
+              type="text"
+              value={openaiBaseUrl ?? ''}
+              onChange={e => setOpenaiBaseUrl(e.target.value.trim() || null)}
+              placeholder="https://api..."
+              helperText="Pasting will be enough. No save button required."
+            />
+          </div>
+
+          <div className="mt-4">
+            <Label required>Model Name</Label>
+            <Input
+              type="text"
+              value={openaiModel ?? ''}
+              onChange={e => setOpenaiModel(e.target.value.trim() || null)}
+              placeholder="gpt-4o"
+              helperText="Pasting will be enough. No save button required."
+            />
+          </div>
+          <div className="mt-4">
+            <Label required>OpenAI Compatible API Key</Label>
+            <Input
+              type="password"
+              value={openaiApiKey ?? ''}
+              onChange={e => setOpenaiApiKey(e.target.value.trim() || null)}
+              placeholder="sk-..."
+              helperText="Pasting will be enough. No save button required."
+            />
+          </div>
+
         </div>
       )}
 
       {aiBackend === 'gemini' && (
+     <div>
+         <div className="mt-4">
+          <Label required>Model Name</Label>
+          <Input
+            type="text"
+            value={geminiModel ?? ''}
+            onChange={e => setGeminiModel(e.target.value.trim() || null)}
+            placeholder="gemini-2.5-flash"
+            helperText="Pasting will be enough. No save button required."
+          />
+        </div>
         <div className="mt-4">
-          <Label required>Google Gemini API Key</Label>
+          <Label required>API Key</Label>
           <Input
             type="password"
             value={geminiApiKey ?? ''}
             onChange={e => setGeminiApiKey(e.target.value.trim() || null)}
             placeholder="AIza..."
-            helperText="Don't worry about clicking the eye button. Pasting the key is enough."
+            helperText="Pasting will be enough. No save button required."
           />
         </div>
+     </div>
       )}
     </div>
   );

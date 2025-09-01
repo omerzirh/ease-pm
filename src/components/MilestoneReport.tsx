@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react';
 import gitlabService from '../services/gitlabService';
 import { useSettingsStore } from '../store/useSettingsStore';
-import { Select } from './ui/select';
-import { Textarea } from './ui/textarea';
-import { Button, buttonVariants } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
+import { Select, Textarea, Button, Input, Label, buttonVariants } from './ui';
+
 import { cn } from '../lib/utils';
 
 

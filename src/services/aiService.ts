@@ -35,10 +35,16 @@ export async function generateEpic(
 export async function generateAssigneeSummary(
   assigneeName: string,
   issueTitles: string[],
-  backend: AIBackend = 'openai'
+  backend: AIBackend = 'openai',
+  iterationState='current'
 ): Promise<string> {
+  const tense = {
+    opened: 'will be working',
+    current: 'is working', 
+    closed: 'worked'
+  }[iterationState] || 'worked'
   const systemPrompt = 
-    'You are a helpful assistant that creates concise work summaries. Based on the issue titles provided, create a brief 2-3 sentence summary of what this person worked on. Focus on the main themes and accomplishments. Respond with plain text, no JSON.';
+    `You are a helpful assistant that creates concise work summaries. Based on the issue titles provided, create a brief 2-3 sentence summary of what this person ${tense} on. Focus on the main themes and accomplishments. Respond with plain text, no JSON.`;
   
   const userPrompt = `Assignee: ${assigneeName}\n\nIssue titles:\n${issueTitles.map(title => `- ${title}`).join('\n')}`;
   
@@ -83,42 +89,53 @@ async function callLLM(
   }
 }
 
-function getStoredApiKey(service: 'openai' | 'gemini'): string | null {
+
+function getStoredSettings(): any {
   try {
     const raw = localStorage.getItem('ease-gitlab-settings');
     if (!raw) return null;
     const parsed = JSON.parse(raw) as { state?: any };
-    const st = parsed.state ?? parsed;
-    return service === 'openai' ? st.openaiApiKey ?? null : st.geminiApiKey ?? null;
+    return parsed.state ?? parsed;
   } catch {
     return null;
   }
 }
 
+
 async function callGemini(prompt: string): Promise<string> {
-  const apiKey = getStoredApiKey('gemini') || (import.meta.env.VITE_GEMINI_API_KEY as string | undefined);
+  const settings = getStoredSettings();
+ 
+  const apiKey = settings?.geminiApiKey || (import.meta.env.VITE_GEMINI_API_KEY as string | undefined);
+  const model = settings?.geminiModel || 'gemini-2.5-flash';
+  
   if (!apiKey) throw new Error('Missing Gemini API key');
 
   const genAI = new GoogleGenAI({ apiKey });
   const result = await genAI.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model,
     contents: prompt,
   });
   return result.text ?? JSON.stringify(result);
 }
 
 async function callOpenAI(prompt: string, temperature: number): Promise<string> {
-  const apiKey = getStoredApiKey('openai') || (import.meta.env.VITE_OPENAI_API_KEY as string | undefined);
+  const settings = getStoredSettings();
+  
+  const apiKey = settings?.openaiApiKey || (import.meta.env.VITE_OPENAI_API_KEY as string | undefined);
+  const baseUrl = settings?.openaiBaseUrl || import.meta.env.VITE_OPENAI_BASE_URL as string | undefined;
+  const model = settings?.openaiModel || import.meta.env.VITE_OPENAI_MODEL_NAME as string | undefined;
+  
   if (!apiKey) throw new Error('Missing OpenAI API key');
 
-  const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+
+  const response = await fetch(baseUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'deepseek-chat',
+      model,
       messages: [
         { role: 'system', content: prompt.split('\n\n')[0] },
         { role: 'user', content: prompt.split('\n\n').slice(1).join('\n\n') },

@@ -12,6 +12,14 @@ interface SettingsState {
   setOpenaiApiKey: (key: string | null) => void;
   setGeminiApiKey: (key: string | null) => void;
 
+  openaiBaseUrl: string | null;
+  openaiModel: string | null;
+  geminiModel: string | null;
+  setOpenaiBaseUrl: (url: string | null) => void;
+  setOpenaiModel: (model: string | null) => void;
+  setGeminiModel: (model: string | null) => void;
+
+
   groupId: string | null;
   groupName: string | null;
   projectId: string | null;
@@ -39,6 +47,12 @@ export const useSettingsStore = create<SettingsState>()(
       geminiApiKey: null,
       setOpenaiApiKey: (openaiApiKey) => set({ openaiApiKey }),
       setGeminiApiKey: (geminiApiKey) => set({ geminiApiKey }),
+      openaiBaseUrl: null,
+      openaiModel: null,
+      geminiModel: null,
+      setOpenaiBaseUrl: (openaiBaseUrl) => set({ openaiBaseUrl }),
+      setOpenaiModel: (openaiModel) => set({ openaiModel }),
+      setGeminiModel: (geminiModel) => set({ geminiModel }),
 
       groupId: null,
       groupName: null,

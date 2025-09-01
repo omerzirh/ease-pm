@@ -9,12 +9,7 @@ import { useEpicStore } from '../store/useEpicStore';
 import remarkGfm from 'remark-gfm';
 import debounce from 'lodash.debounce';
 import { usePrefixStore } from '../store/usePrefixStore';
-import { Select } from './ui/select';
-import { Textarea } from './ui/textarea';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Checkbox } from './ui/checkbox';
+import { Select, Textarea, Button, Input, Label, Checkbox } from './ui';
 
 
 const IssueGenerator = () => {
