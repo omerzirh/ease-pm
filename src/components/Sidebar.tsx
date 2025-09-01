@@ -10,7 +10,8 @@ import { AiOutlinePicLeft } from "react-icons/ai";
 import { GoMilestone } from "react-icons/go";
 import { GoIterations } from "react-icons/go";
 import { IoSettingsOutline } from "react-icons/io5";
-
+import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight} from "react-icons/md";
+import { RxCross2 } from "react-icons/rx";
 
 interface NavItem {
   id: MainTab;
@@ -167,53 +168,38 @@ const Sidebar: React.FC<SidebarProps> = ({
           {(!isCollapsed || isMobile) && (
             <Button
               onClick={onTitleClick}
-              className="font-medium hover:text-slate-300 transition-colors duration-150 truncate"
+              className="font-medium text-orange-400 hover:text-orange-300 transition-colors duration-150 truncate"
               aria-label="Go to issues page"
-              variant={'secondary'}
+              variant={'toggle'}
             >
-              GitLab PM
+              Ease PM
             </Button>
           )}
 
           {!isMobile && (
-            <Tooltip
-              content={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              position="right"
-              delay={300}
-            >
+         
               <Button
                 onClick={() => toggleCollapsed()}
-                className="p-1 hover:bg-slate-700 rounded transition-colors duration-150"
+                className="text-white p-1 rounded transition-colors duration-150"
                 aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-                variant={'secondary'}
+                variant={'toggle'}
               >
-                <svg
-                  className={`w-4 h-4 transition-transform duration-200 ${isCollapsed ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
+                {isCollapsed ? (
+                  <MdOutlineKeyboardArrowRight className="w-6 h-6" />
+                ) : (
+                  <MdOutlineKeyboardArrowLeft className="w-6 h-6" />
+                )}
               </Button>
-            </Tooltip>
           )}
 
           {isMobile && (
             <Button
               onClick={() => setMobileOpen(false)}
-              className="p-1 hover:bg-slate-700 rounded transition-colors duration-150"
+              className="p-1 rounded transition-colors duration-150"
               aria-label="Close navigation menu"
-              variant={'secondary'}
+              variant={'toggle'}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <RxCross2 className="w-5 h-5" />
             </Button>
           )}
         </div>
@@ -324,36 +310,22 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </nav>
 
-        <div className="p-4 border-t border-slate-700">
+        <div className="w-full p-1 border-t border-slate-700">
           {isCollapsed && !isMobile ? (
-            <Tooltip
-              content={isAuthenticated ? 'Logout' : 'Login with GitLab'}
-              position="right"
-              delay={400}
-            >
               <Button
                 onClick={onAuthToggle}
-                className={`
-                  w-full flex items-center p-3 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg 
-                  transition-all duration-150 ease-in-out justify-center hover:shadow-sm
-                  focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 focus:ring-offset-slate-800
-                `}
+                className={'w-full'}
                 aria-label={isAuthenticated ? 'Logout' : 'Login with GitLab'}
-                variant={'secondary'}
+                variant={'toggle'}
               >
                 <img src={gitlab} alt="GitLab" className="w-5 h-5 flex-shrink-0" />
               </Button>
-            </Tooltip>
           ) : (
             <Button
               onClick={onAuthToggle}
-              className={`
-                w-full flex items-center p-3 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg 
-                transition-all duration-150 ease-in-out justify-start hover:shadow-sm
-                focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 focus:ring-offset-slate-800
-              `}
+              className={'w-full'}
               aria-label={isAuthenticated ? 'Logout' : 'Login with GitLab'}
-              variant={'secondary'}
+              variant={'toggle'}
             >
               <img src={gitlab} alt="GitLab" className="w-5 h-5 flex-shrink-0" />
               <span className={`ml-3 truncate transition-opacity duration-200 ${isTransitioning && !isMobile ? 'opacity-0' : 'opacity-100'} flex items-center gap-2`}>

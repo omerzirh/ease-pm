@@ -13,6 +13,7 @@ const buttonVariants = cva(
         success: "bg-green-600 text-white hover:bg-green-700",
         outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         ghost: "hover:bg-accent hover:text-accent-foreground",
+        toggle: " text-white",
       },
       size: {
         sm: "h-8 px-3 text-xs",
