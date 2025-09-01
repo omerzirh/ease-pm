@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
 import { generateIssue } from '../services/aiService';
-import { GoogleGenAI } from '@google/genai';
 import gitlabService from '../services/gitlabService';
 import { useLabelStore } from '../store/useLabelStore';
 import { useSettingsStore } from '../store/useSettingsStore';
@@ -9,15 +8,20 @@ import ReactMarkdown from 'react-markdown';
 import { useEpicStore } from '../store/useEpicStore';
 import remarkGfm from 'remark-gfm';
 import debounce from 'lodash.debounce';
-import { useGitlabAuth } from '../store/useGitlabAuth';
 import { usePrefixStore } from '../store/usePrefixStore';
+import { Select } from './ui/select';
+import { Textarea } from './ui/textarea';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Checkbox } from './ui/checkbox';
 
 
 const IssueGenerator = () => {
   const [prompt, setPrompt] = useState('');
   const [draftTitle, setDraftTitle] = useState('');
   const [draftDescription, setDraftDescription] = useState('');
-  const { labels, setLabels, keywords, setKeywords } = useLabelStore();
+  const { labels, setLabels, keywords } = useLabelStore();
   const { selectedEpic, setEpic } = useEpicStore();
   const { setTab } = useTabStore();
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
@@ -160,27 +164,27 @@ const IssueGenerator = () => {
      <div className="max-w-3xl flex flex-col gap-6">
 
         <div>
-          <label className="block text-sm font-medium mb-1">Prompt</label>
-          <textarea
+          <Label>Prompt</Label>
+          <Textarea
             value={prompt}
             onChange={e => setPrompt(e.target.value)}
             rows={3}
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
           />
-          <button
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50"
-            disabled={loading}
+          <Button
+            className="mt-4"
+            variant="primary"
+            size="md"
+            loading={loading}
             onClick={handleGenerate}
           >
-            {loading ? 'Generating...' : 'Generate with AI'}
-          </button>
+            Generate with AI
+          </Button>
           {message && <p className="mt-2 text-sm">{message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Title Prefix</label>
-          <select
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
+          <Label>Title Prefix</Label>
+          <Select
             onChange={e => {
               const prefix = e.target.value;
               if (prefix) {
@@ -194,30 +198,28 @@ const IssueGenerator = () => {
                 {p}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Title</label>
-          <input
+          <Label required>Title</Label>
+          <Input
             value={draftTitle}
             onChange={e => setDraftTitle(e.target.value)}
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Description (Markdown)</label>
-          <textarea
+          <Label>Description (Markdown)</Label>
+          <Textarea
             value={draftDescription}
             onChange={e => setDraftDescription(e.target.value)}
             rows={8}
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Labels</label>
+          <Label>Labels</Label>
           <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto">
             {labels
               .filter(l => {
@@ -226,45 +228,45 @@ const IssueGenerator = () => {
                 return kws.some(k => l.name.toLowerCase().includes(k));
               })
               .map(l => (
-                <label key={l.id} className="flex items-center gap-1">
-                  <input
-                    type="checkbox"
-                    checked={selectedLabels.includes(l.name)}
-                    onChange={e => {
-                      if (e.target.checked) {
-                        setSelectedLabels(prev => [...prev, l.name]);
-                      } else {
-                        setSelectedLabels(prev => prev.filter(name => name !== l.name));
-                      }
-                    }}
-                  />
-                  {l.name}
-                </label>
+                <Checkbox
+                  key={l.id}
+                  label={l.name}
+                  checked={selectedLabels.includes(l.name)}
+                  onChange={e => {
+                    if (e.target.checked) {
+                      setSelectedLabels(prev => [...prev, l.name]);
+                    } else {
+                      setSelectedLabels(prev => prev.filter(name => name !== l.name));
+                    }
+                  }}
+                  size="sm"
+                />
               ))}
           </div>
 
           <div className="mt-4">
-            <label className="flex items-center gap-2">
-              <input type="checkbox" checked={enableEpic} onChange={e => setEnableEpic(e.target.checked)} />
-              Link Epic
-            </label>
+            <Checkbox
+              label="Link Epic"
+              checked={enableEpic}
+              onChange={e => setEnableEpic(e.target.checked)}
+            />
             {enableEpic && (
               <div className="mt-2">
-                <input
+                <Input
                   value={epicQuery}
                   onChange={e => {
                     setEpicQuery(e.target.value);
                   }}
                   placeholder="Paste epic URL or search title..."
-                  className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800 mb-2"
+                  className="mb-2"
                 />
                 {searchingEpics && <p className="text-sm">Searching...</p>}
                 {epicResults.length > 0 && (
-                  <div className="border max-h-48 overflow-y-auto rounded-md bg-white dark:bg-gray-900">
+                  <div className="border border-border max-h-48 overflow-y-auto rounded-md bg-popover">
                     {epicResults.map(er => (
                       <div
                         key={er.id}
-                        className="px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer text-sm"
+                        className="px-2 py-1 hover:bg-accent hover:text-accent-foreground cursor-pointer text-sm"
                         onClick={() => {
                           setEpic(er);
                           setEpicQuery(er.title);
@@ -277,17 +279,19 @@ const IssueGenerator = () => {
                   </div>
                 )}
                 {selectedEpic && (
-                  <p className="text-sm mt-1 text-green-600">Selected: {selectedEpic.title}</p>
+                  <p className="text-sm mt-1 text-app-semantic-success">Selected: {selectedEpic.title}</p>
                 )}
               </div>
             )}
           </div>
-          <button
-            className="mt-2 px-3 py-1 bg-gray-300 dark:bg-gray-600 rounded-md text-sm"
+          <Button
+            className="mt-2"
+            variant="secondary"
+            size="sm"
             onClick={() => setTab('settings')}
           >
             Edit Labels
-          </button>
+          </Button>
         </div>
 
         {createdIssue ? (
@@ -295,22 +299,23 @@ const IssueGenerator = () => {
             href={createdIssue.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 bg-green-700 text-white rounded-md inline-block"
+            className="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded-md inline-block"
           >
             Issue #{createdIssue.iid} created
           </a>
         ) : (
-          <button
-            className="px-4 py-2 bg-green-600 text-white rounded-md disabled:opacity-50"
+          <Button
+            variant="primary"
+            size="md"
+            loading={loading}
             onClick={handleCreateIssue}
-            disabled={loading}
           >
-            {loading ? 'Creating...' : 'Create Issue in GitLab'}
-          </button>
+            Create Issue in GitLab
+          </Button>
         )}
 
         {message && (
-          <p className="mt-2 text-sm text-center {message.startsWith('Issue created') ? 'text-green-600' : 'text-red-600'}">
+          <p className={`mt-2 text-sm text-center ${message.startsWith('Issue created') ? 'text-green-600' : 'text-destructive'}`}>
             {message}
           </p>
         )}
@@ -318,7 +323,7 @@ const IssueGenerator = () => {
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
         <h2 className="text-lg font-medium">Preview</h2>
         {draftTitle && draftDescription && (
-          <div className="bg-white dark:bg-gray-800 rounded-md p-4">
+          <div className="bg-app-surface-primary rounded-md p-4">
             <h3 className="text-lg font-medium">{draftTitle}</h3>
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {draftDescription}

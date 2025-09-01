@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useSettingsStore } from '../../store/useSettingsStore';
-import Modal from '../Modal';
+import Modal from '../ui/Modal';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 
 const GitlabSettings: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,43 +21,43 @@ const GitlabSettings: React.FC = () => {
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold">GitLab Settings</h2>
-          <button onClick={() => setIsModalOpen(true)} className="text-sm text-blue-600 hover:underline">How to find this information?</button>
+          <Button variant="ghost" size="sm" onClick={() => setIsModalOpen(true)} className="text-sm text-primary hover:underline">How to find this information?</Button>
         </div>
         <div>
-          <label htmlFor="gitlabHost" className="block text-sm font-medium text-gray-700">
+          <Label htmlFor="gitlabHost" required>
             GitLab Host
-          </label>
-          <input
+          </Label>
+          <Input
             type="text"
             id="gitlabHost"
             value={gitlabHost || ''}
             onChange={(e) => setGitlabHost(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             placeholder="https://gitlab.com"
+            className="mt-1"
           />
         </div>
         <div>
-          <label htmlFor="gitlabAppId" className="block text-sm font-medium text-gray-700">
+          <Label htmlFor="gitlabAppId" required>
             Application ID
-          </label>
-          <input
+          </Label>
+          <Input
             type="text"
             id="gitlabAppId"
             value={gitlabAppId || ''}
             onChange={(e) => setGitlabAppId(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1"
           />
         </div>
         <div>
-          <label htmlFor="gitlabCallbackUrl" className="block text-sm font-medium text-gray-700">
+          <Label htmlFor="gitlabCallbackUrl" required>
             Callback URL
-          </label>
-          <input
+          </Label>
+          <Input
             type="text"
             id="gitlabCallbackUrl"
             value={gitlabCallbackUrl || ''}
             onChange={(e) => setGitlabCallbackUrl(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            className="mt-1"
           />
         </div>
       </div>

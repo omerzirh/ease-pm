@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 import gitlabService, { Iteration } from '../services/gitlabService';
 import { useSettingsStore } from '../store/useSettingsStore';
 import { generateAssigneeSummary } from '../services/aiService';
+import { formatIterationName } from '../utils/iterationUtils';
+import { Select } from './ui/select';
+import { Textarea } from './ui/textarea';
+import { Button, buttonVariants } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { cn } from '../lib/utils';
 
 interface AssigneeSummary {
   assignee: string;
@@ -32,7 +39,6 @@ const IterationReport = () => {
     setMessage(null);
     try {
       let data;
-      // Try project iterations first if projectId is available
       if (projectId) {
         console.log(gitlabService)
         data = await gitlabService.fetchProjectIterations(projectId, { 
@@ -40,7 +46,6 @@ const IterationReport = () => {
           includeAncestors: true 
         });
       } else if (groupId) {
-        // Fall back to group iterations
         data = await gitlabService.fetchIterations(groupId, state || 'opened');
       } else {
         throw new Error('No project or group ID available');
@@ -49,7 +54,6 @@ const IterationReport = () => {
       if(data.length === 0) {
         setMessage('No iterations found');
       }
-      // Sort iterations by start date (most recent first)
       const sortedData = data.sort((a: Iteration, b: Iteration) => 
         new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
       );
@@ -65,22 +69,19 @@ const IterationReport = () => {
     const assigneeMap = new Map<string, Array<{ title: string; state: string; web_url: string }>>();
     
     issues.forEach(issue => {
-      // Find assignee labels (format: "Assignee::Name")
       const assigneeLabels = issue.labels?.filter((label: string) => 
         label.startsWith('Assignee::')
       ) || [];
       
       if (assigneeLabels.length === 0) {
-        // If no assignee label, group under "Unassigned"
-        const unassigned = assigneeMap.get('Unassigned') || [];
-        unassigned.push({
+        const backlog = assigneeMap.get('Backlog') || [];
+        backlog.push({
           title: issue.title,
           state: issue.state,
           web_url: issue.web_url
         });
-        assigneeMap.set('Unassigned', unassigned);
+        assigneeMap.set('Backlog', backlog);
       } else {
-        // Group by each assignee (in case there are multiple assignee labels)
         assigneeLabels.forEach((label: string) => {
           const assigneeName = label.replace('Assignee::', '');
           const assigneeIssues = assigneeMap.get(assigneeName) || [];
@@ -103,11 +104,10 @@ const IterationReport = () => {
   const updateSummaryWithAI = (summariesWithAI: AssigneeSummary[]) => {
     if (!selectedIteration) return;
     
-    let iterationInfo = `## ${selectedIteration.title}\n\n` +
+    let iterationInfo = `## ${formatIterationName(selectedIteration)}\n\n` +
       `**Start Date:** ${new Date(selectedIteration.start_date).toLocaleDateString()}\n` +
       `**Due Date:** ${new Date(selectedIteration.due_date).toLocaleDateString()}\n\n`;
     
-    // Add assignee breakdown with AI summaries
     if (summariesWithAI.length > 0) {
       iterationInfo += `### Work by Assignee:\n\n`;
       summariesWithAI.forEach(({ assignee, issues, aiSummary }) => {
@@ -140,7 +140,7 @@ const IterationReport = () => {
               aiBackend
             );
             updatedSummaries[i].aiSummary = aiSummary;
-            setAssigneeSummaries([...updatedSummaries]); // Update UI progressively
+            setAssigneeSummaries([...updatedSummaries]); 
           } catch (error) {
             console.error(`Failed to generate AI summary for ${summary.assignee}:`, error);
             updatedSummaries[i].aiSummary = 'Failed to generate AI summary';
@@ -148,7 +148,6 @@ const IterationReport = () => {
         }
       }
       
-      // Update the main summary with AI summaries
       updateSummaryWithAI(updatedSummaries);
       
     } finally {
@@ -171,7 +170,7 @@ const IterationReport = () => {
         .join('\n');
       setSelectedIteration(iteration);
       
-      let iterationInfo = `## ${iteration.title}\n\n` +
+      let iterationInfo = `## ${formatIterationName(iteration)}\n\n` +
         `**Start Date:** ${new Date(iteration.start_date).toLocaleDateString()}\n` +
         `**Due Date:** ${new Date(iteration.due_date).toLocaleDateString()}\n\n`;
       
@@ -201,7 +200,6 @@ const IterationReport = () => {
     setLoading(true);
     setMessage(null);
     try {
-      // Get all issues for this iteration
       const issues = await gitlabService.fetchIssuesByIteration(projectId, selectedIteration.id);
       
       let reportIid: number;
@@ -221,7 +219,7 @@ const IterationReport = () => {
       } else {
         const res = await gitlabService.createIssue(
           projectId,
-          `${selectedIteration.title} – Iteration Report`,
+          `${formatIterationName(selectedIteration)} – Iteration Report`,
           summary,
           ['iteration-report'],
           undefined,
@@ -261,33 +259,29 @@ const IterationReport = () => {
   }, [iterationState]);
 
   const formatIterationOption = (iteration: Iteration) => {
-    const startDate = new Date(iteration.start_date).toLocaleDateString();
-    const dueDate = new Date(iteration.due_date).toLocaleDateString();
-    return `${iteration.title} (${startDate} - ${dueDate})`;
+    return formatIterationName(iteration);
   };
 
   return (
     <div className="max-w-4xl mx-auto flex flex-col gap-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Iteration State</label>
-          <select
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
+          <Label>Iteration State</Label>
+          <Select
             value={iterationState}
             onChange={e => setIterationState(e.target.value as 'opened' | 'current' | 'closed')}
           >
             <option value="current">Current</option>
             <option value="opened">Open</option>
             <option value="closed">Closed</option>
-          </select>
+          </Select>
         </div>
       </div>
 
       {iterations.length > 0 && (
         <div>
-          <label className="block text-sm font-medium mb-1">Select Iteration</label>
-          <select
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
+          <Label required>Select Iteration</Label>
+          <Select
             onChange={e => {
               const iter = iterations.find(it => it.id === Number(e.target.value));
               if (iter) loadIssuesAndSummary(iter);
@@ -299,7 +293,7 @@ const IterationReport = () => {
                 {formatIterationOption(iter)}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       )}
 
@@ -307,24 +301,25 @@ const IterationReport = () => {
         <div>
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-medium">Assignee Summaries</h3>
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50"
+            <Button
+              variant="primary"
+              size="md"
+              loading={generatingAI}
               onClick={() => generateAISummaries(assigneeSummaries)}
-              disabled={generatingAI}
             >
-              {generatingAI ? 'Generating AI Summaries...' : 'Generate AI Summaries'}
-            </button>
+              Generate AI Summaries
+            </Button>
           </div>
           
           <div className="space-y-4">
             {assigneeSummaries.map(({ assignee, issues, aiSummary }) => (
-              <div key={assignee} className="border border-gray-300 dark:border-gray-700 rounded-md p-4 bg-gray-50 dark:bg-gray-800">
-                <h4 className="font-medium text-lg mb-2">{assignee} ({issues.length} issues)</h4>
+              <div key={assignee} className="border border-border rounded-md p-4 bg-card">
+                <h4 className="font-medium text-lg mb-2 text-card-foreground">{assignee} ({issues.length} issues)</h4>
                 
                 {aiSummary && (
-                  <div className="mb-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-                    <p className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-1">AI Summary:</p>
-                    <p className="text-blue-700 dark:text-blue-300">{aiSummary}</p>
+                  <div className="mb-3 p-3 bg-muted rounded-md">
+                    <p className="text-sm font-medium text-muted-foreground mb-1">AI Summary:</p>
+                    <p className="text-foreground">{aiSummary}</p>
                   </div>
                 )}
                 
@@ -336,7 +331,7 @@ const IterationReport = () => {
                         href={issue.web_url} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-blue-600 dark:text-blue-400 hover:underline"
+                        className="text-primary hover:underline"
                       >
                         {issue.title}
                       </a>
@@ -351,43 +346,44 @@ const IterationReport = () => {
 
       {summary && (
         <div>
-          <label className="block text-sm font-medium mb-1">Existing Report IID (optional)</label>
-          <input
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 mb-4 bg-white dark:bg-gray-800"
+          <Label>Existing Report IID (optional)</Label>
+          <Input
+            className="mb-4"
             value={existingReportId}
             onChange={e => setExistingReportId(e.target.value)}
             placeholder="e.g. 123"
           />
-          <label className="block text-sm font-medium mb-1">Generated Summary</label>
-          <textarea
+          <Label>Generated Summary</Label>
+          <Textarea
             value={summary}
             onChange={e => setSummary(e.target.value)}
             rows={12}
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
           />
           {createdReport ? (
             <a
               href={createdReport.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 px-4 py-2 bg-green-700 text-white rounded-md inline-block"
+              className={cn("mt-2", buttonVariants({ variant: "success" }))}
             >
               Report #{createdReport.iid} created
             </a>
           ) : (
-            <button
-              className="mt-2 px-4 py-2 bg-green-600 text-white rounded-md disabled:opacity-50"
+            <Button
+              className="mt-2"
+              variant="primary"
+              size="md"
+              loading={loading}
               onClick={handleCreateOrUpdate}
-              disabled={loading}
             >
-              {loading ? 'Creating...' : 'Create / Update Report'}
-            </button>
+              Create / Update Report
+            </Button>
           )}
         </div>
       )}
 
       {message && (
-        <p className={`mt-2 text-sm text-center ${message.startsWith('Report') ? 'text-green-600' : 'text-red-600'}`}>
+        <p className={`mt-2 text-sm text-center ${message.startsWith('Report') ? 'text-green-600' : 'text-destructive'}`}>
           {message}
         </p>
       )}

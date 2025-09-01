@@ -7,10 +7,6 @@ interface PrefixState {
   removePrefix: (p: string) => void;
 }
 
-/**
- * zustand store for managing commit/issue prefixes.
- * Persisted in localStorage under key `prefix-store`.
- */
 export const usePrefixStore = create<PrefixState>()(
   persist(
     (set, get) => ({
@@ -18,7 +14,7 @@ export const usePrefixStore = create<PrefixState>()(
       addPrefix: (p) => {
         if (!p.trim()) return;
         const { prefixes } = get();
-        if (prefixes.includes(p)) return; // avoid duplicates
+        if (prefixes.includes(p)) return;
         set({ prefixes: [...prefixes, p] });
       },
       removePrefix: (p) => {
@@ -27,7 +23,7 @@ export const usePrefixStore = create<PrefixState>()(
       },
     }),
     {
-      name: 'prefix-store', // localStorage key
+      name: 'prefix-store',
     },
   ),
 );

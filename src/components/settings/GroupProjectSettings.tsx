@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import gitlabService from '../../services/gitlabService';
 import { useSettingsStore } from '../../store/useSettingsStore';
 import { useGitlabAuth } from '../../store/useGitlabAuth';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Select } from '../ui/select';
+import { Label } from '../ui/label';
 
 interface GitlabProject {
   id: number;
@@ -27,7 +31,6 @@ const GroupProjectSettings = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
 
-  // Fetch projects when stored groupId exists on mount
   useEffect(() => {
     if (groupId && token && editing) {
       handleFetchProjects(groupId);
@@ -57,7 +60,7 @@ const GroupProjectSettings = () => {
     try {
       const projects = await gitlabService.fetchProjects(gid);
       setProjectOptions(projects);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setMessage(err.message || 'Failed to fetch projects');
     } finally {
       setLoading(false);
@@ -96,37 +99,38 @@ const GroupProjectSettings = () => {
           <p className="mb-4 text-sm">
             <span className="font-medium">Project ID:</span> {projectId || 'Not set'}
           </p>
-          <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-md"
+          <Button
+            variant="primary"
             onClick={() => setEditing(true)}
           >
             Edit
-          </button>
+          </Button>
         </>
       ) : (
         <>
-          <label className="block text-sm font-medium mb-1">Group ID / Path</label>
-          <input
+          <Label required>Group ID / Path</Label>
+          <Input
             value={groupInput}
             onChange={e => setGroupInput(e.target.value)}
-            className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 mb-2 bg-white dark:bg-gray-800"
             placeholder="e.g. 123456 or my-group"
+            className="mb-2"
           />
-          <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50 mb-4"
+          <Button
+            variant="primary"
+            className="mb-4"
             onClick={handleSaveGroup}
             disabled={!groupInput.trim() || loading}
+            loading={loading}
           >
             Save Group & Fetch Projects
-          </button>
+          </Button>
 
           {projectOptions.length > 0 && (
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Select Project</label>
-              <select
+              <Label required>Select Project</Label>
+              <Select
                 value={selectedProject}
                 onChange={e => setSelectedProject(e.target.value)}
-                className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800"
               >
                 <option value="">-- choose a project --</option>
                 {projectOptions.map(p => (
@@ -134,22 +138,23 @@ const GroupProjectSettings = () => {
                     {p.path_with_namespace}
                   </option>
                 ))}
-              </select>
-              <button
-                className="mt-2 px-4 py-2 bg-green-600 text-white rounded-md disabled:opacity-50"
+              </Select>
+              <Button
+                variant="primary"
+                className="mt-2"
                 onClick={handleSaveProject}
                 disabled={!selectedProject}
               >
                 Save Project
-              </button>
+              </Button>
             </div>
           )}
-          <button
-            className="px-4 py-2 bg-gray-500 text-white rounded-md"
+          <Button
+            variant="secondary"
             onClick={() => setEditing(false)}
           >
             Cancel
-          </button>
+          </Button>
         </>
       )}
 

@@ -1,7 +1,10 @@
-import { useState } from 'react';
-import gitlabService from '../../services/gitlabService';
-import { useLabelStore } from '../../store/useLabelStore';
-import { useSettingsStore } from '../../store/useSettingsStore';
+import { useState } from "react";
+import gitlabService from "../../services/gitlabService";
+import { useLabelStore } from "../../store/useLabelStore";
+import { useSettingsStore } from "../../store/useSettingsStore";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 const LabelsSettings = () => {
   const { labels, setLabels, keywords, setKeywords } = useLabelStore();
@@ -13,7 +16,7 @@ const LabelsSettings = () => {
 
   const handleFetch = async () => {
     if (!projectId) {
-      setMessage('Missing VITE_GITLAB_PROJECT_ID');
+      setMessage("Missing VITE_GITLAB_PROJECT_ID");
       return;
     }
     setLoading(true);
@@ -22,8 +25,8 @@ const LabelsSettings = () => {
       const all = await gitlabService.fetchLabels(projectId);
       const filtered = filterLabels(all, keywords);
       setPreview(filtered);
-    } catch (err: any) {
-      setMessage(err.message || 'Failed to fetch labels');
+    } catch (err: unknown) {
+      setMessage(err.message || "Failed to fetch labels");
     } finally {
       setLoading(false);
     }
@@ -31,39 +34,41 @@ const LabelsSettings = () => {
 
   const handleSave = () => {
     setLabels(preview);
-    setMessage('Saved!');
+    setMessage("Saved!");
   };
 
   return (
     <div className="max-w-xl">
       <h2 className="text-xl font-semibold mb-4">Label Settings</h2>
 
-      <label className="block text-sm font-medium mb-1">Filter Keywords (comma separated)</label>
-      <input
+      <Label>Filter Keywords (comma separated)</Label>
+      <Input
         value={keywords}
-        onChange={e => setKeywords(e.target.value)}
-        className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 mb-4 bg-white dark:bg-gray-800"
+        onChange={(e) => setKeywords(e.target.value)}
         placeholder="bug,frontend,urgent"
+        className="mb-4"
       />
 
-      <button
+      <Button
         onClick={handleFetch}
-        className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:opacity-50 mr-2"
+        variant="primary"
+        className="mr-2"
         disabled={loading}
+        loading={loading}
       >
         Fetch & Preview
-      </button>
-      <button
+      </Button>
+      <Button
         onClick={handleSave}
-        className="px-4 py-2 bg-green-600 text-white rounded-md disabled:opacity-50"
+        variant="primary"
         disabled={preview.length === 0}
       >
         Save
-      </button>
+      </Button>
 
       {preview.length > 0 && (
         <div className="mt-4 max-h-64 overflow-y-auto border p-2 rounded-md">
-          {preview.map(l => (
+          {preview.map((l) => (
             <div key={l.id} className="text-sm py-0.5">
               {l.name}
             </div>
@@ -76,12 +81,16 @@ const LabelsSettings = () => {
   );
 };
 
-import type { Label } from '../../store/useLabelStore';
+import type { Label as LabelType } from "../../store/useLabelStore";
 
-function filterLabels(all: Label[], kw: string): Label[] {
+function filterLabels(all: LabelType[], kw: string): LabelType[] {
   if (!kw.trim()) return all;
-  const kws = kw.toLowerCase().split(',').map(k => k.trim()).filter(Boolean);
-  return all.filter(l => kws.some(k => l.name.toLowerCase().includes(k)));
+  const kws = kw
+    .toLowerCase()
+    .split(",")
+    .map((k) => k.trim())
+    .filter(Boolean);
+  return all.filter((l) => kws.some((k) => l.name.toLowerCase().includes(k)));
 }
 
 export default LabelsSettings;

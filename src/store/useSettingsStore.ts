@@ -7,7 +7,6 @@ interface SettingsState {
   aiBackend: AIBackend;
   setBackend: (b: AIBackend) => void;
 
-  // optional API keys stored in localStorage (null if not set)
   openaiApiKey: string | null;
   geminiApiKey: string | null;
   setOpenaiApiKey: (key: string | null) => void;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from './button';
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,12 +15,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center" onClick={onClose}>
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
-        <div className="flex justify-between items-center border-b pb-3">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
-          <button
+      <div className="bg-card rounded-lg shadow-xl p-6 w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-between items-center border-b border-border pb-3">
+          <h3 className="text-lg font-semibold text-card-foreground">{title}</h3>
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onClose}
-            className="text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+            className="ml-auto"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -29,7 +32,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
               ></path>
             </svg>
             <span className="sr-only">Close modal</span>
-          </button>
+          </Button>
         </div>
         <div className="mt-4 space-y-4">
           {children}
