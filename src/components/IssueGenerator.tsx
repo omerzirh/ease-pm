@@ -6,6 +6,7 @@ import { useSettingsStore } from '../store/useSettingsStore';
 import { useTabStore } from '../store/useTabStore';
 import ReactMarkdown from 'react-markdown';
 import { useEpicStore } from '../store/useEpicStore';
+import { useGeneratedIssueStore } from '../store/useGeneratedIssueStore';
 import remarkGfm from 'remark-gfm';
 import debounce from 'lodash.debounce';
 import { usePrefixStore } from '../store/usePrefixStore';
@@ -13,17 +14,22 @@ import { Select, Textarea, Button, Input, Label, Checkbox } from './ui';
 
 
 const IssueGenerator = () => {
-  const [prompt, setPrompt] = useState('');
-  const [draftTitle, setDraftTitle] = useState('');
-  const [draftDescription, setDraftDescription] = useState('');
   const { labels, setLabels, keywords } = useLabelStore();
   const { selectedEpic, setEpic } = useEpicStore();
   const { setTab } = useTabStore();
-  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  const { generatedContent, updateField, clearContent } = useGeneratedIssueStore();
+
+  // Use generated content from store or fallback to empty values
+  const prompt = generatedContent?.prompt || '';
+  const draftTitle = generatedContent?.draftTitle || '';
+  const draftDescription = generatedContent?.draftDescription || '';
+  const selectedLabels = generatedContent?.selectedLabels || [];
+  const enableEpic = generatedContent?.enableEpic || false;
+  const epicQuery = generatedContent?.epicQuery || '';
+  const storedSelectedEpic = generatedContent?.selectedEpic;
+
   const [createdIssue, setCreatedIssue] = useState<{ iid: number; url: string } | null>(null);
   const [loading, setLoading] = useState(false);
-  const [enableEpic, setEnableEpic] = useState(false);
-  const [epicQuery, setEpicQuery] = useState('');
   const [epicResults, setEpicResults] = useState<{ id: number; iid: number; title: string; web_url: string }[]>([]);
   const [searchingEpics, setSearchingEpics] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -61,7 +67,10 @@ const IssueGenerator = () => {
       const iid = urlMatch[1];
       if (groupId) {
         gitlabService.searchEpics(groupId, iid).then(res => {
-          if (res.length) setEpic(res[0]);
+          if (res.length) {
+            setEpic(res[0]);
+            updateField('selectedEpic', res[0]);
+          }
         });
       }
       setEpicResults([]);
@@ -94,8 +103,8 @@ const IssueGenerator = () => {
         fullDescription += `\n\n### Dependencies\n${dependencies}`;
       }
 
-      setDraftTitle(title);
-      setDraftDescription(fullDescription);
+      updateField('draftTitle', title);
+      updateField('draftDescription', fullDescription);
     } catch (err: any) {
       setMessage(err.message || 'Failed to generate');
     } finally {
@@ -134,9 +143,10 @@ const IssueGenerator = () => {
       const res = await gitlabService.createIssue(projectId, draftTitle, draftDescription, selectedLabels);
       console.log(res)
 
-      if (enableEpic && selectedEpic) {
+      const epicToUse = storedSelectedEpic || selectedEpic;
+      if (enableEpic && epicToUse) {
         try {
-          await gitlabService.addIssueToEpic(groupId!, selectedEpic.iid!, projectId, res.id);
+          await gitlabService.addIssueToEpic(groupId!, epicToUse.iid!, projectId, res.id);
         } catch (err: any) {
           console.error(err);
           setMessage(`Issue created but failed to link epic: ${err.message}`);
@@ -145,6 +155,8 @@ const IssueGenerator = () => {
       }
       setMessage(`Issue created: ${res.web_url}`);
       setCreatedIssue({ iid: res.iid, url: res.web_url });
+      // Clear the generated content after successful creation
+      clearContent();
     } catch (err: any) {
       setMessage(err.message || 'Failed to create issue');
     } finally {
@@ -162,7 +174,7 @@ const IssueGenerator = () => {
           <Label>Prompt</Label>
           <Textarea
             value={prompt}
-            onChange={e => setPrompt(e.target.value)}
+            onChange={e => updateField('prompt', e.target.value)}
             rows={3}
           />
           <Button
@@ -183,7 +195,7 @@ const IssueGenerator = () => {
             onChange={e => {
               const prefix = e.target.value;
               if (prefix) {
-                setDraftTitle(`${prefix} ${draftTitle}`);
+                updateField('draftTitle', `${prefix} ${draftTitle}`);
               }
             }}
           >
@@ -200,7 +212,7 @@ const IssueGenerator = () => {
           <Label required>Title</Label>
           <Input
             value={draftTitle}
-            onChange={e => setDraftTitle(e.target.value)}
+            onChange={e => updateField('draftTitle', e.target.value)}
           />
         </div>
 
@@ -208,7 +220,7 @@ const IssueGenerator = () => {
           <Label>Description (Markdown)</Label>
           <Textarea
             value={draftDescription}
-            onChange={e => setDraftDescription(e.target.value)}
+            onChange={e => updateField('draftDescription', e.target.value)}
             rows={8}
           />
         </div>
@@ -228,11 +240,10 @@ const IssueGenerator = () => {
                   label={l.name}
                   checked={selectedLabels.includes(l.name)}
                   onChange={e => {
-                    if (e.target.checked) {
-                      setSelectedLabels(prev => [...prev, l.name]);
-                    } else {
-                      setSelectedLabels(prev => prev.filter(name => name !== l.name));
-                    }
+                    const newLabels = e.target.checked
+                      ? [...selectedLabels, l.name]
+                      : selectedLabels.filter(name => name !== l.name);
+                    updateField('selectedLabels', newLabels);
                   }}
                   size="sm"
                 />
@@ -243,14 +254,14 @@ const IssueGenerator = () => {
             <Checkbox
               label="Link Epic"
               checked={enableEpic}
-              onChange={e => setEnableEpic(e.target.checked)}
+              onChange={e => updateField('enableEpic', e.target.checked)}
             />
             {enableEpic && (
               <div className="mt-2">
                 <Input
                   value={epicQuery}
                   onChange={e => {
-                    setEpicQuery(e.target.value);
+                    updateField('epicQuery', e.target.value);
                   }}
                   placeholder="Paste epic URL or search title..."
                   className="mb-2"
@@ -264,7 +275,8 @@ const IssueGenerator = () => {
                         className="px-2 py-1 hover:bg-accent hover:text-accent-foreground cursor-pointer text-sm"
                         onClick={() => {
                           setEpic(er);
-                          setEpicQuery(er.title);
+                          updateField('selectedEpic', er);
+                          updateField('epicQuery', er.title);
                           setEpicResults([]);
                         }}
                       >
@@ -273,8 +285,8 @@ const IssueGenerator = () => {
                     ))}
                   </div>
                 )}
-                {selectedEpic && (
-                  <p className="text-sm mt-1 text-app-semantic-success">Selected: {selectedEpic.title}</p>
+                {(storedSelectedEpic || selectedEpic) && (
+                  <p className="text-sm mt-1 text-app-semantic-success">Selected: {(storedSelectedEpic || selectedEpic)?.title}</p>
                 )}
               </div>
             )}
