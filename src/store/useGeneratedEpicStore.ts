@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 
 interface GeneratedEpicContent {
   prompt: string;
@@ -28,17 +27,12 @@ const initialContent: GeneratedEpicContent = {
   enableEpic: false,
 };
 
-export const useGeneratedEpicStore = create<GeneratedEpicState>()(
-  persist(
-    (set, get) => ({
-      generatedContent: null,
-      setGeneratedContent: (generatedContent) => set({ generatedContent }),
-      updateField: (field, value) => {
-        const current = get().generatedContent || initialContent;
-        set({ generatedContent: { ...current, [field]: value } });
-      },
-      clearContent: () => set({ generatedContent: null }),
-    }),
-    { name: 'ease-gitlab-generated-epic' },
-  ),
-);
+export const useGeneratedEpicStore = create<GeneratedEpicState>()((set, get) => ({
+  generatedContent: null,
+  setGeneratedContent: (generatedContent) => set({ generatedContent }),
+  updateField: (field, value) => {
+    const current = get().generatedContent || initialContent;
+    set({ generatedContent: { ...current, [field]: value } });
+  },
+  clearContent: () => set({ generatedContent: null }),
+}));

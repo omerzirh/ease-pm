@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 
 interface GeneratedIssueContent {
   prompt: string;
@@ -28,17 +27,12 @@ const initialContent: GeneratedIssueContent = {
   epicQuery: '',
 };
 
-export const useGeneratedIssueStore = create<GeneratedIssueState>()(
-  persist(
-    (set, get) => ({
-      generatedContent: null,
-      setGeneratedContent: (generatedContent) => set({ generatedContent }),
-      updateField: (field, value) => {
-        const current = get().generatedContent || initialContent;
-        set({ generatedContent: { ...current, [field]: value } });
-      },
-      clearContent: () => set({ generatedContent: null }),
-    }),
-    { name: 'ease-gitlab-generated-issue' },
-  ),
-);
+export const useGeneratedIssueStore = create<GeneratedIssueState>()((set, get) => ({
+  generatedContent: null,
+  setGeneratedContent: (generatedContent) => set({ generatedContent }),
+  updateField: (field, value) => {
+    const current = get().generatedContent || initialContent;
+    set({ generatedContent: { ...current, [field]: value } });
+  },
+  clearContent: () => set({ generatedContent: null }),
+}));
