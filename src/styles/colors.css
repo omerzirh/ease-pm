@@ -5,22 +5,22 @@
   --color-surface-primary: 255 255 255; /* white */
   --color-surface-secondary: 248 250 252; /* slate-100 */
   --color-surface-tertiary: 241 245 249; /* slate-50 */
-  
+
   --color-interactive-primary: 51 65 85; /* slate-700 */
   --color-interactive-primary-hover: 71 85 105; /* slate-600 */
   --color-interactive-secondary: 203 213 225; /* slate-300 */
   --color-interactive-secondary-hover: 148 163 184; /* slate-400 */
   --color-interactive-disabled: 148 163 184; /* slate-400 */
-  
+
   --color-text-primary: 30 41 59; /* slate-800 */
   --color-text-secondary: 71 85 105; /* slate-600 */
   --color-text-tertiary: 100 116 139; /* slate-500 */
   --color-text-inverse: 255 255 255; /* white */
-  
+
   --color-border-primary: 226 232 240; /* slate-200 */
   --color-border-secondary: 203 213 225; /* slate-300 */
   --color-border-focus: 100 116 139; /* slate-500 */
-  
+
   /* Semantic accent colors (same for both modes) */
   --color-semantic-success: 74 222 128; /* green-400 */
   --color-semantic-error: 248 113 113; /* red-400 */
@@ -33,18 +33,18 @@
   --color-surface-primary: 30 41 59; /* slate-800 */
   --color-surface-secondary: 51 65 85; /* slate-700 */
   --color-surface-tertiary: 71 85 105; /* slate-600 */
-  
+
   --color-interactive-primary: 51 65 85; /* slate-700 */
   --color-interactive-primary-hover: 71 85 105; /* slate-600 */
   --color-interactive-secondary: 71 85 105; /* slate-600 */
   --color-interactive-secondary-hover: 100 116 139; /* slate-500 */
   --color-interactive-disabled: 148 163 184; /* slate-400 */
-  
+
   --color-text-primary: 241 245 249; /* slate-100 */
   --color-text-secondary: 203 213 225; /* slate-300 */
   --color-text-tertiary: 148 163 184; /* slate-400 */
   --color-text-inverse: 30 41 59; /* slate-800 */
-  
+
   --color-border-primary: 51 65 85; /* slate-700 */
   --color-border-secondary: 71 85 105; /* slate-600 */
   --color-border-focus: 100 116 139; /* slate-500 */

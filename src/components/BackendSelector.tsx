@@ -10,12 +10,8 @@ const BackendSelector = () => {
   ];
 
   return (
-    <Select
-      className="text-sm"
-      value={aiBackend}
-      onChange={(e) => setBackend(e.target.value as AIBackend)}
-    >
-      {options.map((o) => (
+    <Select className="text-sm" value={aiBackend} onChange={e => setBackend(e.target.value as AIBackend)}>
+      {options.map(o => (
         <option key={o.value} value={o.value}>
           {o.label}
         </option>

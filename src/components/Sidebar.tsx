@@ -3,15 +3,15 @@ import { MainTab } from '../store/useTabStore';
 import { useSidebarStore } from '../store/useSidebarStore';
 import Tooltip from './ui/Tooltip';
 import SettingsSubmenu from './SettingsSubmenu';
-import gitlab from "../assets/icons/gitlabicon.svg"
+import gitlab from '../assets/icons/gitlabicon.svg';
 import { Button } from './ui';
-import { CiStickyNote } from "react-icons/ci";
-import { AiOutlinePicLeft } from "react-icons/ai";
-import { GoMilestone } from "react-icons/go";
-import { GoIterations } from "react-icons/go";
-import { IoSettingsOutline } from "react-icons/io5";
-import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight} from "react-icons/md";
-import { RxCross2 } from "react-icons/rx";
+import { CiStickyNote } from 'react-icons/ci';
+import { AiOutlinePicLeft } from 'react-icons/ai';
+import { GoMilestone } from 'react-icons/go';
+import { GoIterations } from 'react-icons/go';
+import { IoSettingsOutline } from 'react-icons/io5';
+import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from 'react-icons/md';
+import { RxCross2 } from 'react-icons/rx';
 
 interface NavItem {
   id: MainTab;
@@ -34,7 +34,7 @@ const navigationItems: NavItem[] = [
   { id: 'epic', label: 'Epics', icon: AiOutlinePicLeft },
   { id: 'milestone', label: 'Milestones', icon: GoMilestone },
   { id: 'iteration', label: 'Iterations', icon: GoIterations },
-  { id: 'settings', label: 'Settings', icon: IoSettingsOutline }
+  { id: 'settings', label: 'Settings', icon: IoSettingsOutline },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -44,24 +44,18 @@ const Sidebar: React.FC<SidebarProps> = ({
   onAuthToggle,
   onTitleClick,
   activeSettingsTab = 'labels',
-  onSettingsTabChange = () => { }
+  onSettingsTabChange = () => {},
 }) => {
-  const {
-    isCollapsed,
-    isMobileOpen,
-    showSettingsSubmenu,
-    toggleCollapsed,
-    setMobileOpen,
-    setShowSettingsSubmenu
-  } = useSidebarStore();
+  const { isCollapsed, isMobileOpen, showSettingsSubmenu, toggleCollapsed, setMobileOpen, setShowSettingsSubmenu } =
+    useSidebarStore();
 
   const [isMobile, setIsMobile] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const handleOnSettingsTabChange = (tab:string) => {
-    toggleCollapsed(false)
-    onSettingsTabChange(tab)
-  }
+  const handleOnSettingsTabChange = (tab: string) => {
+    toggleCollapsed(false);
+    onSettingsTabChange(tab);
+  };
   useEffect(() => {
     if (isMobile) {
       setMobileOpen(false);
@@ -87,7 +81,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       timeoutId = window.setTimeout(handleResize, 100);
     };
 
-    handleResize(); 
+    handleResize();
     window.addEventListener('resize', debouncedResize);
     return () => {
       window.removeEventListener('resize', debouncedResize);
@@ -155,9 +149,10 @@ const Sidebar: React.FC<SidebarProps> = ({
         className={`
           fixed top-0 z-50 h-full bg-slate-800 text-white border-r border-slate-700 shadow-lg
           transition-all duration-250 ease-in-out
-          ${isMobile
-            ? `right-0 w-72 ${isMobileOpen ? 'translate-x-0' : 'translate-x-full'}`
-            : `left-0 ${isCollapsed ? 'w-16' : 'w-60'}`
+          ${
+            isMobile
+              ? `right-0 w-72 ${isMobileOpen ? 'translate-x-0' : 'translate-x-full'}`
+              : `left-0 ${isCollapsed ? 'w-16' : 'w-60'}`
           }
           ${isTransitioning ? 'overflow-hidden' : ''}
         `}
@@ -177,19 +172,18 @@ const Sidebar: React.FC<SidebarProps> = ({
           )}
 
           {!isMobile && (
-         
-              <Button
-                onClick={() => toggleCollapsed()}
-                className="text-white p-1 rounded transition-colors duration-150"
-                aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-                variant={'toggle'}
-              >
-                {isCollapsed ? (
-                  <MdOutlineKeyboardArrowRight className="w-6 h-6" />
-                ) : (
-                  <MdOutlineKeyboardArrowLeft className="w-6 h-6" />
-                )}
-              </Button>
+            <Button
+              onClick={() => toggleCollapsed()}
+              className="text-white p-1 rounded transition-colors duration-150"
+              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              variant={'toggle'}
+            >
+              {isCollapsed ? (
+                <MdOutlineKeyboardArrowRight className="w-6 h-6" />
+              ) : (
+                <MdOutlineKeyboardArrowLeft className="w-6 h-6" />
+              )}
+            </Button>
           )}
 
           {isMobile && (
@@ -206,7 +200,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         <nav className="flex-1 p-2" role="navigation" aria-label="Main navigation">
           <div className="space-y-1">
-            {navigationItems.map((item) => {
+            {navigationItems.map(item => {
               const IconComponent = item.icon;
               const isActive = currentTab === item.id;
 
@@ -216,9 +210,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                     onClick={() => onTabChange(item.id)}
                     className={`
                       w-full flex items-center p-3 rounded-lg transition-all duration-150 ease-in-out
-                      ${isActive
-                        ? 'bg-slate-700 text-white shadow-md'
-                        : 'text-slate-300 hover:text-white hover:bg-slate-700 hover:shadow-sm'
+                      ${
+                        isActive
+                          ? 'bg-slate-700 text-white shadow-md'
+                          : 'text-slate-300 hover:text-white hover:bg-slate-700 hover:shadow-sm'
                       }
                       ${isCollapsed && !isMobile ? 'justify-center' : 'justify-start'}
                       focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 focus:ring-offset-slate-800
@@ -227,19 +222,25 @@ const Sidebar: React.FC<SidebarProps> = ({
                     aria-label={`Navigate to ${item.label}`}
                     variant={'secondary'}
                   >
-                    <IconComponent className={`w-5 h-5 flex-shrink-0 transition-transform duration-150 ${isActive ? 'scale-110' : ''}`} />
+                    <IconComponent
+                      className={`w-5 h-5 flex-shrink-0 transition-transform duration-150 ${isActive ? 'scale-110' : ''}`}
+                    />
                     {(!isCollapsed || isMobile) && (
-                      <span className={`ml-3 truncate transition-opacity duration-200 ${isTransitioning && !isMobile ? 'opacity-0' : 'opacity-100'}`}>
+                      <span
+                        className={`ml-3 truncate transition-opacity duration-200 ${isTransitioning && !isMobile ? 'opacity-0' : 'opacity-100'}`}
+                      >
                         {item.label}
                       </span>
                     )}
                   </Button>
 
                   {item.id === 'settings' && showSettingsSubmenu && (
-                    <div className={`
+                    <div
+                      className={`
                       ml-2 transition-all duration-200 ease-in-out
-                      ${(!isCollapsed || isMobile) ? 'opacity-100' : 'opacity-0'}
-                    `}>
+                      ${!isCollapsed || isMobile ? 'opacity-100' : 'opacity-0'}
+                    `}
+                    >
                       <SettingsSubmenu
                         activeSettingsTab={activeSettingsTab}
                         onSettingsTabChange={onSettingsTabChange}
@@ -253,12 +254,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
               if (isCollapsed && !isMobile && item.id !== 'settings') {
                 return (
-                  <Tooltip
-                    key={item.id}
-                    content={item.label}
-                    position="right"
-                    delay={400}
-                  >
+                  <Tooltip key={item.id} content={item.label} position="right" delay={400}>
                     {ButtonContent}
                   </Tooltip>
                 );
@@ -267,18 +263,15 @@ const Sidebar: React.FC<SidebarProps> = ({
               if (isCollapsed && !isMobile && item.id === 'settings') {
                 return (
                   <div key={item.id} className="relative">
-                    <Tooltip
-                      content={item.label}
-                      position="right"
-                      delay={400}
-                    >
+                    <Tooltip content={item.label} position="right" delay={400}>
                       <Button
                         onClick={() => onTabChange(item.id)}
                         className={`
                           w-full flex items-center p-3 rounded-lg transition-all duration-150 ease-in-out
-                          ${isActive
-                            ? 'bg-slate-700 text-white shadow-md'
-                            : 'text-slate-300 hover:text-white hover:bg-slate-700 hover:shadow-sm'
+                          ${
+                            isActive
+                              ? 'bg-slate-700 text-white shadow-md'
+                              : 'text-slate-300 hover:text-white hover:bg-slate-700 hover:shadow-sm'
                           }
                           justify-center
                           focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 focus:ring-offset-slate-800
@@ -287,7 +280,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                         aria-label={`Navigate to ${item.label}`}
                         variant={'secondary'}
                       >
-                        <item.icon className={`w-5 h-5 flex-shrink-0 transition-transform duration-150 ${isActive ? 'scale-110' : ''}`} />
+                        <item.icon
+                          className={`w-5 h-5 flex-shrink-0 transition-transform duration-150 ${isActive ? 'scale-110' : ''}`}
+                        />
                       </Button>
                     </Tooltip>
 
@@ -312,14 +307,14 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         <div className="w-full p-1 border-t border-slate-700">
           {isCollapsed && !isMobile ? (
-              <Button
-                onClick={onAuthToggle}
-                className={'w-full'}
-                aria-label={isAuthenticated ? 'Logout' : 'Login with GitLab'}
-                variant={'toggle'}
-              >
-                <img src={gitlab} alt="GitLab" className="w-5 h-5 flex-shrink-0" />
-              </Button>
+            <Button
+              onClick={onAuthToggle}
+              className={'w-full'}
+              aria-label={isAuthenticated ? 'Logout' : 'Login with GitLab'}
+              variant={'toggle'}
+            >
+              <img src={gitlab} alt="GitLab" className="w-5 h-5 flex-shrink-0" />
+            </Button>
           ) : (
             <Button
               onClick={onAuthToggle}
@@ -328,7 +323,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               variant={'toggle'}
             >
               <img src={gitlab} alt="GitLab" className="w-5 h-5 flex-shrink-0" />
-              <span className={`ml-3 truncate transition-opacity duration-200 ${isTransitioning && !isMobile ? 'opacity-0' : 'opacity-100'} flex items-center gap-2`}>
+              <span
+                className={`ml-3 truncate transition-opacity duration-200 ${isTransitioning && !isMobile ? 'opacity-0' : 'opacity-100'} flex items-center gap-2`}
+              >
                 {isAuthenticated ? 'Logout' : 'Login with GitLab'}
               </span>
             </Button>

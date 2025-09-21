@@ -15,15 +15,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center" onClick={onClose}>
-      <div className="bg-card rounded-lg shadow-xl p-6 w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-card rounded-lg shadow-xl p-6 w-full max-w-2xl" onClick={e => e.stopPropagation()}>
         <div className="flex justify-between items-center border-b border-border pb-3">
           <h3 className="text-lg font-semibold text-card-foreground">{title}</h3>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
-            className="ml-auto"
-          >
+          <Button variant="ghost" size="sm" onClick={onClose} className="ml-auto">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path
                 fillRule="evenodd"
@@ -34,9 +29,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
             <span className="sr-only">Close modal</span>
           </Button>
         </div>
-        <div className="mt-4 space-y-4">
-          {children}
-        </div>
+        <div className="mt-4 space-y-4">{children}</div>
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ export interface IssueSummary {
 export async function generateMilestoneSummary(
   milestoneTitle: string,
   issueTitles: string[],
-  backend: 'openai' | 'gemini' = 'openai',
+  backend: 'openai' | 'gemini' = 'openai'
 ): Promise<IssueSummary> {
   const prompt = `Write a short summary for milestone "${milestoneTitle}" based on the following issues:\n${issueTitles
     .map((t, i) => `${i + 1}. ${t}`)
@@ -64,9 +64,9 @@ async function generateSummaryWithGemini(prompt: string): Promise<IssueSummary> 
     throw new Error('Missing VITE_GEMINI_API_KEY');
   }
 
-  const genAI = new GoogleGenAI({apiKey});
+  const genAI = new GoogleGenAI({ apiKey });
 
-  const result = await genAI.models.generateContent({model: 'gemini-2.5-flash', contents: prompt});
+  const result = await genAI.models.generateContent({ model: 'gemini-2.5-flash', contents: prompt });
   const text = result.text;
 
   return { summary: text || '' };

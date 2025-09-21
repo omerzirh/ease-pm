@@ -31,7 +31,7 @@ const App = () => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -49,10 +49,10 @@ const App = () => {
         onSettingsTabChange={setActiveSettingsTab}
       />
 
-      <div 
+      <div
         className={`
           flex flex-col flex-1 transition-all duration-250 ease-in-out
-          ${isMobile ? 'ml-0' : (isCollapsed ? 'ml-16' : 'ml-60')}
+          ${isMobile ? 'ml-0' : isCollapsed ? 'ml-16' : 'ml-60'}
         `}
       >
         <main className="flex-1 overflow-y-auto p-6">
@@ -62,8 +62,8 @@ const App = () => {
           {tab === 'iteration' && <IterationReport />}
           {tab === 'settings' && <SettingsPage activeTab={activeSettingsTab} />}
         </main>
-        
-        <footer 
+
+        <footer
           className={`
             p-4 border-t border-app-border-primary text-center text-sm transition-all duration-250 ease-in-out
           `}

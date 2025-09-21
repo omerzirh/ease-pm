@@ -7,12 +7,7 @@ interface TooltipProps {
   delay?: number;
 }
 
-const Tooltip: React.FC<TooltipProps> = ({ 
-  content, 
-  children, 
-  position = 'right',
-  delay = 500 
-}) => {
+const Tooltip: React.FC<TooltipProps> = ({ content, children, position = 'right', delay = 500 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout>();
@@ -71,11 +66,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   };
 
   return (
-    <div 
-      className="relative inline-block"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div className="relative inline-block" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       {children}
       {isVisible && (
         <div

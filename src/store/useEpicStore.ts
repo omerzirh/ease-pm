@@ -15,10 +15,10 @@ interface EpicState {
 
 export const useEpicStore = create<EpicState>()(
   persist(
-    (set) => ({
+    set => ({
       selectedEpic: null,
-      setEpic: (selectedEpic) => set({ selectedEpic }),
+      setEpic: selectedEpic => set({ selectedEpic }),
     }),
-    { name: 'ease-gitlab-epic' },
-  ),
+    { name: 'ease-gitlab-epic' }
+  )
 );

@@ -5,24 +5,24 @@ interface SidebarState {
   isCollapsed: boolean;
   isMobileOpen: boolean;
   showSettingsSubmenu: boolean;
-  toggleCollapsed: (val?:boolean) => void;
+  toggleCollapsed: (val?: boolean) => void;
   setMobileOpen: (open: boolean) => void;
   setShowSettingsSubmenu: (show: boolean) => void;
 }
 
 export const useSidebarStore = create<SidebarState>()(
   persist(
-    (set) => ({
+    set => ({
       isCollapsed: false,
       isMobileOpen: false,
       showSettingsSubmenu: false,
-      toggleCollapsed: (value) => set((state) => ({ isCollapsed: value ||  !state.isCollapsed })),
-      setMobileOpen: (open) => set({ isMobileOpen: open }),
-      setShowSettingsSubmenu: (show) => set({ showSettingsSubmenu: show }),
+      toggleCollapsed: value => set(state => ({ isCollapsed: value || !state.isCollapsed })),
+      setMobileOpen: open => set({ isMobileOpen: open }),
+      setShowSettingsSubmenu: show => set({ showSettingsSubmenu: show }),
     }),
     {
       name: 'ease-gitlab-sidebar',
-      partialize: (state) => ({ isCollapsed: state.isCollapsed }),
+      partialize: state => ({ isCollapsed: state.isCollapsed }),
     }
   )
 );

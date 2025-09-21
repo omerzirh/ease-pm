@@ -14,19 +14,13 @@ export interface EpicDraft {
 
 export type AIBackend = 'openai' | 'gemini';
 
-export async function generateIssue(
-  prompt: string,
-  backend: AIBackend = 'openai'
-): Promise<IssueDraft> {
+export async function generateIssue(prompt: string, backend: AIBackend = 'openai'): Promise<IssueDraft> {
   const systemPrompt =
     'You are a helpful assistant that writes GitLab issue titles and descriptions in Markdown. Respond ONLY with valid JSON with keys "title", "description", "acceptanceCriteria", and "dependencies".';
   return generateDraft<IssueDraft>({ backend, systemPrompt, userPrompt: prompt });
 }
 
-export async function generateEpic(
-  prompt: string,
-  backend: AIBackend = 'openai'
-): Promise<EpicDraft> {
+export async function generateEpic(prompt: string, backend: AIBackend = 'openai'): Promise<EpicDraft> {
   const systemPrompt =
     'You are a helpful assistant that writes GitLab epic titles and descriptions in Markdown. Respond ONLY with valid JSON with keys "title" and "description".';
   return generateDraft<EpicDraft>({ backend, systemPrompt, userPrompt: prompt });
@@ -36,18 +30,18 @@ export async function generateAssigneeSummary(
   assigneeName: string,
   issueTitles: string[],
   backend: AIBackend = 'openai',
-  iterationState='current'
+  iterationState = 'current'
 ): Promise<string> {
-  const tense = {
-    opened: 'will be working',
-    current: 'is working', 
-    closed: 'worked'
-  }[iterationState] || 'worked'
-  const systemPrompt = 
-    `You are a helpful assistant that creates concise work summaries. Based on the issue titles provided, create a brief 2-3 sentence summary of what this person ${tense} on. Focus on the main themes and accomplishments. Respond with plain text, no JSON.`;
-  
+  const tense =
+    {
+      opened: 'will be working',
+      current: 'is working',
+      closed: 'worked',
+    }[iterationState] || 'worked';
+  const systemPrompt = `You are a helpful assistant that creates concise work summaries. Based on the issue titles provided, create a brief 2-3 sentence summary of what this person ${tense} on. Focus on the main themes and accomplishments. Respond with plain text, no JSON.`;
+
   const userPrompt = `Assignee: ${assigneeName}\n\nIssue titles:\n${issueTitles.map(title => `- ${title}`).join('\n')}`;
-  
+
   const fullPrompt = buildPrompt(systemPrompt, userPrompt);
   return await callLLM(backend, fullPrompt, 0.3);
 }
@@ -59,8 +53,8 @@ async function generateDraft<T>({
   temperature = 0.5,
 }: {
   backend: AIBackend;
-  systemPrompt: string; 
-  userPrompt: string;   
+  systemPrompt: string;
+  userPrompt: string;
   temperature?: number;
 }): Promise<T> {
   const fullPrompt = buildPrompt(systemPrompt, userPrompt);
@@ -69,17 +63,11 @@ async function generateDraft<T>({
   return safeJsonParse(jsonString);
 }
 
-
 function buildPrompt(systemPrompt: string, userPrompt: string): string {
   return `${systemPrompt}\n\n${userPrompt}`;
 }
 
-
-async function callLLM(
-  backend: AIBackend,
-  prompt: string,
-  temperature: number,
-): Promise<string> {
+async function callLLM(backend: AIBackend, prompt: string, temperature: number): Promise<string> {
   switch (backend) {
     case 'gemini':
       return callGemini(prompt);
@@ -88,7 +76,6 @@ async function callLLM(
       return callOpenAI(prompt, temperature);
   }
 }
-
 
 function getStoredSettings(): any {
   try {
@@ -101,13 +88,12 @@ function getStoredSettings(): any {
   }
 }
 
-
 async function callGemini(prompt: string): Promise<string> {
   const settings = getStoredSettings();
- 
+
   const apiKey = settings?.geminiApiKey || (import.meta.env.VITE_GEMINI_API_KEY as string | undefined);
   const model = settings?.geminiModel || 'gemini-2.5-flash';
-  
+
   if (!apiKey) throw new Error('Missing Gemini API key');
 
   const genAI = new GoogleGenAI({ apiKey });
@@ -120,13 +106,12 @@ async function callGemini(prompt: string): Promise<string> {
 
 async function callOpenAI(prompt: string, temperature: number): Promise<string> {
   const settings = getStoredSettings();
-  
-  const apiKey = settings?.openaiApiKey || (import.meta.env.VITE_OPENAI_API_KEY as string | undefined);
-  const baseUrl = settings?.openaiBaseUrl || import.meta.env.VITE_OPENAI_BASE_URL as string | undefined;
-  const model = settings?.openaiModel || import.meta.env.VITE_OPENAI_MODEL_NAME as string | undefined;
-  
-  if (!apiKey) throw new Error('Missing OpenAI API key');
 
+  const apiKey = settings?.openaiApiKey || (import.meta.env.VITE_OPENAI_API_KEY as string | undefined);
+  const baseUrl = settings?.openaiBaseUrl || (import.meta.env.VITE_OPENAI_BASE_URL as string | undefined);
+  const model = settings?.openaiModel || (import.meta.env.VITE_OPENAI_MODEL_NAME as string | undefined);
+
+  if (!apiKey) throw new Error('Missing OpenAI API key');
 
   const response = await fetch(baseUrl, {
     method: 'POST',
@@ -161,4 +146,3 @@ function safeJsonParse<T>(text: string): T {
     return {} as T;
   }
 }
-

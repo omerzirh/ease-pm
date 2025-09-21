@@ -29,7 +29,7 @@ const initialContent: GeneratedIssueContent = {
 
 export const useGeneratedIssueStore = create<GeneratedIssueState>()((set, get) => ({
   generatedContent: null,
-  setGeneratedContent: (generatedContent) => set({ generatedContent }),
+  setGeneratedContent: generatedContent => set({ generatedContent }),
   updateField: (field, value) => {
     const current = get().generatedContent || initialContent;
     set({ generatedContent: { ...current, [field]: value } });

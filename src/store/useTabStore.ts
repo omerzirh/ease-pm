@@ -10,10 +10,10 @@ interface TabState {
 
 export const useTabStore = create<TabState>()(
   persist(
-    (set) => ({
+    set => ({
       tab: 'issue',
-      setTab: (tab) => set({ tab }),
+      setTab: tab => set({ tab }),
     }),
-    { name: 'ease-gitlab-tab' },
-  ),
+    { name: 'ease-gitlab-tab' }
+  )
 );

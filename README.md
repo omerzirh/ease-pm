@@ -45,18 +45,18 @@ VITE_OPENAI_API_KEY=sk-...
 VITE_GEMINI_API_KEY=AIza...
 ```
 
-> ℹ️  Omit AI keys if you don’t plan to use the AI-powered features.
+> ℹ️ Omit AI keys if you don’t plan to use the AI-powered features.
 
 ---
 
 ## Useful Commands
 
-| Action                | Command           |
-|-----------------------|-------------------|
-| Start dev server      | `pnpm dev`        |
-| Build for production  | `pnpm build`      |
-| Preview production    | `pnpm preview`    |
-| Lint & type-check     | `pnpm run lint` † |
+| Action               | Command           |
+| -------------------- | ----------------- |
+| Start dev server     | `pnpm dev`        |
+| Build for production | `pnpm build`      |
+| Preview production   | `pnpm preview`    |
+| Lint & type-check    | `pnpm run lint` † |
 
 † Add your own lint script if desired.
 
@@ -78,9 +78,9 @@ src/
 
 ## Contributing
 
-1. Create a feature branch: `git checkout -b feat/awesome`  
-2. Commit your changes: `git commit -m "feat: awesome"`  
-3. Push to the branch: `git push origin feat/awesome`  
+1. Create a feature branch: `git checkout -b feat/awesome`
+2. Commit your changes: `git commit -m "feat: awesome"`
+3. Push to the branch: `git push origin feat/awesome`
 4. Open a Merge Request in GitLab
 
 ---

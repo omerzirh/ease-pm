@@ -36,7 +36,7 @@ describe('Settings Submenu Integration', () => {
     vi.clearAllMocks();
     mockSidebarStore.isCollapsed = false;
     mockSidebarStore.isMobileOpen = false;
-    mockSidebarStore.showSettingsSubmenu = true; 
+    mockSidebarStore.showSettingsSubmenu = true;
     mockSidebarStore.activeSettingsTab = 'labels';
   });
 
@@ -57,7 +57,7 @@ describe('Settings Submenu Integration', () => {
     fireEvent.click(aiProviderButton);
 
     expect(mockSetActiveSettingsTab).toHaveBeenCalledWith('ai');
-    
+
     expect(defaultProps.onSettingsTabChange).toHaveBeenCalledWith('ai');
   });
 
@@ -84,7 +84,7 @@ describe('Settings Submenu Integration', () => {
     settingsTabs.forEach((tabName, index) => {
       const button = screen.getByText(tabName);
       fireEvent.click(button);
-      
+
       expect(mockSetActiveSettingsTab).toHaveBeenCalledWith(expectedIds[index]);
       expect(defaultProps.onSettingsTabChange).toHaveBeenCalledWith(expectedIds[index]);
     });
@@ -105,7 +105,7 @@ describe('Settings Submenu Integration', () => {
 
     const labelsButton = screen.getByText('Labels');
     expect(labelsButton).toBeInTheDocument();
-    
+
     fireEvent.click(labelsButton);
     expect(mockSetActiveSettingsTab).toHaveBeenCalledWith('labels');
   });

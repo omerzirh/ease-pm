@@ -51,11 +51,7 @@ const PrefixesSettings = () => {
           placeholder="new prefix"
           className="flex-1"
         />
-        <Button
-          onClick={handleAdd}
-          variant="primary"
-          disabled={!input.trim()}
-        >
+        <Button onClick={handleAdd} variant="primary" disabled={!input.trim()}>
           Add
         </Button>
       </div>

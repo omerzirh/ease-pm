@@ -1,10 +1,10 @@
-import { useState } from "react";
-import gitlabService from "../../services/gitlabService";
-import { useLabelStore, filterLabelsByKeywords } from "../../store/useLabelStore";
-import { useSettingsStore } from "../../store/useSettingsStore";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { useState } from 'react';
+import gitlabService from '../../services/gitlabService';
+import { useLabelStore, filterLabelsByKeywords } from '../../store/useLabelStore';
+import { useSettingsStore } from '../../store/useSettingsStore';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 
 const LabelsSettings = () => {
   const { labels, setLabels, issueKeywords, epicKeywords, setIssueKeywords, setEpicKeywords } = useLabelStore();
@@ -19,7 +19,7 @@ const LabelsSettings = () => {
 
   const handleFetch = async () => {
     if (!projectId) {
-      setMessage("Missing VITE_GITLAB_PROJECT_ID");
+      setMessage('Missing VITE_GITLAB_PROJECT_ID');
       return;
     }
     setLoading(true);
@@ -29,7 +29,7 @@ const LabelsSettings = () => {
       setAllLabels(all);
       setMessage(`Fetched ${all.length} labels. Set filter keywords to preview filtered results.`);
     } catch (err: any) {
-      setMessage(err.message || "Failed to fetch labels");
+      setMessage(err.message || 'Failed to fetch labels');
     } finally {
       setLoading(false);
     }
@@ -37,12 +37,12 @@ const LabelsSettings = () => {
 
   const handleSave = () => {
     if (allLabels.length === 0) {
-      setMessage("Please fetch labels first");
+      setMessage('Please fetch labels first');
       return;
     }
-    
+
     setLabels(allLabels);
-    setMessage("Label filters saved!");
+    setMessage('Label filters saved!');
   };
 
   return (
@@ -54,7 +54,7 @@ const LabelsSettings = () => {
           <h3 className="text-sm font-medium mb-2">All Available Labels ({allLabels.length})</h3>
           <div className="max-h-32 overflow-y-auto border p-2 rounded-md bg-gray-50">
             <div className="flex flex-wrap gap-1">
-              {allLabels.map((l) => (
+              {allLabels.map(l => (
                 <span key={l.id} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
                   {l.name}
                 </span>
@@ -69,11 +69,11 @@ const LabelsSettings = () => {
           <Label>Issue Filter Keywords (comma separated)</Label>
           <Input
             value={issueKeywords}
-            onChange={(e) => setIssueKeywords(e.target.value)}
+            onChange={e => setIssueKeywords(e.target.value)}
             placeholder="bug,frontend,urgent"
             className="mb-4"
           />
-          
+
           {allLabels.length > 0 && (
             <div>
               <h3 className="text-sm font-medium mb-2">
@@ -81,7 +81,7 @@ const LabelsSettings = () => {
                 {issueKeywords.trim() === '' && <span className="text-gray-500 font-normal"> - showing all</span>}
               </h3>
               <div className="max-h-48 overflow-y-auto border p-2 rounded-md">
-                {issuePreview.map((l) => (
+                {issuePreview.map(l => (
                   <div key={l.id} className="text-sm py-0.5">
                     {l.name}
                   </div>
@@ -95,11 +95,11 @@ const LabelsSettings = () => {
           <Label>Epic Filter Keywords (comma separated)</Label>
           <Input
             value={epicKeywords}
-            onChange={(e) => setEpicKeywords(e.target.value)}
+            onChange={e => setEpicKeywords(e.target.value)}
             placeholder="epic,feature,milestone"
             className="mb-4"
           />
-          
+
           {allLabels.length > 0 && (
             <div>
               <h3 className="text-sm font-medium mb-2">
@@ -107,7 +107,7 @@ const LabelsSettings = () => {
                 {epicKeywords.trim() === '' && <span className="text-gray-500 font-normal"> - showing all</span>}
               </h3>
               <div className="max-h-48 overflow-y-auto border p-2 rounded-md">
-                {epicPreview.map((l) => (
+                {epicPreview.map(l => (
                   <div key={l.id} className="text-sm py-0.5">
                     {l.name}
                   </div>
@@ -119,20 +119,10 @@ const LabelsSettings = () => {
       </div>
 
       <div className="mt-6">
-        <Button
-          onClick={handleFetch}
-          variant="primary"
-          className="mr-2"
-          disabled={loading}
-          loading={loading}
-        >
+        <Button onClick={handleFetch} variant="primary" className="mr-2" disabled={loading} loading={loading}>
           Fetch & Preview
         </Button>
-        <Button
-          onClick={handleSave}
-          variant="primary"
-          disabled={allLabels.length === 0}
-        >
+        <Button onClick={handleSave} variant="primary" disabled={allLabels.length === 0}>
           Save
         </Button>
       </div>
@@ -141,7 +131,5 @@ const LabelsSettings = () => {
     </div>
   );
 };
-
-
 
 export default LabelsSettings;

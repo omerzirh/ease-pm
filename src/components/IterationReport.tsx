@@ -40,22 +40,22 @@ const IterationReport = () => {
     try {
       let data;
       if (projectId) {
-        console.log(gitlabService)
-        data = await gitlabService.fetchProjectIterations(projectId, { 
+        console.log(gitlabService);
+        data = await gitlabService.fetchProjectIterations(projectId, {
           state: state || 'opened',
-          includeAncestors: true 
+          includeAncestors: true,
         });
       } else if (groupId) {
         data = await gitlabService.fetchIterations(groupId, state || 'opened');
       } else {
         throw new Error('No project or group ID available');
       }
-      
-      if(data.length === 0) {
+
+      if (data.length === 0) {
         setMessage('No iterations found');
       }
-      const sortedData = data.sort((a: Iteration, b: Iteration) => 
-        new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+      const sortedData = data.sort(
+        (a: Iteration, b: Iteration) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
       );
       setIterations(sortedData);
     } catch (err: any) {
@@ -67,18 +67,16 @@ const IterationReport = () => {
 
   const groupIssuesByAssignee = (issues: any[]): AssigneeSummary[] => {
     const assigneeMap = new Map<string, Array<{ title: string; state: string; web_url: string }>>();
-    
+
     issues.forEach(issue => {
-      const assigneeLabels = issue.labels?.filter((label: string) => 
-        label.startsWith('Assignee::')
-      ) || [];
-      
+      const assigneeLabels = issue.labels?.filter((label: string) => label.startsWith('Assignee::')) || [];
+
       if (assigneeLabels.length === 0) {
         const backlog = assigneeMap.get('Backlog') || [];
         backlog.push({
           title: issue.title,
           state: issue.state,
-          web_url: issue.web_url
+          web_url: issue.web_url,
         });
         assigneeMap.set('Backlog', backlog);
       } else {
@@ -88,26 +86,27 @@ const IterationReport = () => {
           assigneeIssues.push({
             title: issue.title,
             state: issue.state,
-            web_url: issue.web_url
+            web_url: issue.web_url,
           });
           assigneeMap.set(assigneeName, assigneeIssues);
         });
       }
     });
-    
+
     return Array.from(assigneeMap.entries()).map(([assignee, issues]) => ({
       assignee,
-      issues
+      issues,
     }));
   };
 
   const updateSummaryWithAI = (summariesWithAI: AssigneeSummary[]) => {
     if (!selectedIteration) return;
-    
-    let iterationInfo = `## ${formatIterationName(selectedIteration)}\n\n` +
+
+    let iterationInfo =
+      `## ${formatIterationName(selectedIteration)}\n\n` +
       `**Start Date:** ${new Date(selectedIteration.start_date).toLocaleDateString()}\n` +
       `**Due Date:** ${new Date(selectedIteration.due_date).toLocaleDateString()}\n\n`;
-    
+
     if (summariesWithAI.length > 0) {
       iterationInfo += `### Work by Assignee:\n\n`;
       summariesWithAI.forEach(({ assignee, issues, aiSummary }) => {
@@ -121,14 +120,14 @@ const IterationReport = () => {
         iterationInfo += '\n';
       });
     }
-    
+
     setSummary(iterationInfo);
   };
 
   const generateAISummaries = async (assigneeSummaries: AssigneeSummary[]) => {
     setGeneratingAI(true);
     const updatedSummaries = [...assigneeSummaries];
-    
+
     try {
       for (let i = 0; i < updatedSummaries.length; i++) {
         const summary = updatedSummaries[i];
@@ -141,16 +140,15 @@ const IterationReport = () => {
               iterationState
             );
             updatedSummaries[i].aiSummary = aiSummary;
-            setAssigneeSummaries([...updatedSummaries]); 
+            setAssigneeSummaries([...updatedSummaries]);
           } catch (error) {
             console.error(`Failed to generate AI summary for ${summary.assignee}:`, error);
             updatedSummaries[i].aiSummary = 'Failed to generate AI summary';
           }
         }
       }
-      
+
       updateSummaryWithAI(updatedSummaries);
-      
     } finally {
       setGeneratingAI(false);
     }
@@ -162,19 +160,20 @@ const IterationReport = () => {
     setAssigneeSummaries([]);
     try {
       const issues = await gitlabService.fetchIssuesByIteration(projectId!, iteration.id);
-      
+
       const grouped = groupIssuesByAssignee(issues);
       setAssigneeSummaries(grouped);
-      
+
       const listMarkdown = issues
         .map((i: any) => `- ${i.state === 'closed' ? '✅' : '🟢'} [${i.title}](${i.web_url})`)
         .join('\n');
       setSelectedIteration(iteration);
-      
-      let iterationInfo = `## ${formatIterationName(iteration)}\n\n` +
+
+      let iterationInfo =
+        `## ${formatIterationName(iteration)}\n\n` +
         `**Start Date:** ${new Date(iteration.start_date).toLocaleDateString()}\n` +
         `**Due Date:** ${new Date(iteration.due_date).toLocaleDateString()}\n\n`;
-      
+
       if (grouped.length > 0) {
         iterationInfo += `### Work by Assignee:\n\n`;
         grouped.forEach(({ assignee, issues }) => {
@@ -185,10 +184,9 @@ const IterationReport = () => {
           iterationInfo += '\n';
         });
       }
-      
+
       iterationInfo += `### All Issues:\n${listMarkdown}`;
       setSummary(iterationInfo);
-      
     } catch (err: any) {
       setMessage(err.message || 'Failed to load issues / summary');
     } finally {
@@ -202,15 +200,15 @@ const IterationReport = () => {
     setMessage(null);
     try {
       const issues = await gitlabService.fetchIssuesByIteration(projectId, selectedIteration.id);
-      
+
       let reportIid: number;
       let reportUrl: string;
-      
+
       if (existingReportId.trim()) {
         reportIid = Number(existingReportId.trim());
         try {
           await gitlabService.updateIssue(projectId, reportIid, {
-            description: summary
+            description: summary,
           });
           reportUrl = `${gitlabService.getHostUrl()}/projects/${projectId}/-/issues/${reportIid}`;
           setMessage(`Report #${reportIid} updated`);
@@ -231,10 +229,10 @@ const IterationReport = () => {
         setMessage(`Report created: ${reportUrl}`);
         setCreatedReport({ iid: res.iid, url: res.web_url });
       }
-      
+
       const already = await gitlabService.fetchIssueLinks(projectId, reportIid);
       let linkedCount = 0;
-      
+
       for (const issue of issues) {
         if (!already.includes(issue.iid) && issue.iid !== reportIid) {
           try {
@@ -245,16 +243,15 @@ const IterationReport = () => {
           }
         }
       }
-      
+
       setMessage(prev => `${prev ? prev + ' | ' : ''}Linked ${linkedCount} issues to report #${reportIid}`);
-      
     } catch (err: any) {
       setMessage(err.message || 'Failed to create/update report issue');
     } finally {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     loadIterations(iterationState);
   }, [iterationState]);
@@ -311,26 +308,28 @@ const IterationReport = () => {
               Generate AI Summaries
             </Button>
           </div>
-          
+
           <div className="space-y-4">
             {assigneeSummaries.map(({ assignee, issues, aiSummary }) => (
               <div key={assignee} className="border border-border rounded-md p-4 bg-card">
-                <h4 className="font-medium text-lg mb-2 text-card-foreground">{assignee} ({issues.length} issues)</h4>
-                
+                <h4 className="font-medium text-lg mb-2 text-card-foreground">
+                  {assignee} ({issues.length} issues)
+                </h4>
+
                 {aiSummary && (
                   <div className="mb-3 p-3 bg-muted rounded-md">
                     <p className="text-sm font-medium text-muted-foreground mb-1">AI Summary:</p>
                     <p className="text-foreground">{aiSummary}</p>
                   </div>
                 )}
-                
+
                 <div className="space-y-1">
                   {issues.map((issue, idx) => (
                     <div key={idx} className="flex items-center gap-2">
                       <span>{issue.state === 'closed' ? '✅' : '🟢'}</span>
-                      <a 
-                        href={issue.web_url} 
-                        target="_blank" 
+                      <a
+                        href={issue.web_url}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary hover:underline"
                       >
@@ -355,28 +354,18 @@ const IterationReport = () => {
             placeholder="e.g. 123"
           />
           <Label>Generated Summary</Label>
-          <Textarea
-            value={summary}
-            onChange={e => setSummary(e.target.value)}
-            rows={12}
-          />
+          <Textarea value={summary} onChange={e => setSummary(e.target.value)} rows={12} />
           {createdReport ? (
             <a
               href={createdReport.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={cn("mt-2", buttonVariants({ variant: "success" }))}
+              className={cn('mt-2', buttonVariants({ variant: 'success' }))}
             >
               Report #{createdReport.iid} created
             </a>
           ) : (
-            <Button
-              className="mt-2"
-              variant="primary"
-              size="md"
-              loading={loading}
-              onClick={handleCreateOrUpdate}
-            >
+            <Button className="mt-2" variant="primary" size="md" loading={loading} onClick={handleCreateOrUpdate}>
               Create / Update Report
             </Button>
           )}
@@ -384,7 +373,9 @@ const IterationReport = () => {
       )}
 
       {message && (
-        <p className={`mt-2 text-sm text-center ${message.startsWith('Report') ? 'text-green-600' : 'text-destructive'}`}>
+        <p
+          className={`mt-2 text-sm text-center ${message.startsWith('Report') ? 'text-green-600' : 'text-destructive'}`}
+        >
           {message}
         </p>
       )}
