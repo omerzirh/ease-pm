@@ -12,7 +12,7 @@ const LabelsSettings = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const projectId = useSettingsStore.getState().projectId;
+  const { projectId } = useSettingsStore();
 
   const issuePreview = filterLabelsByKeywords(allLabels, issueKeywords);
   const epicPreview = filterLabelsByKeywords(allLabels, epicKeywords);
