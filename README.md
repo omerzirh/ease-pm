@@ -25,8 +25,8 @@ npm i -g pnpm   # if you don't have it yet
 Clone the repo and install dependencies:
 
 ```bash
-git clone https://github.com/your-org/ease-gitlab.git
-cd ease-gitlab
+git clone https://github.com/omerzirh/ease-pm.git
+cd ease-pm
 pnpm install
 ```
 
@@ -78,10 +78,58 @@ src/
 
 ## Contributing
 
-1. Create a feature branch: `git checkout -b feat/awesome`
-2. Commit your changes: `git commit -m "feat: awesome"`
-3. Push to the branch: `git push origin feat/awesome`
-4. Open a Merge Request in GitLab
+We’re excited that you want to contribute to **Ease GitLab**!  
+Bug fixes, new features, or documentation improvements — all contributions make the project better.  
+
+### 🚀 How to Contribute
+1. **Fork the repository**  
+   Click the **Fork** button on this repo to create your own copy.
+
+2. **Clone your fork**  
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/ease-pm.git
+   cd ease-pm
+   ```
+
+3. **Create a feature branch**  
+   Work on a new branch for your changes:
+   ```bash
+   git checkout -b feat/your-feature-name
+   # or
+   git checkout -b fix/readme-install
+   ```
+
+4. **Make your changes**  
+   - Edit the necessary files  
+   - Test locally:  
+     ```bash
+     pnpm dev
+     ```
+
+5. **Commit your changes**  
+   Use clear and descriptive commit messages:
+   ```bash
+   git commit -m "feat: add contributor guidelines"
+   ```
+
+6. **Push to your fork**  
+   ```bash
+   git push origin feat/your-feature-name
+   ```
+
+7. **Open a Pull Request (PR)**  
+   - Go to your fork on GitHub  
+   - Click **Compare & pull request**  
+   - Describe **what** you changed and **why**  
+
+---
+
+### 📌 Guidelines
+- Follow the existing code style (use ESLint: `pnpm run lint`)  
+- Add tests if you introduce new features  
+- Update the README if your changes affect documentation  
+- For questions or discussions, open an **Issue** first  
+
 
 ---
 
