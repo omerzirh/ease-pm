@@ -8,9 +8,9 @@ interface ThemeState {
 
 export const useThemeStore = create<ThemeState>()(
   persist(
-    set => ({
+    (set) => ({
       dark: false,
-      toggle: () => set(state => ({ dark: !state.dark })),
+      toggle: () => set((state) => ({ dark: !state.dark })),
     }),
     {
       name: 'ease-gitlab-theme',

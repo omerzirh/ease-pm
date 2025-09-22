@@ -1,52 +1,49 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "../../lib/utils"
+import * as React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '../../lib/utils';
 
 const inputVariants = cva(
-  "flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors",
+  'flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors',
   {
     variants: {
       variant: {
-        default: "",
-        error: "border-destructive focus-visible:ring-destructive",
+        default: '',
+        error: 'border-destructive focus-visible:ring-destructive',
       },
       size: {
-        sm: "h-8 px-2 text-xs",
-        md: "h-9 px-3 py-2",
-        lg: "h-10 px-4 py-2",
+        sm: 'h-8 px-2 text-xs',
+        md: 'h-9 px-3 py-2',
+        lg: 'h-10 px-4 py-2',
       },
     },
     defaultVariants: {
-      variant: "default",
-      size: "md",
+      variant: 'default',
+      size: 'md',
     },
   }
-)
+);
 
 export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof inputVariants> {
-  error?: boolean
-  helperText?: string
+  error?: boolean;
+  helperText?: string;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, variant, size, error, helperText, type, ...props }, ref) => {
-    const [showPassword, setShowPassword] = React.useState(false)
-    const isPassword = type === "password"
-    const inputType = isPassword && showPassword ? "text" : type
+    const [showPassword, setShowPassword] = React.useState(false);
+    const isPassword = type === 'password';
+    const inputType = isPassword && showPassword ? 'text' : type;
 
-    const inputVariant = error ? "error" : variant
+    const inputVariant = error ? 'error' : variant;
 
     return (
       <div className="space-y-1">
         <div className="relative">
           <input
             type={inputType}
-            className={cn(
-              inputVariants({ variant: inputVariant, size, className }),
-              isPassword && "pr-10"
-            )}
+            className={cn(inputVariants({ variant: inputVariant, size, className }), isPassword && 'pr-10')}
             ref={ref}
             {...props}
           />
@@ -55,7 +52,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-sm hover:text-foreground transition-colors"
-              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
               tabIndex={-1}
             >
               {showPassword ? (
@@ -99,19 +96,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
         {helperText && (
-          <p
-            className={cn(
-              "text-xs",
-              error ? "text-destructive" : "text-muted-foreground"
-            )}
-          >
-            {helperText}
-          </p>
+          <p className={cn('text-xs', error ? 'text-destructive' : 'text-muted-foreground')}>{helperText}</p>
         )}
       </div>
-    )
+    );
   }
-)
-Input.displayName = "Input"
+);
+Input.displayName = 'Input';
 
-export { Input, inputVariants }
+export { Input, inputVariants };

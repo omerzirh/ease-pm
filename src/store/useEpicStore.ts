@@ -19,6 +19,6 @@ export const useEpicStore = create<EpicState>()(
       selectedEpic: null,
       setEpic: (selectedEpic) => set({ selectedEpic }),
     }),
-    { name: 'ease-gitlab-epic' },
-  ),
+    { name: 'ease-gitlab-epic' }
+  )
 );

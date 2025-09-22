@@ -14,6 +14,6 @@ export const useTabStore = create<TabState>()(
       tab: 'issue',
       setTab: (tab) => set({ tab }),
     }),
-    { name: 'ease-gitlab-tab' },
-  ),
+    { name: 'ease-gitlab-tab' }
+  )
 );

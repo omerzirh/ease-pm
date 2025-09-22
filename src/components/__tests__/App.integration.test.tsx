@@ -19,9 +19,7 @@ vi.mock('../IterationReport', () => ({
 }));
 
 vi.mock('../SettingsPage', () => ({
-  default: ({ activeTab }: { activeTab: string }) => (
-    <div data-testid="settings-page">Settings Page - {activeTab}</div>
-  ),
+  default: ({ activeTab }: { activeTab: string }) => <div data-testid="settings-page">Settings Page - {activeTab}</div>,
 }));
 
 Object.defineProperty(window, 'innerWidth', {
@@ -31,10 +29,9 @@ Object.defineProperty(window, 'innerWidth', {
 });
 
 describe('App Integration Tests', () => {
-
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     window.innerWidth = 1024;
   });
 
@@ -45,20 +42,20 @@ describe('App Integration Tests', () => {
   describe('Sidebar Integration', () => {
     it('renders App with Sidebar instead of NavigationBar', () => {
       render(<App />);
-      
+
       const sidebar = document.querySelector('aside[role="navigation"]');
       expect(sidebar).toBeInTheDocument();
-      
+
       const mainContent = screen.getByRole('main');
       expect(mainContent).toBeInTheDocument();
-      
+
       const footer = screen.getByRole('contentinfo');
       expect(footer).toBeInTheDocument();
     });
 
     it('renders navigation items correctly', () => {
       render(<App />);
-      
+
       expect(screen.getByLabelText('Navigate to Issues')).toBeInTheDocument();
       expect(screen.getByLabelText('Navigate to Epics')).toBeInTheDocument();
       expect(screen.getByLabelText('Navigate to Milestones')).toBeInTheDocument();
@@ -70,21 +67,21 @@ describe('App Integration Tests', () => {
   describe('Layout Adjustments', () => {
     it('applies correct layout classes to main content container', () => {
       render(<App />);
-      
+
       const mainContentContainer = document.querySelector('.flex.flex-col.flex-1');
       expect(mainContentContainer).toHaveClass('flex', 'flex-col', 'flex-1');
     });
 
     it('applies smooth transitions to layout changes', () => {
       render(<App />);
-      
+
       const mainContentContainer = document.querySelector('.flex.flex-col.flex-1');
       expect(mainContentContainer).toHaveClass('transition-all', 'duration-250', 'ease-in-out');
     });
 
     it('handles responsive layout correctly', () => {
       render(<App />);
-      
+
       const appContainer = document.querySelector('.flex.h-full');
       expect(appContainer).toBeInTheDocument();
     });
@@ -93,18 +90,18 @@ describe('App Integration Tests', () => {
   describe('Responsive Behavior', () => {
     it('sets up resize event listener', () => {
       const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
-      
+
       render(<App />);
-      
+
       expect(addEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function));
     });
 
     it('cleans up resize event listener on unmount', () => {
       const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
-      
+
       const { unmount } = render(<App />);
       unmount();
-      
+
       expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function));
     });
   });
@@ -117,7 +114,7 @@ describe('App Integration Tests', () => {
 
     it('renders main content area correctly', () => {
       render(<App />);
-      
+
       const mainContent = screen.getByRole('main');
       expect(mainContent).toHaveClass('flex-1', 'overflow-y-auto', 'p-6');
     });
@@ -126,7 +123,7 @@ describe('App Integration Tests', () => {
   describe('Settings Integration', () => {
     it('manages settings tab state with default value', () => {
       render(<App />);
-      
+
       expect(screen.getByTestId('issue-generator')).toBeInTheDocument();
     });
   });
@@ -134,7 +131,7 @@ describe('App Integration Tests', () => {
   describe('Theme Integration', () => {
     it('sets up theme effect correctly', () => {
       render(<App />);
-      
+
       expect(screen.getByTestId('issue-generator')).toBeInTheDocument();
     });
   });
@@ -142,7 +139,7 @@ describe('App Integration Tests', () => {
   describe('Authentication Integration', () => {
     it('renders authentication button in sidebar', () => {
       render(<App />);
-      
+
       const authButton = screen.getByLabelText('Login with GitLab');
       expect(authButton).toBeInTheDocument();
     });
@@ -151,13 +148,13 @@ describe('App Integration Tests', () => {
   describe('Footer Integration', () => {
     it('renders footer with correct styling and transitions', () => {
       render(<App />);
-      
+
       const footer = screen.getByRole('contentinfo');
       expect(footer).toBeInTheDocument();
       expect(footer).toHaveClass('transition-all', 'duration-250', 'ease-in-out');
-      
+
       expect(footer).toHaveTextContent('Created with ❤ by Omer Zirh');
-      
+
       const link = screen.getByRole('link', { name: 'Omer Zirh' });
       expect(link).toHaveAttribute('href', 'https://github.com/omerzirh');
       expect(link).toHaveAttribute('target', '_blank');

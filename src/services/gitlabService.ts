@@ -2,7 +2,8 @@ import { Gitlab } from '@gitbeaker/browser';
 import { useGitlabAuth } from '../store/useGitlabAuth';
 import { useSettingsStore } from '../store/useSettingsStore';
 
-const getGitlabHost = () => useSettingsStore.getState().gitlabHost || import.meta.env.VITE_GITLAB_HOST || 'https://gitlab.com';
+const getGitlabHost = () =>
+  useSettingsStore.getState().gitlabHost || import.meta.env.VITE_GITLAB_HOST || 'https://gitlab.com';
 
 const getApi = () => {
   const { api } = useGitlabAuth.getState();
@@ -45,10 +46,16 @@ export interface GitLabService {
   fetchLabels(projectId: string | number): Promise<Array<{ id: number; name: string; description: string }>>;
   fetchMilestones(projectId: string | number): Promise<Array<{ id: number; title: string; description: string }>>;
   fetchGroupMilestones(groupId: string | number): Promise<Array<{ id: number; title: string; description: string }>>;
-  fetchIssuesByMilestone(projectId: string | number, milestone: string): Promise<Array<{ id: number; iid: number; title: string; web_url: string; state: string }>>;
+  fetchIssuesByMilestone(
+    projectId: string | number,
+    milestone: string
+  ): Promise<Array<{ id: number; iid: number; title: string; web_url: string; state: string }>>;
   fetchProjectIterations(projectId: string | number, options?: IterationOptions): Promise<Iteration[]>;
   fetchIterations(groupId: string | number, state?: string): Promise<Iteration[]>;
-  fetchIssuesByIteration(projectId: string | number, iterationId: number): Promise<Array<{ id: number; iid: number; title: string; web_url: string; state: string; labels: string[] }>>;
+  fetchIssuesByIteration(
+    projectId: string | number,
+    iterationId: number
+  ): Promise<Array<{ id: number; iid: number; title: string; web_url: string; state: string; labels: string[] }>>;
   createIssue(
     projectId: string | number,
     title: string,
@@ -70,14 +77,18 @@ export interface GitLabService {
     parentId?: number,
     enableEpic?: boolean
   ): Promise<{ id: number; iid: number; web_url: string }>;
-  linkIssues(
-    projectId: string | number,
-    sourceIid: number,
-    targetIid: number,
-  ): Promise<any>;
+  linkIssues(projectId: string | number, sourceIid: number, targetIid: number): Promise<any>;
   fetchIssueLinks(projectId: string | number, issueIid: number): Promise<number[]>;
-  searchEpics(groupId: string | number, query: string): Promise<Array<{ id: number; iid: number; title: string; web_url: string }>>;
-  addIssueToEpic(groupId: string | number, epicIid: number, projectId: number | string, issueIid: number): Promise<void>;
+  searchEpics(
+    groupId: string | number,
+    query: string
+  ): Promise<Array<{ id: number; iid: number; title: string; web_url: string }>>;
+  addIssueToEpic(
+    groupId: string | number,
+    epicIid: number,
+    projectId: number | string,
+    issueIid: number
+  ): Promise<void>;
   getHostUrl(): string;
 }
 
@@ -90,7 +101,7 @@ export const gitlabService: GitLabService = {
   async fetchLabels(projectId) {
     const api = getApi();
     const labels = await api.Labels.all(projectId);
-    return labels.map(label => ({
+    return labels.map((label) => ({
       id: (label as any).id,
       name: (label as any).name,
       description: (label as any).description || '',
@@ -105,7 +116,7 @@ export const gitlabService: GitLabService = {
     };
     if (parentId && enableEpic) epicData.parent_id = parentId;
     const api = getApi();
-    const epic = await api.Epics.create(groupId, title, epicData)
+    const epic = await api.Epics.create(groupId, title, epicData);
     return { id: (epic as any).id, iid: (epic as any).iid, web_url: (epic as any).web_url };
   },
 
@@ -127,7 +138,7 @@ export const gitlabService: GitLabService = {
   async fetchMilestones(projectId) {
     const api = getApi();
     const milestones = await api.ProjectMilestones.all(projectId);
-    return milestones.map(milestone => ({
+    return milestones.map((milestone) => ({
       id: (milestone as any).id,
       title: (milestone as any).title,
       description: (milestone as any).description || '',
@@ -137,7 +148,7 @@ export const gitlabService: GitLabService = {
   async fetchGroupMilestones(groupId) {
     const api = getApi();
     const milestones = await api.GroupMilestones.all(groupId);
-    return milestones.map(milestone => ({
+    return milestones.map((milestone) => ({
       id: (milestone as any).id,
       title: (milestone as any).title,
       description: (milestone as any).description || '',
@@ -153,7 +164,7 @@ export const gitlabService: GitLabService = {
       per_page: 100,
     });
 
-    return issues.map(issue => ({
+    return issues.map((issue) => ({
       id: (issue as any).id,
       iid: (issue as any).iid,
       title: (issue as any).title,
@@ -169,7 +180,8 @@ export const gitlabService: GitLabService = {
     if (options.state) params.append('state', options.state);
     if (options.search) params.append('search', options.search);
     if (options.includeAncestors !== undefined) params.append('include_ancestors', options.includeAncestors.toString());
-    if (options.includeDescendants !== undefined) params.append('include_descendants', options.includeDescendants.toString());
+    if (options.includeDescendants !== undefined)
+      params.append('include_descendants', options.includeDescendants.toString());
     if (options.updatedBefore) params.append('updated_before', options.updatedBefore);
     if (options.updatedAfter) params.append('updated_after', options.updatedAfter);
 
@@ -177,7 +189,7 @@ export const gitlabService: GitLabService = {
 
     const response = await fetch(url, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
@@ -206,7 +218,7 @@ export const gitlabService: GitLabService = {
 
     const response = await fetch(url, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
@@ -237,7 +249,7 @@ export const gitlabService: GitLabService = {
       per_page: 100,
     });
 
-    return issues.map(issue => ({
+    return issues.map((issue) => ({
       id: (issue as any).id,
       iid: (issue as any).iid,
       title: (issue as any).title,
@@ -294,7 +306,6 @@ export const gitlabService: GitLabService = {
   },
 
   async fetchIssueLinks(projectId: string | number, issueIid: number) {
-
     try {
       const api = getApi();
       const result = await api.Issues.links(projectId, issueIid);
