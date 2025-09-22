@@ -1,21 +1,20 @@
-
-import globals from "globals";
-import tseslint from "typescript-eslint";
-import reactPlugin from "eslint-plugin-react";
-import hooksPlugin from "eslint-plugin-react-hooks";
-import refreshPlugin from "eslint-plugin-react-refresh";
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+import reactPlugin from 'eslint-plugin-react';
+import hooksPlugin from 'eslint-plugin-react-hooks';
+import refreshPlugin from 'eslint-plugin-react-refresh';
 
 export default tseslint.config(
   {
-    ignores: ["dist/", "node_modules/"],
+    ignores: ['dist/', 'node_modules/'],
   },
   ...tseslint.configs.recommended,
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ['**/*.{ts,tsx}'],
     plugins: {
       react: reactPlugin,
-      "react-hooks": hooksPlugin,
-      "react-refresh": refreshPlugin,
+      'react-hooks': hooksPlugin,
+      'react-refresh': refreshPlugin,
     },
     languageOptions: {
       parserOptions: {
@@ -29,27 +28,23 @@ export default tseslint.config(
     },
     rules: {
       ...reactPlugin.configs.recommended.rules,
-      ...reactPlugin.configs["jsx-runtime"].rules,
+      ...reactPlugin.configs['jsx-runtime'].rules,
       ...hooksPlugin.configs.recommended.rules,
-      "react/prop-types": "off",
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
+      'react/prop-types': 'off',
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
     settings: {
       react: {
-        version: "detect",
+        version: 'detect',
       },
     },
   },
   {
-    files: ["vite.config.ts", "eslint.config.js"],
+    files: ['vite.config.ts', 'eslint.config.js'],
     languageOptions: {
-        globals: {
-            ...globals.node
-        }
-    }
+      globals: {
+        ...globals.node,
+      },
+    },
   }
 );
-

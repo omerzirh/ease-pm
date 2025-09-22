@@ -15,14 +15,7 @@ interface GitlabProject {
 
 const GroupProjectSettings = () => {
   const { token } = useGitlabAuth();
-  const {
-    groupId,
-    projectId,
-    projectName,
-    setGroupId,
-    setProjectId,
-    setProjectName,
-  } = useSettingsStore();
+  const { groupId, projectId, projectName, setGroupId, setProjectId, setProjectName } = useSettingsStore();
 
   const [groupInput, setGroupInput] = useState(groupId || '');
   const [projectOptions, setProjectOptions] = useState<GitlabProject[]>([]);
@@ -72,7 +65,7 @@ const GroupProjectSettings = () => {
       setMessage('Please select a project');
       return;
     }
-    const selectedProjectObj = projectOptions.find(p => p.id === Number(selectedProject));
+    const selectedProjectObj = projectOptions.find((p) => p.id === Number(selectedProject));
     if (!selectedProjectObj) {
       setMessage('Project not found');
       return;
@@ -90,7 +83,7 @@ const GroupProjectSettings = () => {
 
       {!editing ? (
         <>
-        <p className="mb-2 text-sm">
+          <p className="mb-2 text-sm">
             <span className="font-medium">Group/Project Name:</span> {projectName || 'Not set'}
           </p>
           <p className="mb-2 text-sm">
@@ -99,10 +92,7 @@ const GroupProjectSettings = () => {
           <p className="mb-4 text-sm">
             <span className="font-medium">Project ID:</span> {projectId || 'Not set'}
           </p>
-          <Button
-            variant="primary"
-            onClick={() => setEditing(true)}
-          >
+          <Button variant="primary" onClick={() => setEditing(true)}>
             Edit
           </Button>
         </>
@@ -111,7 +101,7 @@ const GroupProjectSettings = () => {
           <Label required>Group ID / Path</Label>
           <Input
             value={groupInput}
-            onChange={e => setGroupInput(e.target.value)}
+            onChange={(e) => setGroupInput(e.target.value)}
             placeholder="e.g. 123456 or my-group"
             className="mb-2"
           />
@@ -128,31 +118,20 @@ const GroupProjectSettings = () => {
           {projectOptions.length > 0 && (
             <div className="mb-4">
               <Label required>Select Project</Label>
-              <Select
-                value={selectedProject}
-                onChange={e => setSelectedProject(e.target.value)}
-              >
+              <Select value={selectedProject} onChange={(e) => setSelectedProject(e.target.value)}>
                 <option value="">-- choose a project --</option>
-                {projectOptions.map(p => (
+                {projectOptions.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.path_with_namespace}
                   </option>
                 ))}
               </Select>
-              <Button
-                variant="primary"
-                className="mt-2"
-                onClick={handleSaveProject}
-                disabled={!selectedProject}
-              >
+              <Button variant="primary" className="mt-2" onClick={handleSaveProject} disabled={!selectedProject}>
                 Save Project
               </Button>
             </div>
           )}
-          <Button
-            variant="secondary"
-            onClick={() => setEditing(false)}
-          >
+          <Button variant="secondary" onClick={() => setEditing(false)}>
             Cancel
           </Button>
         </>

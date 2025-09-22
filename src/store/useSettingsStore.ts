@@ -19,7 +19,6 @@ interface SettingsState {
   setOpenaiModel: (model: string | null) => void;
   setGeminiModel: (model: string | null) => void;
 
-
   groupId: string | null;
   groupName: string | null;
   projectId: string | null;
@@ -72,6 +71,6 @@ export const useSettingsStore = create<SettingsState>()(
     }),
     {
       name: 'ease-gitlab-settings',
-    },
-  ),
+    }
+  )
 );

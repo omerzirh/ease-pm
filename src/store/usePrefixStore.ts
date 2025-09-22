@@ -24,6 +24,6 @@ export const usePrefixStore = create<PrefixState>()(
     }),
     {
       name: 'prefix-store',
-    },
-  ),
+    }
+  )
 );

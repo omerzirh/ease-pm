@@ -2,9 +2,12 @@ import { create } from 'zustand';
 import { Gitlab } from '@gitbeaker/browser';
 import { useSettingsStore } from './useSettingsStore';
 
-const getGitlabHost = () => useSettingsStore.getState().gitlabHost || import.meta.env.VITE_GITLAB_HOST || 'https://gitlab.com';
-const getGitlabAppId = () => useSettingsStore.getState().gitlabAppId || import.meta.env.VITE_GITLAB_APPLICATION_ID as string;
-const getGitlabCallbackUrl = () => useSettingsStore.getState().gitlabCallbackUrl || import.meta.env.VITE_GITLAB_CALLBACK as string;
+const getGitlabHost = () =>
+  useSettingsStore.getState().gitlabHost || import.meta.env.VITE_GITLAB_HOST || 'https://gitlab.com';
+const getGitlabAppId = () =>
+  useSettingsStore.getState().gitlabAppId || (import.meta.env.VITE_GITLAB_APPLICATION_ID as string);
+const getGitlabCallbackUrl = () =>
+  useSettingsStore.getState().gitlabCallbackUrl || (import.meta.env.VITE_GITLAB_CALLBACK as string);
 
 interface GitlabAuthState {
   token: string | null;
@@ -19,12 +22,14 @@ const storedToken = localStorage.getItem('gitlab_token');
 export const useGitlabAuth = create<GitlabAuthState>((set, get) => ({
   token: storedToken,
   api: storedToken ? new Gitlab({ oauthToken: storedToken, host: getGitlabHost() }) : null,
-  
+
   login: async () => {
     const generateRandom = (length: number) => {
       const array = new Uint32Array(length);
       crypto.getRandomValues(array);
-      return Array.from(array, dec => ('0' + dec.toString(16)).slice(-2)).join('').slice(0, length);
+      return Array.from(array, (dec) => ('0' + dec.toString(16)).slice(-2))
+        .join('')
+        .slice(0, length);
     };
 
     const base64url = (bytes: ArrayBuffer) => {
@@ -46,7 +51,7 @@ export const useGitlabAuth = create<GitlabAuthState>((set, get) => ({
     sessionStorage.setItem('gitlab_pkce_verifier', codeVerifier);
 
     const authUrl = `${getGitlabHost()}/oauth/authorize?client_id=${getGitlabAppId()}&redirect_uri=${encodeURIComponent(
-      getGitlabCallbackUrl(),
+      getGitlabCallbackUrl()
     )}&response_type=code&scope=api&code_challenge_method=S256&code_challenge=${codeChallenge}`;
 
     const width = 500;
@@ -54,11 +59,7 @@ export const useGitlabAuth = create<GitlabAuthState>((set, get) => ({
     const left = window.screenX + (window.outerWidth - width) / 2;
     const top = window.screenY + (window.outerHeight - height) / 2;
 
-    const popup = window.open(
-      authUrl,
-      'GitLabLogin',
-      `width=${width},height=${height},left=${left},top=${top}`,
-    );
+    const popup = window.open(authUrl, 'GitLabLogin', `width=${width},height=${height},left=${left},top=${top}`);
 
     const interval = setInterval(async () => {
       if (!popup || popup.closed) {
@@ -94,8 +95,7 @@ export const useGitlabAuth = create<GitlabAuthState>((set, get) => ({
           popup.close();
           clearInterval(interval);
         }
-      } catch (_) {
-      }
+      } catch (_) {}
     }, 500);
   },
   setToken: (token: string) => {

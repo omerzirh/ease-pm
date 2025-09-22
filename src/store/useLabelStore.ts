@@ -28,12 +28,16 @@ export const useLabelStore = create<LabelState>()(
     }),
     {
       name: 'label-store',
-    },
-  ),
+    }
+  )
 );
 
 export const filterLabelsByKeywords = (labels: Label[], keywords: string): Label[] => {
   if (!keywords.trim()) return labels;
-  const kws = keywords.toLowerCase().split(',').map(k => k.trim()).filter(Boolean);
-  return labels.filter(l => kws.some(k => l.name.toLowerCase().includes(k)));
+  const kws = keywords
+    .toLowerCase()
+    .split(',')
+    .map((k) => k.trim())
+    .filter(Boolean);
+  return labels.filter((l) => kws.some((k) => l.name.toLowerCase().includes(k)));
 };

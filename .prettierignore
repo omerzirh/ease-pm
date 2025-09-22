@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.next/
+build/
+dist/
+
+# Lock files
+package-lock.json
+yarn.lock
+bun.lock
+pnpm-lock.yaml
+
+# Environment files
+.env*
+
+# Generated files
+coverage/
+.nyc_output/
+*.tgz
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock

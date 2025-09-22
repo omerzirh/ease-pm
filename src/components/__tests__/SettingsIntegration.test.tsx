@@ -41,12 +41,9 @@ const mockSettingsStore = {
 };
 
 vi.mock('../../store/useSettingsStore', () => ({
-  useSettingsStore: Object.assign(
-    () => mockSettingsStore,
-    {
-      getState: () => mockSettingsStore,
-    }
-  ),
+  useSettingsStore: Object.assign(() => mockSettingsStore, {
+    getState: () => mockSettingsStore,
+  }),
 }));
 
 vi.mock('../../store/usePrefixStore', () => ({
@@ -75,7 +72,7 @@ describe('Settings Integration', () => {
 
   it('shows settings submenu when settings tab is active', () => {
     render(<Sidebar {...sidebarProps} />);
-    
+
     expect(screen.getByLabelText('Navigate to Labels settings')).toBeInTheDocument();
     expect(screen.getByLabelText('Navigate to AI Provider settings')).toBeInTheDocument();
     expect(screen.getByLabelText('Navigate to GitLab settings')).toBeInTheDocument();
@@ -84,10 +81,10 @@ describe('Settings Integration', () => {
   it('renders correct settings page based on active tab', () => {
     render(<SettingsPage activeTab="labels" />);
     expect(screen.getByText('Label Settings')).toBeInTheDocument();
-    
+
     render(<SettingsPage activeTab="ai" />);
     expect(screen.getByText('AI Provider')).toBeInTheDocument();
-    
+
     render(<SettingsPage activeTab="gitlab" />);
     expect(screen.getByText('GitLab Settings')).toBeInTheDocument();
   });
@@ -95,16 +92,16 @@ describe('Settings Integration', () => {
   it('handles settings submenu navigation', () => {
     const onSettingsTabChange = vi.fn();
     render(<Sidebar {...sidebarProps} onSettingsTabChange={onSettingsTabChange} />);
-    
+
     const aiButton = screen.getByLabelText('Navigate to AI Provider settings');
     fireEvent.click(aiButton);
-    
+
     expect(onSettingsTabChange).toHaveBeenCalledWith('ai');
   });
 
   it('shows active state in settings submenu', () => {
     render(<Sidebar {...sidebarProps} activeSettingsTab="gitlab" />);
-    
+
     const gitlabButton = screen.getByLabelText('Navigate to GitLab settings');
     expect(gitlabButton).toHaveAttribute('aria-current', 'page');
   });

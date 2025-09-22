@@ -45,18 +45,18 @@ VITE_OPENAI_API_KEY=sk-...
 VITE_GEMINI_API_KEY=AIza...
 ```
 
-> ℹ️  Omit AI keys if you don’t plan to use the AI-powered features.
+> ℹ️ Omit AI keys if you don’t plan to use the AI-powered features.
 
 ---
 
 ## Useful Commands
 
-| Action                | Command           |
-|-----------------------|-------------------|
-| Start dev server      | `pnpm dev`        |
-| Build for production  | `pnpm build`      |
-| Preview production    | `pnpm preview`    |
-| Lint & type-check     | `pnpm run lint` † |
+| Action               | Command           |
+| -------------------- | ----------------- |
+| Start dev server     | `pnpm dev`        |
+| Build for production | `pnpm build`      |
+| Preview production   | `pnpm preview`    |
+| Lint & type-check    | `pnpm run lint` † |
 
 † Add your own lint script if desired.
 
@@ -79,13 +79,15 @@ src/
 ## Contributing
 
 We’re excited that you want to contribute to **Ease GitLab**!  
-Bug fixes, new features, or documentation improvements — all contributions make the project better.  
+Bug fixes, new features, or documentation improvements — all contributions make the project better.
 
 ### 🚀 How to Contribute
+
 1. **Fork the repository**  
    Click the **Fork** button on this repo to create your own copy.
 
-2. **Clone your fork**  
+2. **Clone your fork**
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/ease-pm.git
    cd ease-pm
@@ -93,43 +95,46 @@ Bug fixes, new features, or documentation improvements — all contributions mak
 
 3. **Create a feature branch**  
    Work on a new branch for your changes:
+
    ```bash
    git checkout -b feat/your-feature-name
    # or
    git checkout -b fix/readme-install
    ```
 
-4. **Make your changes**  
-   - Edit the necessary files  
-   - Test locally:  
+4. **Make your changes**
+   - Edit the necessary files
+   - Test locally:
      ```bash
      pnpm dev
      ```
 
 5. **Commit your changes**  
    Use clear and descriptive commit messages:
+
    ```bash
    git commit -m "feat: add contributor guidelines"
    ```
 
-6. **Push to your fork**  
+6. **Push to your fork**
+
    ```bash
    git push origin feat/your-feature-name
    ```
 
-7. **Open a Pull Request (PR)**  
-   - Go to your fork on GitHub  
-   - Click **Compare & pull request**  
-   - Describe **what** you changed and **why**  
+7. **Open a Pull Request (PR)**
+   - Go to your fork on GitHub
+   - Click **Compare & pull request**
+   - Describe **what** you changed and **why**
 
 ---
 
 ### 📌 Guidelines
-- Follow the existing code style (use ESLint: `pnpm run lint`)  
-- Add tests if you introduce new features  
-- Update the README if your changes affect documentation  
-- For questions or discussions, open an **Issue** first  
 
+- Follow the existing code style (use ESLint: `pnpm run lint`)
+- Add tests if you introduce new features
+- Update the README if your changes affect documentation
+- For questions or discussions, open an **Issue** first
 
 ---
 
