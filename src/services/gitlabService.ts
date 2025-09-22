@@ -101,7 +101,7 @@ export const gitlabService: GitLabService = {
   async fetchLabels(projectId) {
     const api = getApi();
     const labels = await api.Labels.all(projectId);
-    return labels.map(label => ({
+    return labels.map((label) => ({
       id: (label as any).id,
       name: (label as any).name,
       description: (label as any).description || '',
@@ -138,7 +138,7 @@ export const gitlabService: GitLabService = {
   async fetchMilestones(projectId) {
     const api = getApi();
     const milestones = await api.ProjectMilestones.all(projectId);
-    return milestones.map(milestone => ({
+    return milestones.map((milestone) => ({
       id: (milestone as any).id,
       title: (milestone as any).title,
       description: (milestone as any).description || '',
@@ -148,7 +148,7 @@ export const gitlabService: GitLabService = {
   async fetchGroupMilestones(groupId) {
     const api = getApi();
     const milestones = await api.GroupMilestones.all(groupId);
-    return milestones.map(milestone => ({
+    return milestones.map((milestone) => ({
       id: (milestone as any).id,
       title: (milestone as any).title,
       description: (milestone as any).description || '',
@@ -164,7 +164,7 @@ export const gitlabService: GitLabService = {
       per_page: 100,
     });
 
-    return issues.map(issue => ({
+    return issues.map((issue) => ({
       id: (issue as any).id,
       iid: (issue as any).iid,
       title: (issue as any).title,
@@ -249,7 +249,7 @@ export const gitlabService: GitLabService = {
       per_page: 100,
     });
 
-    return issues.map(issue => ({
+    return issues.map((issue) => ({
       id: (issue as any).id,
       iid: (issue as any).iid,
       title: (issue as any).title,

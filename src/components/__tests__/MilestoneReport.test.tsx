@@ -62,7 +62,7 @@ describe('MilestoneReport', () => {
 
       await waitFor(() => {
         const textareas = screen.getAllByRole('textbox');
-        const summaryTextarea = textareas.find(textarea => textarea.rows === 10);
+        const summaryTextarea = textareas.find((textarea) => textarea.rows === 10);
         expect(summaryTextarea).toBeDefined();
         const summaryValue = summaryTextarea!.value;
 
@@ -105,7 +105,7 @@ describe('MilestoneReport', () => {
 
       await waitFor(() => {
         const textareas = screen.getAllByRole('textbox');
-        const summaryTextarea = textareas.find(textarea => textarea.rows === 10);
+        const summaryTextarea = textareas.find((textarea) => textarea.rows === 10);
         expect(summaryTextarea).toBeDefined();
         const summaryValue = summaryTextarea!.value;
 
@@ -150,7 +150,7 @@ describe('MilestoneReport', () => {
 
       await waitFor(() => {
         const textareas = screen.getAllByRole('textbox');
-        const summaryTextarea = textareas.find(textarea => textarea.rows === 10);
+        const summaryTextarea = textareas.find((textarea) => textarea.rows === 10);
         expect(summaryTextarea).toBeDefined();
         const summaryValue = summaryTextarea!.value;
 

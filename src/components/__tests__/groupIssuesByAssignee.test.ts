@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 const groupIssuesByAssignee = (issues: any[]) => {
   const assigneeMap = new Map<string, Array<{ title: string; state: string; web_url: string }>>();
 
-  issues.forEach(issue => {
+  issues.forEach((issue) => {
     const assigneeLabels = issue.labels?.filter((label: string) => label.startsWith('Assignee::')) || [];
 
     if (assigneeLabels.length === 0) {
@@ -86,11 +86,11 @@ describe('groupIssuesByAssignee', () => {
 
     expect(result).toHaveLength(2);
 
-    const johnDoeGroup = result.find(group => group.assignee === 'John Doe');
+    const johnDoeGroup = result.find((group) => group.assignee === 'John Doe');
     expect(johnDoeGroup).toBeDefined();
     expect(johnDoeGroup!.issues).toHaveLength(2);
 
-    const janeSmithGroup = result.find(group => group.assignee === 'Jane Smith');
+    const janeSmithGroup = result.find((group) => group.assignee === 'Jane Smith');
     expect(janeSmithGroup).toBeDefined();
     expect(janeSmithGroup!.issues).toHaveLength(1);
   });
@@ -115,12 +115,12 @@ describe('groupIssuesByAssignee', () => {
 
     expect(result).toHaveLength(2);
 
-    const backlogGroup = result.find(group => group.assignee === 'Backlog');
+    const backlogGroup = result.find((group) => group.assignee === 'Backlog');
     expect(backlogGroup).toBeDefined();
     expect(backlogGroup!.issues).toHaveLength(1);
     expect(backlogGroup!.issues[0].title).toBe('Unassigned Issue');
 
-    const johnDoeGroup = result.find(group => group.assignee === 'John Doe');
+    const johnDoeGroup = result.find((group) => group.assignee === 'John Doe');
     expect(johnDoeGroup).toBeDefined();
     expect(johnDoeGroup!.issues).toHaveLength(1);
     expect(johnDoeGroup!.issues[0].title).toBe('Assigned Issue');
@@ -140,12 +140,12 @@ describe('groupIssuesByAssignee', () => {
 
     expect(result).toHaveLength(2);
 
-    const johnDoeGroup = result.find(group => group.assignee === 'John Doe');
+    const johnDoeGroup = result.find((group) => group.assignee === 'John Doe');
     expect(johnDoeGroup).toBeDefined();
     expect(johnDoeGroup!.issues).toHaveLength(1);
     expect(johnDoeGroup!.issues[0].title).toBe('Multi-assigned Issue');
 
-    const janeSmithGroup = result.find(group => group.assignee === 'Jane Smith');
+    const janeSmithGroup = result.find((group) => group.assignee === 'Jane Smith');
     expect(janeSmithGroup).toBeDefined();
     expect(janeSmithGroup!.issues).toHaveLength(1);
     expect(janeSmithGroup!.issues[0].title).toBe('Multi-assigned Issue');

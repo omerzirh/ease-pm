@@ -26,7 +26,7 @@ const PrefixesSettings = () => {
 
       {prefixes.length > 0 && (
         <ul className="mb-4 border border-app-border-primary rounded-md divide-y divide-app-border-secondary">
-          {prefixes.map(p => (
+          {prefixes.map((p) => (
             <li key={p} className="flex items-center justify-between px-3 py-2">
               <span>{p}</span>
               <Button
@@ -46,7 +46,7 @@ const PrefixesSettings = () => {
       <div className="flex items-center gap-2">
         <Input
           value={input}
-          onChange={e => setInput(e.target.value)}
+          onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="new prefix"
           className="flex-1"

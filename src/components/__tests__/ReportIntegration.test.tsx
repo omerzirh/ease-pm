@@ -93,7 +93,7 @@ describe('Report Integration Tests', () => {
 
       mockGitlabService.fetchProjectIterations.mockResolvedValue(mockIterations);
       mockGitlabService.fetchIssuesByIteration.mockResolvedValue(mockIssues);
-      mockFormatIterationName.mockImplementation(iteration => {
+      mockFormatIterationName.mockImplementation((iteration) => {
         if (iteration.id === 1) return '1/1/2024 - 1/14/2024';
         if (iteration.id === 2) return 'Sprint 2';
         return 'Unknown';
@@ -122,7 +122,7 @@ describe('Report Integration Tests', () => {
 
       await waitFor(() => {
         const textareas = screen.getAllByRole('textbox');
-        const summaryTextarea = textareas.find(textarea => textarea.rows === 12);
+        const summaryTextarea = textareas.find((textarea) => textarea.rows === 12);
         expect(summaryTextarea).toBeDefined();
         expect(summaryTextarea!.value).toContain('## 1/1/2024 - 1/14/2024');
       });
@@ -171,7 +171,7 @@ describe('Report Integration Tests', () => {
       mockGitlabService.fetchProjectIterations.mockResolvedValue(mockIterations);
       mockGitlabService.fetchIssuesByIteration.mockResolvedValue(mockIssues);
       mockFormatIterationName.mockReturnValue('Test Sprint');
-      mockGenerateAssigneeSummary.mockImplementation(assignee => {
+      mockGenerateAssigneeSummary.mockImplementation((assignee) => {
         if (assignee === 'Backlog') return 'AI summary for backlog items';
         if (assignee === 'John Doe') return "AI summary for John's work";
         return 'Generic AI summary';
@@ -258,7 +258,7 @@ describe('Report Integration Tests', () => {
 
       await waitFor(() => {
         const textareas = screen.getAllByRole('textbox');
-        const summaryTextarea = textareas.find(textarea => textarea.rows === 10);
+        const summaryTextarea = textareas.find((textarea) => textarea.rows === 10);
         expect(summaryTextarea).toBeDefined();
         const summaryValue = summaryTextarea!.value;
 
@@ -308,7 +308,7 @@ describe('Report Integration Tests', () => {
 
       await waitFor(() => {
         const textareas = screen.getAllByRole('textbox');
-        const summaryTextarea = textareas.find(textarea => textarea.rows === 10);
+        const summaryTextarea = textareas.find((textarea) => textarea.rows === 10);
         expect(summaryTextarea).toBeDefined();
 
         const summaryValue = summaryTextarea!.value;
@@ -367,7 +367,7 @@ describe('Report Integration Tests', () => {
       let iterationSummary = '';
       await waitFor(() => {
         const textareas = screen.getAllByRole('textbox');
-        const summaryTextarea = textareas.find(textarea => textarea.rows === 12);
+        const summaryTextarea = textareas.find((textarea) => textarea.rows === 12);
         expect(summaryTextarea).toBeDefined();
         iterationSummary = summaryTextarea!.value;
         expect(iterationSummary).toContain('[Test Issue](https://gitlab.example.com/project/issues/1)');
@@ -390,7 +390,7 @@ describe('Report Integration Tests', () => {
 
       await waitFor(() => {
         const textareas = screen.getAllByRole('textbox');
-        const summaryTextarea = textareas.find(textarea => textarea.rows === 10);
+        const summaryTextarea = textareas.find((textarea) => textarea.rows === 10);
         expect(summaryTextarea).toBeDefined();
         const milestoneSummary = summaryTextarea!.value;
 

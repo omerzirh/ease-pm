@@ -41,7 +41,7 @@ describe('SettingsSubmenu', () => {
     render(<SettingsSubmenu {...defaultProps} isCollapsed={true} isMobile={false} />);
 
     const buttons = screen.getAllByRole('button');
-    buttons.forEach(button => {
+    buttons.forEach((button) => {
       expect(button).toHaveClass('justify-center');
     });
   });

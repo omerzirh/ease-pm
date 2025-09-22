@@ -54,7 +54,7 @@ const LabelsSettings = () => {
           <h3 className="text-sm font-medium mb-2">All Available Labels ({allLabels.length})</h3>
           <div className="max-h-32 overflow-y-auto border p-2 rounded-md bg-gray-50">
             <div className="flex flex-wrap gap-1">
-              {allLabels.map(l => (
+              {allLabels.map((l) => (
                 <span key={l.id} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
                   {l.name}
                 </span>
@@ -69,7 +69,7 @@ const LabelsSettings = () => {
           <Label>Issue Filter Keywords (comma separated)</Label>
           <Input
             value={issueKeywords}
-            onChange={e => setIssueKeywords(e.target.value)}
+            onChange={(e) => setIssueKeywords(e.target.value)}
             placeholder="bug,frontend,urgent"
             className="mb-4"
           />
@@ -81,7 +81,7 @@ const LabelsSettings = () => {
                 {issueKeywords.trim() === '' && <span className="text-gray-500 font-normal"> - showing all</span>}
               </h3>
               <div className="max-h-48 overflow-y-auto border p-2 rounded-md">
-                {issuePreview.map(l => (
+                {issuePreview.map((l) => (
                   <div key={l.id} className="text-sm py-0.5">
                     {l.name}
                   </div>
@@ -95,7 +95,7 @@ const LabelsSettings = () => {
           <Label>Epic Filter Keywords (comma separated)</Label>
           <Input
             value={epicKeywords}
-            onChange={e => setEpicKeywords(e.target.value)}
+            onChange={(e) => setEpicKeywords(e.target.value)}
             placeholder="epic,feature,milestone"
             className="mb-4"
           />
@@ -107,7 +107,7 @@ const LabelsSettings = () => {
                 {epicKeywords.trim() === '' && <span className="text-gray-500 font-normal"> - showing all</span>}
               </h3>
               <div className="max-h-48 overflow-y-auto border p-2 rounded-md">
-                {epicPreview.map(l => (
+                {epicPreview.map((l) => (
                   <div key={l.id} className="text-sm py-0.5">
                     {l.name}
                   </div>

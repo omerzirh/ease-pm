@@ -55,7 +55,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       <div className="relative">
         <input
           type="checkbox"
-          ref={node => {
+          ref={(node) => {
             if (checkboxRef.current !== node) {
               (checkboxRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
             }
@@ -73,7 +73,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           )}
           data-state={dataState}
           checked={checked}
-          onKeyDown={e => {
+          onKeyDown={(e) => {
             if (e.key === ' ' || e.key === 'Enter') {
               e.preventDefault();
               if (!props.disabled) {
@@ -94,7 +94,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             error && indeterminate && 'bg-destructive text-destructive-foreground',
             props.disabled && 'cursor-not-allowed'
           )}
-          onClick={e => {
+          onClick={(e) => {
             if (!props.disabled) {
               e.preventDefault();
               e.stopPropagation();

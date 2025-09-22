@@ -38,36 +38,36 @@ interface SettingsState {
 
 export const useSettingsStore = create<SettingsState>()(
   persist(
-    set => ({
+    (set) => ({
       aiBackend: 'openai',
-      setBackend: aiBackend => set({ aiBackend }),
+      setBackend: (aiBackend) => set({ aiBackend }),
 
       openaiApiKey: null,
       geminiApiKey: null,
-      setOpenaiApiKey: openaiApiKey => set({ openaiApiKey }),
-      setGeminiApiKey: geminiApiKey => set({ geminiApiKey }),
+      setOpenaiApiKey: (openaiApiKey) => set({ openaiApiKey }),
+      setGeminiApiKey: (geminiApiKey) => set({ geminiApiKey }),
       openaiBaseUrl: null,
       openaiModel: null,
       geminiModel: null,
-      setOpenaiBaseUrl: openaiBaseUrl => set({ openaiBaseUrl }),
-      setOpenaiModel: openaiModel => set({ openaiModel }),
-      setGeminiModel: geminiModel => set({ geminiModel }),
+      setOpenaiBaseUrl: (openaiBaseUrl) => set({ openaiBaseUrl }),
+      setOpenaiModel: (openaiModel) => set({ openaiModel }),
+      setGeminiModel: (geminiModel) => set({ geminiModel }),
 
       groupId: null,
       groupName: null,
       projectId: null,
       projectName: null,
-      setGroupId: groupId => set({ groupId }),
-      setGroupName: groupName => set({ groupName }),
-      setProjectId: projectId => set({ projectId }),
-      setProjectName: projectName => set({ projectName }),
+      setGroupId: (groupId) => set({ groupId }),
+      setGroupName: (groupName) => set({ groupName }),
+      setProjectId: (projectId) => set({ projectId }),
+      setProjectName: (projectName) => set({ projectName }),
 
       gitlabHost: null,
       gitlabAppId: null,
       gitlabCallbackUrl: null,
-      setGitlabHost: gitlabHost => set({ gitlabHost }),
-      setGitlabAppId: gitlabAppId => set({ gitlabAppId }),
-      setGitlabCallbackUrl: gitlabCallbackUrl => set({ gitlabCallbackUrl }),
+      setGitlabHost: (gitlabHost) => set({ gitlabHost }),
+      setGitlabAppId: (gitlabAppId) => set({ gitlabAppId }),
+      setGitlabCallbackUrl: (gitlabCallbackUrl) => set({ gitlabCallbackUrl }),
     }),
     {
       name: 'ease-gitlab-settings',

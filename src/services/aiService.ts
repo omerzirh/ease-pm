@@ -40,7 +40,7 @@ export async function generateAssigneeSummary(
     }[iterationState] || 'worked';
   const systemPrompt = `You are a helpful assistant that creates concise work summaries. Based on the issue titles provided, create a brief 2-3 sentence summary of what this person ${tense} on. Focus on the main themes and accomplishments. Respond with plain text, no JSON.`;
 
-  const userPrompt = `Assignee: ${assigneeName}\n\nIssue titles:\n${issueTitles.map(title => `- ${title}`).join('\n')}`;
+  const userPrompt = `Assignee: ${assigneeName}\n\nIssue titles:\n${issueTitles.map((title) => `- ${title}`).join('\n')}`;
 
   const fullPrompt = buildPrompt(systemPrompt, userPrompt);
   return await callLLM(backend, fullPrompt, 0.3);

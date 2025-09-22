@@ -68,7 +68,7 @@ const IterationReport = () => {
   const groupIssuesByAssignee = (issues: any[]): AssigneeSummary[] => {
     const assigneeMap = new Map<string, Array<{ title: string; state: string; web_url: string }>>();
 
-    issues.forEach(issue => {
+    issues.forEach((issue) => {
       const assigneeLabels = issue.labels?.filter((label: string) => label.startsWith('Assignee::')) || [];
 
       if (assigneeLabels.length === 0) {
@@ -114,7 +114,7 @@ const IterationReport = () => {
         if (aiSummary) {
           iterationInfo += `*${aiSummary}*\n\n`;
         }
-        issues.forEach(issue => {
+        issues.forEach((issue) => {
           iterationInfo += `- ${issue.state === 'closed' ? '✅' : '🟢'} [${issue.title}](${issue.web_url})\n`;
         });
         iterationInfo += '\n';
@@ -135,7 +135,7 @@ const IterationReport = () => {
           try {
             const aiSummary = await generateAssigneeSummary(
               summary.assignee,
-              summary.issues.map(issue => issue.title),
+              summary.issues.map((issue) => issue.title),
               aiBackend,
               iterationState
             );
@@ -178,7 +178,7 @@ const IterationReport = () => {
         iterationInfo += `### Work by Assignee:\n\n`;
         grouped.forEach(({ assignee, issues }) => {
           iterationInfo += `**${assignee}** (${issues.length} issues):\n`;
-          issues.forEach(issue => {
+          issues.forEach((issue) => {
             iterationInfo += `- ${issue.state === 'closed' ? '✅' : '🟢'} [${issue.title}](${issue.web_url})\n`;
           });
           iterationInfo += '\n';
@@ -244,7 +244,7 @@ const IterationReport = () => {
         }
       }
 
-      setMessage(prev => `${prev ? prev + ' | ' : ''}Linked ${linkedCount} issues to report #${reportIid}`);
+      setMessage((prev) => `${prev ? prev + ' | ' : ''}Linked ${linkedCount} issues to report #${reportIid}`);
     } catch (err: any) {
       setMessage(err.message || 'Failed to create/update report issue');
     } finally {
@@ -267,7 +267,7 @@ const IterationReport = () => {
           <Label>Iteration State</Label>
           <Select
             value={iterationState}
-            onChange={e => setIterationState(e.target.value as 'opened' | 'current' | 'closed')}
+            onChange={(e) => setIterationState(e.target.value as 'opened' | 'current' | 'closed')}
           >
             <option value="current">Current</option>
             <option value="opened">Open</option>
@@ -280,13 +280,13 @@ const IterationReport = () => {
         <div>
           <Label required>Select Iteration</Label>
           <Select
-            onChange={e => {
-              const iter = iterations.find(it => it.id === Number(e.target.value));
+            onChange={(e) => {
+              const iter = iterations.find((it) => it.id === Number(e.target.value));
               if (iter) loadIssuesAndSummary(iter);
             }}
           >
             <option value="">Choose an iteration</option>
-            {iterations.map(iter => (
+            {iterations.map((iter) => (
               <option key={iter.id} value={iter.id}>
                 {formatIterationOption(iter)}
               </option>
@@ -350,11 +350,11 @@ const IterationReport = () => {
           <Input
             className="mb-4"
             value={existingReportId}
-            onChange={e => setExistingReportId(e.target.value)}
+            onChange={(e) => setExistingReportId(e.target.value)}
             placeholder="e.g. 123"
           />
           <Label>Generated Summary</Label>
-          <Textarea value={summary} onChange={e => setSummary(e.target.value)} rows={12} />
+          <Textarea value={summary} onChange={(e) => setSummary(e.target.value)} rows={12} />
           {createdReport ? (
             <a
               href={createdReport.url}

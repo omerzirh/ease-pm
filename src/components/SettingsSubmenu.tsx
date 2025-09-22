@@ -36,7 +36,7 @@ const SettingsSubmenu: React.FC<SettingsSubmenuProps> = ({
 }) => {
   return (
     <div className="mt-2 space-y-1">
-      {settingsSubmenuItems.map(item => {
+      {settingsSubmenuItems.map((item) => {
         const IconComponent = item.icon;
         const isActive = activeSettingsTab === item.id;
 

@@ -21,7 +21,7 @@ const AISettings = () => {
     <div className="max-w-md">
       <h2 className="text-xl font-semibold mb-4">AI Provider</h2>
       <Label>Select backend</Label>
-      <Select value={aiBackend} onChange={e => setBackend(e.target.value as any)}>
+      <Select value={aiBackend} onChange={(e) => setBackend(e.target.value as any)}>
         <option value="openai">OpenAI</option>
         <option value="gemini">Google Gemini</option>
       </Select>
@@ -33,7 +33,7 @@ const AISettings = () => {
             <Input
               type="text"
               value={openaiBaseUrl ?? ''}
-              onChange={e => setOpenaiBaseUrl(e.target.value.trim() || null)}
+              onChange={(e) => setOpenaiBaseUrl(e.target.value.trim() || null)}
               placeholder="https://api..."
               helperText="Pasting will be enough. No save button required."
             />
@@ -44,7 +44,7 @@ const AISettings = () => {
             <Input
               type="text"
               value={openaiModel ?? ''}
-              onChange={e => setOpenaiModel(e.target.value.trim() || null)}
+              onChange={(e) => setOpenaiModel(e.target.value.trim() || null)}
               placeholder="gpt-4o"
               helperText="Pasting will be enough. No save button required."
             />
@@ -54,7 +54,7 @@ const AISettings = () => {
             <Input
               type="password"
               value={openaiApiKey ?? ''}
-              onChange={e => setOpenaiApiKey(e.target.value.trim() || null)}
+              onChange={(e) => setOpenaiApiKey(e.target.value.trim() || null)}
               placeholder="sk-..."
               helperText="Pasting will be enough. No save button required."
             />
@@ -69,7 +69,7 @@ const AISettings = () => {
             <Input
               type="text"
               value={geminiModel ?? ''}
-              onChange={e => setGeminiModel(e.target.value.trim() || null)}
+              onChange={(e) => setGeminiModel(e.target.value.trim() || null)}
               placeholder="gemini-2.5-flash"
               helperText="Pasting will be enough. No save button required."
             />
@@ -79,7 +79,7 @@ const AISettings = () => {
             <Input
               type="password"
               value={geminiApiKey ?? ''}
-              onChange={e => setGeminiApiKey(e.target.value.trim() || null)}
+              onChange={(e) => setGeminiApiKey(e.target.value.trim() || null)}
               placeholder="AIza..."
               helperText="Pasting will be enough. No save button required."
             />

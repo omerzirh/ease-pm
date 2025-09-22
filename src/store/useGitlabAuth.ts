@@ -27,7 +27,7 @@ export const useGitlabAuth = create<GitlabAuthState>((set, get) => ({
     const generateRandom = (length: number) => {
       const array = new Uint32Array(length);
       crypto.getRandomValues(array);
-      return Array.from(array, dec => ('0' + dec.toString(16)).slice(-2))
+      return Array.from(array, (dec) => ('0' + dec.toString(16)).slice(-2))
         .join('')
         .slice(0, length);
     };

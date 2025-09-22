@@ -32,7 +32,7 @@ const GitlabSettings: React.FC = () => {
             type="text"
             id="gitlabHost"
             value={gitlabHost || ''}
-            onChange={e => setGitlabHost(e.target.value)}
+            onChange={(e) => setGitlabHost(e.target.value)}
             placeholder="https://gitlab.com"
             className="mt-1"
           />
@@ -45,7 +45,7 @@ const GitlabSettings: React.FC = () => {
             type="text"
             id="gitlabAppId"
             value={gitlabAppId || ''}
-            onChange={e => setGitlabAppId(e.target.value)}
+            onChange={(e) => setGitlabAppId(e.target.value)}
             className="mt-1"
           />
         </div>
@@ -57,7 +57,7 @@ const GitlabSettings: React.FC = () => {
             type="text"
             id="gitlabCallbackUrl"
             value={gitlabCallbackUrl || ''}
-            onChange={e => setGitlabCallbackUrl(e.target.value)}
+            onChange={(e) => setGitlabCallbackUrl(e.target.value)}
             className="mt-1"
           />
         </div>

@@ -49,7 +49,7 @@ const MilestoneReport = () => {
     try {
       const issues = await gitlabService.fetchIssuesByMilestone(projectId!, milestone.title);
       const listMarkdown = issues
-        .map(i => {
+        .map((i) => {
           const statusIcon = i.state === 'closed' ? '✅' : '🟢';
           const titleText = i.web_url ? `[${i.title}](${i.web_url})` : i.title;
           return `- ${statusIcon} ${titleText}`;
@@ -92,7 +92,7 @@ const MilestoneReport = () => {
           await gitlabService.linkIssues(projectId, reportIid, iss.iid);
         }
       }
-      setMessage(prev => `${prev ? prev + ' | ' : ''}Linked ${issues.length} issues to report #${reportIid}`);
+      setMessage((prev) => `${prev ? prev + ' | ' : ''}Linked ${issues.length} issues to report #${reportIid}`);
     } catch (err: unknown) {
       setMessage(err.message || 'Failed to create report issue');
     } finally {
@@ -111,13 +111,13 @@ const MilestoneReport = () => {
         <div>
           <Label required>Select Milestone</Label>
           <Select
-            onChange={e => {
-              const m = milestones.find(mil => mil.id === Number(e.target.value));
+            onChange={(e) => {
+              const m = milestones.find((mil) => mil.id === Number(e.target.value));
               if (m) loadIssuesAndSummary(m);
             }}
           >
             <option value="">Choose a milestone</option>
-            {milestones.map(m => (
+            {milestones.map((m) => (
               <option key={m.id} value={m.id}>
                 {m.title}
               </option>
@@ -132,11 +132,11 @@ const MilestoneReport = () => {
           <Input
             className="mb-4"
             value={existingReportId}
-            onChange={e => setExistingReportId(e.target.value)}
+            onChange={(e) => setExistingReportId(e.target.value)}
             placeholder="e.g. 123"
           />
           <Label>Generated Summary</Label>
-          <Textarea value={summary} onChange={e => setSummary(e.target.value)} rows={10} />
+          <Textarea value={summary} onChange={(e) => setSummary(e.target.value)} rows={10} />
           {createdReport ? (
             <a
               href={createdReport.url}

@@ -181,7 +181,7 @@ describe('IterationReport', () => {
     ];
 
     mockGitlabService.fetchProjectIterations.mockResolvedValue(mockIterations);
-    mockFormatIterationName.mockImplementation(iteration => {
+    mockFormatIterationName.mockImplementation((iteration) => {
       if (iteration.id === 1) return '1/1/2024 - 1/14/2024';
       if (iteration.id === 2) return 'Sprint 2';
       return 'Unknown';
@@ -240,7 +240,7 @@ describe('IterationReport', () => {
 
     await waitFor(() => {
       const textareas = screen.getAllByRole('textbox');
-      const summaryTextarea = textareas.find(textarea => textarea.rows === 12);
+      const summaryTextarea = textareas.find((textarea) => textarea.rows === 12);
       expect(summaryTextarea).toBeDefined();
 
       expect(summaryTextarea!.value).toContain('## 1/1/2024 - 1/14/2024');
@@ -293,7 +293,7 @@ describe('IterationReport', () => {
 
     await waitFor(() => {
       const textareas = screen.getAllByRole('textbox');
-      const summaryTextarea = textareas.find(textarea => textarea.rows === 12);
+      const summaryTextarea = textareas.find((textarea) => textarea.rows === 12);
       expect(summaryTextarea).toBeDefined();
 
       expect(summaryTextarea!.value).toContain(`## ${formattedName}`);

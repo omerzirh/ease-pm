@@ -42,7 +42,7 @@ const IssueGenerator = () => {
         setSearchingEpics(true);
         try {
           const res = await gitlabService.searchEpics(groupId, q);
-          setEpicResults(res.map(e => ({ id: e.id, iid: e.iid, title: e.title, web_url: e.web_url })));
+          setEpicResults(res.map((e) => ({ id: e.id, iid: e.iid, title: e.title, web_url: e.web_url })));
         } catch (e) {
           console.error(e);
         } finally {
@@ -59,7 +59,7 @@ const IssueGenerator = () => {
     if (urlMatch) {
       const iid = urlMatch[1];
       if (groupId) {
-        gitlabService.searchEpics(groupId, iid).then(res => {
+        gitlabService.searchEpics(groupId, iid).then((res) => {
           if (res.length) setEpic(res[0]);
         });
       }
@@ -155,7 +155,7 @@ const IssueGenerator = () => {
       <div className="max-w-3xl flex flex-col gap-6">
         <div>
           <Label>Prompt</Label>
-          <Textarea value={prompt} onChange={e => setPrompt(e.target.value)} rows={3} />
+          <Textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={3} />
           <Button className="mt-4" variant="primary" size="md" loading={loading} onClick={handleGenerate}>
             Generate with AI
           </Button>
@@ -165,7 +165,7 @@ const IssueGenerator = () => {
         <div>
           <Label>Title Prefix</Label>
           <Select
-            onChange={e => {
+            onChange={(e) => {
               const prefix = e.target.value;
               if (prefix) {
                 setDraftTitle(`${prefix} ${draftTitle}`);
@@ -173,7 +173,7 @@ const IssueGenerator = () => {
             }}
           >
             <option value="">Select prefix</option>
-            {prefixes.map(p => (
+            {prefixes.map((p) => (
               <option key={p} value={p}>
                 {p}
               </option>
@@ -183,27 +183,27 @@ const IssueGenerator = () => {
 
         <div>
           <Label required>Title</Label>
-          <Input value={draftTitle} onChange={e => setDraftTitle(e.target.value)} />
+          <Input value={draftTitle} onChange={(e) => setDraftTitle(e.target.value)} />
         </div>
 
         <div>
           <Label>Description (Markdown)</Label>
-          <Textarea value={draftDescription} onChange={e => setDraftDescription(e.target.value)} rows={8} />
+          <Textarea value={draftDescription} onChange={(e) => setDraftDescription(e.target.value)} rows={8} />
         </div>
 
         <div>
           <Label>Labels</Label>
           <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto">
-            {filterLabelsByKeywords(labels, issueKeywords).map(l => (
+            {filterLabelsByKeywords(labels, issueKeywords).map((l) => (
               <Checkbox
                 key={l.id}
                 label={l.name}
                 checked={selectedLabels.includes(l.name)}
-                onChange={e => {
+                onChange={(e) => {
                   if (e.target.checked) {
-                    setSelectedLabels(prev => [...prev, l.name]);
+                    setSelectedLabels((prev) => [...prev, l.name]);
                   } else {
-                    setSelectedLabels(prev => prev.filter(name => name !== l.name));
+                    setSelectedLabels((prev) => prev.filter((name) => name !== l.name));
                   }
                 }}
                 size="sm"
@@ -212,12 +212,12 @@ const IssueGenerator = () => {
           </div>
 
           <div className="mt-4">
-            <Checkbox label="Link Epic" checked={enableEpic} onChange={e => setEnableEpic(e.target.checked)} />
+            <Checkbox label="Link Epic" checked={enableEpic} onChange={(e) => setEnableEpic(e.target.checked)} />
             {enableEpic && (
               <div className="mt-2">
                 <Input
                   value={epicQuery}
-                  onChange={e => {
+                  onChange={(e) => {
                     setEpicQuery(e.target.value);
                   }}
                   placeholder="Paste epic URL or search title..."
@@ -226,7 +226,7 @@ const IssueGenerator = () => {
                 {searchingEpics && <p className="text-sm">Searching...</p>}
                 {epicResults.length > 0 && (
                   <div className="border border-border max-h-48 overflow-y-auto rounded-md bg-popover">
-                    {epicResults.map(er => (
+                    {epicResults.map((er) => (
                       <div
                         key={er.id}
                         className="px-2 py-1 hover:bg-accent hover:text-accent-foreground cursor-pointer text-sm"

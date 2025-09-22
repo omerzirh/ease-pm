@@ -65,7 +65,7 @@ const GroupProjectSettings = () => {
       setMessage('Please select a project');
       return;
     }
-    const selectedProjectObj = projectOptions.find(p => p.id === Number(selectedProject));
+    const selectedProjectObj = projectOptions.find((p) => p.id === Number(selectedProject));
     if (!selectedProjectObj) {
       setMessage('Project not found');
       return;
@@ -101,7 +101,7 @@ const GroupProjectSettings = () => {
           <Label required>Group ID / Path</Label>
           <Input
             value={groupInput}
-            onChange={e => setGroupInput(e.target.value)}
+            onChange={(e) => setGroupInput(e.target.value)}
             placeholder="e.g. 123456 or my-group"
             className="mb-2"
           />
@@ -118,9 +118,9 @@ const GroupProjectSettings = () => {
           {projectOptions.length > 0 && (
             <div className="mb-4">
               <Label required>Select Project</Label>
-              <Select value={selectedProject} onChange={e => setSelectedProject(e.target.value)}>
+              <Select value={selectedProject} onChange={(e) => setSelectedProject(e.target.value)}>
                 <option value="">-- choose a project --</option>
-                {projectOptions.map(p => (
+                {projectOptions.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.path_with_namespace}
                   </option>
