@@ -20,7 +20,7 @@ const MilestoneReport = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [createdReport, setCreatedReport] = useState<{ iid: number; url: string } | null>(null);
 
-  const { projectId, groupId } = useSettingsStore.getState();
+  const { projectId, groupId } = useSettingsStore();
 
   const loadMilestones = async () => {
     if (!projectId) {
@@ -37,7 +37,7 @@ const MilestoneReport = () => {
       }
       setMilestones(data);
     } catch (err: unknown) {
-      setMessage(err.message || 'Failed to load milestones');
+      setMessage((err instanceof Error && err.message) ? err.message : 'Failed to load milestones');
     } finally {
       setLoading(false);
     }
@@ -58,7 +58,7 @@ const MilestoneReport = () => {
       setSelectedMilestone(milestone);
       setSummary(listMarkdown);
     } catch (err: unknown) {
-      setMessage(err.message || 'Failed to load issues / summary');
+      setMessage((err instanceof Error && err.message) ? err.message : 'Failed to load issues / summary');
     } finally {
       setLoading(false);
     }
@@ -94,7 +94,7 @@ const MilestoneReport = () => {
       }
       setMessage((prev) => `${prev ? prev + ' | ' : ''}Linked ${issues.length} issues to report #${reportIid}`);
     } catch (err: unknown) {
-      setMessage(err.message || 'Failed to create report issue');
+      setMessage((err instanceof Error && err.message) ? err.message : 'Failed to create report issue');
     } finally {
       setLoading(false);
     }

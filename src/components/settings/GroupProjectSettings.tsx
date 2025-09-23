@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import gitlabService from '../../services/gitlabService';
 import { useSettingsStore } from '../../store/useSettingsStore';
+import { useEpicStore } from '../../store/useEpicStore';
+import { useGeneratedEpicStore } from '../../store/useGeneratedEpicStore';
+import { useGeneratedIssueStore } from '../../store/useGeneratedIssueStore';
+import { useLabelStore } from '../../store/useLabelStore';
 import { useGitlabAuth } from '../../store/useGitlabAuth';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -16,6 +20,10 @@ interface GitlabProject {
 const GroupProjectSettings = () => {
   const { token } = useGitlabAuth();
   const { groupId, projectId, projectName, setGroupId, setProjectId, setProjectName } = useSettingsStore();
+  const { setEpic } = useEpicStore();
+  const { clearContent: clearEpicContent } = useGeneratedEpicStore();
+  const { clearContent: clearIssueContent } = useGeneratedIssueStore();
+  const { setLabels } = useLabelStore();
 
   const [groupInput, setGroupInput] = useState(groupId || '');
   const [projectOptions, setProjectOptions] = useState<GitlabProject[]>([]);
@@ -39,6 +47,10 @@ const GroupProjectSettings = () => {
     setGroupId(groupInput.trim());
     setSelectedProject('');
     setProjectId('');
+    setEpic(null);
+    clearEpicContent();
+    clearIssueContent();
+    setLabels([]);
     await handleFetchProjects(groupInput.trim());
     setMessage('Group ID saved');
   };
@@ -54,7 +66,7 @@ const GroupProjectSettings = () => {
       const projects = await gitlabService.fetchProjects(gid);
       setProjectOptions(projects);
     } catch (err: unknown) {
-      setMessage(err.message || 'Failed to fetch projects');
+  setMessage((err instanceof Error && err.message) ? err.message : 'Failed to fetch projects');
     } finally {
       setLoading(false);
     }
@@ -70,9 +82,12 @@ const GroupProjectSettings = () => {
       setMessage('Project not found');
       return;
     }
-    console.log(selectedProjectObj);
     setProjectId(selectedProject);
     setProjectName(selectedProjectObj.path_with_namespace);
+    setEpic(null);
+    clearEpicContent();
+    clearIssueContent();
+    setLabels([]);
     setEditing(false);
     setMessage('Project saved');
   };

@@ -28,7 +28,7 @@ const IterationReport = () => {
   const [createdReport, setCreatedReport] = useState<{ iid: number; url: string } | null>(null);
   const [iterationState, setIterationState] = useState<'opened' | 'current' | 'closed'>('current');
 
-  const { projectId, groupId, aiBackend } = useSettingsStore.getState();
+  const { projectId, groupId, aiBackend } = useSettingsStore();
 
   const loadIterations = async (state?: 'opened' | 'current' | 'closed') => {
     if (!groupId && !projectId) {
