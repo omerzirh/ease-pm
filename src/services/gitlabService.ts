@@ -89,6 +89,11 @@ export interface GitLabService {
     projectId: number | string,
     issueIid: number
   ): Promise<void>;
+  fetchEpicIssues(
+    groupId: string | number,
+    epicIid: number,
+    state?: 'opened' | 'closed' | 'all'
+  ): Promise<Array<{ id: number; iid: number; project_id: number; title: string; web_url: string; state: string }>>;
   getHostUrl(): string;
 }
 
@@ -126,6 +131,23 @@ export const gitlabService: GitLabService = {
       await api.EpicIssues.assign(groupId, epicIid, issueIid);
     } catch (error: any) {
       throw new Error(`Failed to add issue to epic: ${error.message}`);
+    }
+  },
+
+  async fetchEpicIssues(groupId, epicIid, state = 'opened') {
+    try {
+      const api = getApi();
+      const issues = await api.EpicIssues.all(groupId, epicIid, { state, per_page: 100 });
+      return issues.map((issue: any) => ({
+        id: issue.id,
+        iid: issue.iid,
+        project_id: issue.project_id,
+        title: issue.title,
+        web_url: issue.web_url,
+        state: issue.state,
+      }));
+    } catch (error: any) {
+      throw new Error(`Failed to fetch epic issues: ${error.message}`);
     }
   },
 

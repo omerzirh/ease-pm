@@ -3,6 +3,7 @@ import IssueGenerator from './components/IssueGenerator';
 import MilestoneReport from './components/MilestoneReport';
 import IterationReport from './components/IterationReport';
 import EpicCreator from './components/EpicCreator';
+import EpicMover from './components/EpicMover';
 import Sidebar from './components/Sidebar';
 import { useSidebarStore } from './store/useSidebarStore';
 import { useGitlabAuth } from './store/useGitlabAuth';
@@ -57,7 +58,13 @@ const App = () => {
       >
         <main className="flex-1 overflow-y-auto p-6 bg-background text-foreground">
           {tab === 'issue' && <IssueGenerator />}
-          {tab === 'epic' && <EpicCreator />}
+          {tab === 'epic' && (
+            <div className="flex flex-col gap-8">
+              <EpicCreator />
+              <div className="h-px bg-border" />
+              <EpicMover />
+            </div>
+          )}
           {tab === 'milestone' && <MilestoneReport />}
           {tab === 'iteration' && <IterationReport />}
           {tab === 'settings' && <SettingsPage activeTab={activeSettingsTab} />}
