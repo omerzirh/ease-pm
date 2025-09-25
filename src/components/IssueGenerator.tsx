@@ -20,7 +20,8 @@ const IssueGenerator = () => {
   const { setTab } = useTabStore();
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [createdIssue, setCreatedIssue] = useState<{ iid: number; url: string } | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loadingGenerate, setLoadingGenerate] = useState(false);
+  const [loadingCreate, setLoadingCreate] = useState(false);
   const [enableEpic, setEnableEpic] = useState(false);
   const [epicQuery, setEpicQuery] = useState('');
   const [epicResults, setEpicResults] = useState<{ id: number; iid: number; title: string; web_url: string }[]>([]);
@@ -77,7 +78,7 @@ const IssueGenerator = () => {
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
 
-    setLoading(true);
+    setLoadingGenerate(true);
     setMessage(null);
 
     try {
@@ -98,7 +99,7 @@ const IssueGenerator = () => {
     } catch (err: any) {
       setMessage(err.message || 'Failed to generate');
     } finally {
-      setLoading(false);
+      setLoadingGenerate(false);
     }
   };
 
@@ -106,14 +107,14 @@ const IssueGenerator = () => {
     if (labels.length > 0) return; // already have labels
 
     if (!projectId) return;
-    setLoading(true);
+    setLoadingCreate(true);
     try {
       const data = await gitlabService.fetchLabels(projectId);
       setLabels(data);
     } catch (err: any) {
       setMessage(err.message || 'Failed to fetch labels');
     } finally {
-      setLoading(false);
+      setLoadingCreate(false);
     }
   };
 
@@ -126,7 +127,7 @@ const IssueGenerator = () => {
       setMessage('Title is empty.');
       return;
     }
-    setLoading(true);
+    setLoadingCreate(true);
     setMessage(null);
     try {
       const res = await gitlabService.createIssue(projectId, draftTitle, draftDescription, selectedLabels);
@@ -146,7 +147,7 @@ const IssueGenerator = () => {
     } catch (err: any) {
       setMessage(err.message || 'Failed to create issue');
     } finally {
-      setLoading(false);
+      setLoadingCreate(false);
     }
   };
 
@@ -156,7 +157,14 @@ const IssueGenerator = () => {
         <div>
           <Label>Prompt</Label>
           <Textarea value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={3} />
-          <Button className="mt-4" variant="primary" size="md" loading={loading} onClick={handleGenerate}>
+          <Button
+            className="mt-4"
+            variant="primary"
+            size="md"
+            loading={loadingGenerate}
+            disabled={loadingGenerate || loadingCreate}
+            onClick={handleGenerate}
+          >
             Generate with AI
           </Button>
           {message && <p className="mt-2 text-sm">{message}</p>}
@@ -262,7 +270,13 @@ const IssueGenerator = () => {
             Issue #{createdIssue.iid} created
           </a>
         ) : (
-          <Button variant="primary" size="md" loading={loading} onClick={handleCreateIssue}>
+          <Button
+            variant="primary"
+            size="md"
+            loading={loadingCreate}
+            disabled={loadingGenerate || loadingCreate}
+            onClick={handleCreateIssue}
+          >
             Create Issue in GitLab
           </Button>
         )}

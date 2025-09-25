@@ -28,7 +28,8 @@ const EpicCreator = () => {
   const [parentQuery, setParentQuery] = useState('');
   const [parentResults, setParentResults] = useState<{ id: number; title: string; web_url: string }[]>([]);
   const [searching, setSearching] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loadingGenerate, setLoadingGenerate] = useState(false);
+  const [loadingCreate, setLoadingCreate] = useState(false);
   const [createdEpic, setCreatedEpic] = useState<{ iid: number; url: string } | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
@@ -80,7 +81,7 @@ const EpicCreator = () => {
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
-    setLoading(true);
+    setLoadingGenerate(true);
     setMessage(null);
     try {
       const res = await generateEpic(prompt, aiBackend);
@@ -90,7 +91,7 @@ const EpicCreator = () => {
     } catch (e: any) {
       setMessage(e.message || 'Failed to generate');
     } finally {
-      setLoading(false);
+      setLoadingGenerate(false);
     }
   };
 
@@ -103,7 +104,7 @@ const EpicCreator = () => {
       setMessage('Title empty');
       return;
     }
-    setLoading(true);
+    setLoadingCreate(true);
     setMessage(null);
     try {
       const fullTitle = titlePrefix ? `${titlePrefix} ${title}` : title;
@@ -120,7 +121,7 @@ const EpicCreator = () => {
     } catch (e: any) {
       setMessage(e.message || 'Failed to create epic');
     } finally {
-      setLoading(false);
+      setLoadingCreate(false);
     }
   };
 
@@ -130,7 +131,14 @@ const EpicCreator = () => {
         <div>
           <Label>Prompt</Label>
           <Textarea rows={3} value={prompt} onChange={(e) => setPrompt(e.target.value)} />
-          <Button className="mt-2" variant="primary" size="sm" loading={loading} onClick={handleGenerate}>
+          <Button
+            className="mt-2"
+            variant="primary"
+            size="sm"
+            loading={loadingGenerate}
+            disabled={loadingGenerate || loadingCreate}
+            onClick={handleGenerate}
+          >
             Generate with AI
           </Button>
         </div>
@@ -214,7 +222,13 @@ const EpicCreator = () => {
             Epic #{createdEpic.iid} created
           </a>
         ) : (
-          <Button variant="primary" size="md" loading={loading} onClick={handleCreateEpic}>
+          <Button
+            variant="primary"
+            size="md"
+            loading={loadingCreate}
+            disabled={loadingGenerate || loadingCreate}
+            onClick={handleCreateEpic}
+          >
             Create Epic
           </Button>
         )}
