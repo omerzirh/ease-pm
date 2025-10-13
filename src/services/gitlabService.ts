@@ -1,15 +1,21 @@
 import { Gitlab } from '@gitbeaker/browser';
 import { useGitlabAuth } from '../store/useGitlabAuth';
 import { useSettingsStore } from '../store/useSettingsStore';
+import {createLogger} from './logger';
+
+const log = createLogger('GitLabService');
 
 const getGitlabHost = () =>
   useSettingsStore.getState().gitlabHost || import.meta.env.VITE_GITLAB_HOST || 'https://gitlab.com';
 
 const getApi = () => {
+  log.info('Getting GitLab API instance');
   const { api } = useGitlabAuth.getState();
   if (!api) {
+    log.error('Not authenticated with GitLab');
     throw new Error('Not authenticated with GitLab');
   }
+  log.debug('Successfully retrieved GitLab API instance');
   return api as InstanceType<typeof Gitlab>;
 };
 
