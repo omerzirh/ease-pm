@@ -13,6 +13,7 @@ interface LogEntry {
 
 class Logger {
     private level: LogLevel;
+    private maxLogs: number;
     private logLevels = {
         error: 0,
         warn: 1,
@@ -23,7 +24,9 @@ class Logger {
     
     constructor() {
         this.level = (import.meta.env.VITE_LOG_LEVEL as LogLevel) || (import.meta.env.DEV ? 'debug' : 'info');
-        // TODO: file logging config
+
+        // Maximum number of logs to store in localStorage (defaults to 500 if VITE_MAX_LOGS is not set properly in .env)
+        this.maxLogs = (import.meta.env.VITE_MAX_LOGS && !isNaN(parseInt(import.meta.env.VITE_MAX_LOGS))) ? parseInt(import.meta.env.VITE_MAX_LOGS) : 500;
     }
 
     private extractErrorInfo(meta?: any): { stack?: string; cleanMeta?: any } {
@@ -137,9 +140,9 @@ class Logger {
             const logs = JSON.parse(localStorage.getItem('ease-pm-logs') || '[]');
             logs.push(entry);
             
-            // Keep only last 100 logs to avoid localStorage bloat
-            if (logs.length > 100) {
-                logs.splice(0, logs.length - 100);
+            // Keep only last maxLogs logs to avoid localStorage bloat
+            if (logs.length > this.maxLogs) {
+                logs.splice(0, logs.length - this.maxLogs);
             }
         
             localStorage.setItem('ease-pm-logs', JSON.stringify(logs));
