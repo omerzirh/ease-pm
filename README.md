@@ -40,6 +40,10 @@ VITE_GITLAB_CALLBACK=http://localhost:5173/callback # OAuth redirect URI
 VITE_GITLAB_PROJECT_ID=12345678                     # Default project (optional)
 VITE_GITLAB_GROUP_ID=12345678                       # Default group   (optional)
 
+# Logging configuration (optional)
+VITE_LOG_LEVEL=debug        # error, warn, info, http, debug
+VITE_MAX_LOGS=1000         # Maximum logs stored in browser (default: 500)
+
 # AI (optional)
 VITE_OPENAI_API_KEY=sk-...
 VITE_GEMINI_API_KEY=AIza...
@@ -137,6 +141,132 @@ Bug fixes, new features, or documentation improvements — all contributions mak
 - For questions or discussions, open an **Issue** first
 
 ---
+
+## Logging
+
+Ease GitLab includes a built-in browser-compatible logging system that helps with debugging and monitoring application behavior.
+
+### Configuration
+
+Add these optional environment variables to your `.env` file:
+
+```env
+# Logging configuration (optional)
+VITE_LOG_LEVEL=debug        # error, warn, info, http, debug
+VITE_MAX_LOGS=1000         # Maximum logs stored in browser (default: 500)
+```
+
+### Log Levels
+
+| Level | Description | When to Use |
+|-------|-------------|-------------|
+| `error` | Critical failures | API errors, authentication failures |
+| `warn` | Potential issues | Fallback behavior, deprecated features |
+| `info` | Important events | User actions, successful operations |
+| `http` | Network activity | API requests/responses |
+| `debug` | Detailed tracing | Function calls, variable states |
+
+### Environment Behavior
+
+- **Development (`pnpm dev`)**: Shows all logs (debug level) by default
+- **Production (`pnpm build`)**: Shows info, warn, and error logs only
+- **Custom**: Override with `VITE_LOG_LEVEL` environment variable
+
+### Usage Examples
+
+```typescript
+import { createLogger } from '../services/logger';
+
+const log = createLogger('MyService');
+
+// Basic logging
+log.info('User logged in successfully');
+log.error('Failed to save data');
+
+// Logging with metadata
+log.info('API call completed', { 
+  endpoint: '/api/projects',
+  duration: '245ms',
+  status: 200 
+});
+
+// Error logging with stack traces
+try {
+  await api.createProject(data);
+} catch (error) {
+  log.error('Project creation failed', error); // Automatically extracts stack trace
+}
+
+// Complex metadata
+log.debug('Processing user input', {
+  userId: 123,
+  action: 'create_issue',
+  formData: { title: 'Bug fix', labels: ['bug', 'urgent'] }
+});
+```
+
+### Viewing Logs
+
+**Browser Console**: Open Developer Tools (F12) → Console tab to see colored, formatted logs
+
+**Local Storage**: Access stored logs via Developer Tools → Application → Local Storage → `ease-pm-logs`
+
+**Export Logs**: Use the exported utility functions:
+```typescript
+import { exportLogs, clearLogs } from './services/logger';
+
+// Get all stored logs
+const logs = exportLogs();
+
+// Clear stored logs
+clearLogs();
+```
+
+### Real Example from GitLab Service
+
+```typescript
+// From src/services/gitlabService.ts
+export const gitlabService: GitLabService = {
+  async fetchProjects(groupId) {
+    log.info('Fetching projects', { groupId });
+    
+    try {
+      log.debug('Attempting to fetch as group', { groupId });
+      const projects = await api.Groups.projects(groupId);
+      
+      log.info('Successfully fetched projects via Groups API', { 
+        groupId, 
+        projectCount: projects.length 
+      });
+      
+      return projects.map(p => ({ id: p.id, name: p.name, path_with_namespace: p.path_with_namespace }));
+    } catch (error) {
+      log.warn('Groups API failed, trying Users API', { 
+        groupId, 
+        error: error.message,
+        status: error.response?.status 
+      });
+      
+      // Fallback logic with additional logging...
+    }
+  }
+};
+```
+
+This produces logs like:
+```
+[12/25/2025, 14:30:15] [INFO] [GitLabService]: Fetching projects
+{
+  "groupId": "my-username"
+}
+
+[12/25/2025, 14:30:16] [WARN] [GitLabService]: Groups API failed, trying Users API
+{
+  "groupId": "my-username",
+  "error": "Request failed with status code 404",
+  "status": 404
+}
+```
 
 ## License
 
