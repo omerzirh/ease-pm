@@ -34,29 +34,29 @@ const EpicCreator = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
   const [enableEpic, setEnableEpic] = useState(false);
-  const { aiBackend, groupId } = useSettingsStore();
+  const { aiBackend, teamGroupId } = useSettingsStore();
   const { prefixes } = usePrefixStore();
 
   useEffect(() => {
     const fetch = async () => {
-      if (!groupId || labels.length) return;
+      if (!teamGroupId || labels.length) return;
       try {
-        const data = await gitlabService.fetchLabels(groupId);
+        const data = await gitlabService.fetchLabels(teamGroupId);
         setLabels(data);
       } catch (e: any) {
         setMessage(e.message || 'Failed to fetch labels');
       }
     };
     fetch();
-  }, [groupId, labels.length, setLabels]);
+  }, [teamGroupId, labels.length, setLabels]);
 
   const debouncedSearch = useMemo(
     () =>
       debounce(async (q: string) => {
-        if (!groupId) return;
+        if (!teamGroupId) return;
         setSearching(true);
         try {
-          const res = await gitlabService.searchEpics(groupId, q);
+          const res = await gitlabService.searchEpics(teamGroupId, q);
           setParentResults(res);
         } catch (e) {
           console.error(e);
@@ -64,7 +64,7 @@ const EpicCreator = () => {
           setSearching(false);
         }
       }, 400),
-    [groupId]
+    [teamGroupId]
   );
 
   useEffect(() => {
@@ -96,8 +96,8 @@ const EpicCreator = () => {
   };
 
   const handleCreateEpic = async () => {
-    if (!groupId) {
-      setMessage('Group ID missing');
+    if (!teamGroupId) {
+      setMessage('Team Group ID missing - please set a team group in settings');
       return;
     }
     if (!title.trim()) {
@@ -109,7 +109,7 @@ const EpicCreator = () => {
     try {
       const fullTitle = titlePrefix ? `${titlePrefix} ${title}` : title;
       const res = await gitlabService.createEpic(
-        groupId,
+        teamGroupId,
         fullTitle,
         description,
         selectedLabels,
@@ -124,6 +124,21 @@ const EpicCreator = () => {
       setLoadingCreate(false);
     }
   };
+
+  if (!teamGroupId) {
+    return (
+      <div className="max-w-3xl mx-auto p-6 text-center">
+        <h2 className="text-lg font-medium mb-4">Team Group Required</h2>
+        <p className="text-gray-600 dark:text-gray-400 mb-4">
+          To create epics, you need to set a team group in your settings. 
+          The team group is used to manage epics that can be linked to issues.
+        </p>
+        <Button variant="primary" onClick={() => window.location.hash = '#settings'}>
+          Go to Settings
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="grid md:grid-cols-2 gap-6">

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import IssueGenerator from './components/IssueGenerator';
 import MilestoneReport from './components/MilestoneReport';
 import IterationReport from './components/IterationReport';
+import TimePeriodReport from './components/TimePeriodReport';
 import EpicCreator from './components/EpicCreator';
 import Sidebar from './components/Sidebar';
 import { useSidebarStore } from './store/useSidebarStore';
@@ -60,6 +61,7 @@ const App = () => {
           {tab === 'epic' && <EpicCreator />}
           {tab === 'milestone' && <MilestoneReport />}
           {tab === 'iteration' && <IterationReport />}
+          {tab === 'timeperiod' && <TimePeriodReport />}
           {tab === 'settings' && <SettingsPage activeTab={activeSettingsTab} />}
         </main>
 
