@@ -23,10 +23,14 @@ interface SettingsState {
   groupName: string | null;
   projectId: string | null;
   projectName: string | null;
+  teamGroupId: string | null;
+  teamGroupName: string | null;
   setGroupId: (id: string) => void;
   setGroupName: (name: string) => void;
   setProjectId: (id: string) => void;
   setProjectName: (name: string) => void;
+  setTeamGroupId: (id: string) => void;
+  setTeamGroupName: (name: string) => void;
 
   gitlabHost: string | null;
   gitlabAppId: string | null;
@@ -57,10 +61,14 @@ export const useSettingsStore = create<SettingsState>()(
       groupName: null,
       projectId: null,
       projectName: null,
+      teamGroupId: null,
+      teamGroupName: null,
       setGroupId: (groupId) => set({ groupId }),
       setGroupName: (groupName) => set({ groupName }),
       setProjectId: (projectId) => set({ projectId }),
       setProjectName: (projectName) => set({ projectName }),
+      setTeamGroupId: (teamGroupId) => set({ teamGroupId }),
+      setTeamGroupName: (teamGroupName) => set({ teamGroupName }),
 
       gitlabHost: null,
       gitlabAppId: null,
