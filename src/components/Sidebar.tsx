@@ -11,6 +11,7 @@ import { AiOutlinePicLeft } from 'react-icons/ai';
 import { GoMilestone } from 'react-icons/go';
 import { GoIterations } from 'react-icons/go';
 import { IoSettingsOutline } from 'react-icons/io5';
+import { MdDateRange } from 'react-icons/md';
 import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from 'react-icons/md';
 import { RxCross2 } from 'react-icons/rx';
 
@@ -35,6 +36,7 @@ const navigationItems: NavItem[] = [
   { id: 'epic', label: 'Epics', icon: AiOutlinePicLeft },
   { id: 'milestone', label: 'Milestones', icon: GoMilestone },
   { id: 'iteration', label: 'Iterations', icon: GoIterations },
+  { id: 'timeperiod', label: 'Time Period', icon: MdDateRange },
   { id: 'settings', label: 'Settings', icon: IoSettingsOutline },
 ];
 

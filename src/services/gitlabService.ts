@@ -81,6 +81,11 @@ export interface GitLabService {
     projectId: string | number,
     iterationId: number
   ): Promise<Array<{ id: number; iid: number; title: string; web_url: string; state: string; labels: string[] }>>;
+  fetchIssuesByDateRange(
+    projectId: string | number,
+    startDate: string,
+    endDate: string
+  ): Promise<Array<{ id: number; iid: number; title: string; web_url: string; state: string; closed_at: string; labels: string[] }>>;
   createIssue(
     projectId: string | number,
     title: string,
@@ -129,7 +134,7 @@ export const gitlabService: GitLabService = {
     
     // Fetch subgroups
     const subgroups = await api.Groups.subgroups(groupId);
-    const groups = subgroups.map((g: any) => ({
+    const groups = (subgroups as any[]).map((g: any) => ({
       id: g.id,
       name: g.name,
       path: g.path,
@@ -360,6 +365,104 @@ export const gitlabService: GitLabService = {
       return result.map((l: any) => l.iid as number);
     } catch (error: any) {
       throw new Error(`Failed to fetch issue links: ${error.message}`);
+    }
+  },
+
+  async fetchIssuesByDateRange(projectId, startDate, endDate) {
+    const api = getApi();
+    
+    console.log('Fetching issues for project:', projectId, 'from', startDate, 'to', endDate);
+    
+    try {
+      // Try multiple approaches to get issues
+      let allIssues: any[] = [];
+      
+      // Approach 1: Get closed issues with updated_after/updated_before
+      try {
+        const closedIssuesUpdated = await api.Issues.all({
+          projectId,
+          state: 'closed',
+          updated_after: startDate,
+          updated_before: endDate,
+          per_page: 100,
+        });
+        allIssues = [...allIssues, ...closedIssuesUpdated];
+        console.log('Found', closedIssuesUpdated.length, 'issues using updated_after/updated_before');
+      } catch (error) {
+        console.warn('Failed to fetch with updated_after/updated_before:', error);
+      }
+
+      // Approach 2: Get all closed issues and filter by closed_at
+      try {
+        const allClosedIssues = await api.Issues.all({
+          projectId,
+          state: 'closed',
+          per_page: 100,
+          order_by: 'closed_at',
+          sort: 'desc',
+        });
+        
+        console.log('Total closed issues found:', allClosedIssues.length);
+
+        // Filter by closed_at date range
+        const startDateTime = new Date(startDate);
+        const endDateTime = new Date(endDate);
+        
+        const filteredByClosedAt = allClosedIssues.filter((issue: any) => {
+          if (!issue.closed_at) return false;
+          const closedAt = new Date(issue.closed_at);
+          return closedAt >= startDateTime && closedAt <= endDateTime;
+        });
+        
+        // Merge with existing results, avoiding duplicates
+        const existingIds = new Set(allIssues.map(issue => issue.id));
+        const newIssues = filteredByClosedAt.filter(issue => !existingIds.has(issue.id));
+        allIssues = [...allIssues, ...newIssues];
+        
+        console.log('Found', filteredByClosedAt.length, 'issues by filtering closed_at');
+      } catch (error) {
+        console.warn('Failed to fetch and filter by closed_at:', error);
+      }
+
+      // Approach 3: If still no results, try getting all issues (both open and closed) and filter
+      if (allIssues.length === 0) {
+        try {
+          const allProjectIssues = await api.Issues.all({
+            projectId,
+            state: 'all',
+            per_page: 100,
+          });
+          
+          const startDateTime = new Date(startDate);
+          const endDateTime = new Date(endDate);
+          
+          const filteredAllIssues = allProjectIssues.filter((issue: any) => {
+            if (issue.state !== 'closed' || !issue.closed_at) return false;
+            const closedAt = new Date(issue.closed_at);
+            return closedAt >= startDateTime && closedAt <= endDateTime;
+          });
+          
+          allIssues = filteredAllIssues;
+          console.log('Found', filteredAllIssues.length, 'issues by checking all project issues');
+        } catch (error) {
+          console.warn('Failed to fetch all project issues:', error);
+        }
+      }
+
+      console.log('Final filtered issues count:', allIssues.length);
+
+      return allIssues.map((issue) => ({
+        id: (issue as any).id,
+        iid: (issue as any).iid,
+        title: (issue as any).title,
+        web_url: (issue as any).web_url,
+        state: (issue as any).state,
+        closed_at: (issue as any).closed_at,
+        labels: (issue as any).labels || [],
+      }));
+    } catch (error) {
+      console.error('Error fetching issues by date range:', error);
+      throw error;
     }
   },
 
