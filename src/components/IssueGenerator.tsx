@@ -27,7 +27,7 @@ const IssueGenerator = () => {
   const [epicResults, setEpicResults] = useState<{ id: number; iid: number; title: string; web_url: string }[]>([]);
   const [searchingEpics, setSearchingEpics] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const { aiBackend, projectId, groupId } = useSettingsStore();
+  const { aiBackend, projectId, teamGroupId } = useSettingsStore();
   const { prefixes } = usePrefixStore();
 
   useEffect(() => {
@@ -39,10 +39,10 @@ const IssueGenerator = () => {
   const debouncedSearchEpics = useMemo(
     () =>
       debounce(async (q: string) => {
-        if (!groupId) return;
+        if (!teamGroupId) return;
         setSearchingEpics(true);
         try {
-          const res = await gitlabService.searchEpics(groupId, q);
+          const res = await gitlabService.searchEpics(teamGroupId, q);
           setEpicResults(res.map((e) => ({ id: e.id, iid: e.iid, title: e.title, web_url: e.web_url })));
         } catch (e) {
           console.error(e);
@@ -50,7 +50,7 @@ const IssueGenerator = () => {
           setSearchingEpics(false);
         }
       }, 400),
-    [groupId]
+    [teamGroupId]
   );
 
   useEffect(() => {
@@ -59,8 +59,8 @@ const IssueGenerator = () => {
     const urlMatch = /epics\/(\d+)/.exec(epicQuery);
     if (urlMatch) {
       const iid = urlMatch[1];
-      if (groupId) {
-        gitlabService.searchEpics(groupId, iid).then((res) => {
+      if (teamGroupId) {
+        gitlabService.searchEpics(teamGroupId, iid).then((res) => {
           if (res.length) setEpic(res[0]);
         });
       }
@@ -135,7 +135,7 @@ const IssueGenerator = () => {
 
       if (enableEpic && selectedEpic) {
         try {
-          await gitlabService.addIssueToEpic(groupId!, selectedEpic.iid!, projectId, res.id);
+          await gitlabService.addIssueToEpic(teamGroupId!, selectedEpic.iid!, projectId, res.id);
         } catch (err: any) {
           console.error(err);
           setMessage(`Issue created but failed to link epic: ${err.message}`);
@@ -220,8 +220,18 @@ const IssueGenerator = () => {
           </div>
 
           <div className="mt-4">
-            <Checkbox label="Link Epic" checked={enableEpic} onChange={(e) => setEnableEpic(e.target.checked)} />
-            {enableEpic && (
+            <Checkbox 
+              label="Link Epic" 
+              checked={enableEpic} 
+              onChange={(e) => setEnableEpic(e.target.checked)}
+              disabled={!teamGroupId}
+            />
+            {!teamGroupId && (
+              <p className="text-xs text-gray-500 mt-1">
+                Set a team group in settings to enable epic linking
+              </p>
+            )}
+            {enableEpic && teamGroupId && (
               <div className="mt-2">
                 <Input
                   value={epicQuery}

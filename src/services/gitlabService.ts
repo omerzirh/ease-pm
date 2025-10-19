@@ -47,8 +47,27 @@ export interface IterationOptions {
   updatedAfter?: string;
 }
 
+export interface GitlabGroup {
+  id: number;
+  name: string;
+  path: string;
+  full_path: string;
+}
+
+export interface GitlabProject {
+  id: number;
+  name: string;
+  path_with_namespace: string;
+}
+
+export interface GroupContent {
+  groups: GitlabGroup[];
+  projects: GitlabProject[];
+}
+
 export interface GitLabService {
   fetchProjects(groupId: string | number): Promise<Array<{ id: number; name: string; path_with_namespace: string }>>;
+  fetchGroupContent(groupId: string | number): Promise<GroupContent>;
   fetchLabels(projectId: string | number): Promise<Array<{ id: number; name: string; description: string }>>;
   fetchMilestones(projectId: string | number): Promise<Array<{ id: number; title: string; description: string }>>;
   fetchGroupMilestones(groupId: string | number): Promise<Array<{ id: number; title: string; description: string }>>;
@@ -103,6 +122,29 @@ export const gitlabService: GitLabService = {
     const api = getApi();
     const projects = await api.Groups.projects(groupId);
     return projects.map((p: any) => ({ id: p.id, name: p.name, path_with_namespace: p.path_with_namespace }));
+  },
+
+  async fetchGroupContent(groupId) {
+    const api = getApi();
+    
+    // Fetch subgroups
+    const subgroups = await api.Groups.subgroups(groupId);
+    const groups = subgroups.map((g: any) => ({
+      id: g.id,
+      name: g.name,
+      path: g.path,
+      full_path: g.full_path,
+    }));
+
+    // Fetch projects
+    const projects = await api.Groups.projects(groupId);
+    const projectList = projects.map((p: any) => ({
+      id: p.id,
+      name: p.name,
+      path_with_namespace: p.path_with_namespace,
+    }));
+
+    return { groups, projects: projectList };
   },
   async fetchLabels(projectId) {
     const api = getApi();
