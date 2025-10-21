@@ -28,7 +28,7 @@ const IssueGenerator = () => {
   const [searchingEpics, setSearchingEpics] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const { aiBackend, projectId, groupId } = useSettingsStore();
-  const { prefixes } = usePrefixStore();
+  const {issuePrefixes  } = usePrefixStore();
 
   useEffect(() => {
     if (projectId && labels.length === 0) {
@@ -181,7 +181,7 @@ const IssueGenerator = () => {
             }}
           >
             <option value="">Select prefix</option>
-            {prefixes.map((p) => (
+            {issuePrefixes.map((p) => (
               <option key={p} value={p}>
                 {p}
               </option>

@@ -35,7 +35,7 @@ const EpicCreator = () => {
   const [prompt, setPrompt] = useState('');
   const [enableEpic, setEnableEpic] = useState(false);
   const { aiBackend, groupId } = useSettingsStore();
-  const { prefixes } = usePrefixStore();
+  const { epicPrefixes } = usePrefixStore();
 
   useEffect(() => {
     const fetch = async () => {
@@ -147,7 +147,7 @@ const EpicCreator = () => {
           <Label>Title Prefix</Label>
           <Select value={titlePrefix} onChange={(e) => setTitlePrefix(e.target.value)}>
             <option value="">Select prefix</option>
-            {prefixes.map((p) => (
+            {epicPrefixes.map((p) => (
               <option key={p} value={p}>
                 {p}
               </option>
