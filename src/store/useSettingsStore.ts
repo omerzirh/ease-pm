@@ -34,6 +34,11 @@ interface SettingsState {
   setGitlabHost: (host: string | null) => void;
   setGitlabAppId: (id: string | null) => void;
   setGitlabCallbackUrl: (url: string | null) => void;
+  //added by mya
+  issuePrefix: string;
+  epicPrefix: string;
+  setIssuePrefix: (prefix: string) => void;
+  setEpicPrefix: (prefix: string) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -68,6 +73,11 @@ export const useSettingsStore = create<SettingsState>()(
       setGitlabHost: (gitlabHost) => set({ gitlabHost }),
       setGitlabAppId: (gitlabAppId) => set({ gitlabAppId }),
       setGitlabCallbackUrl: (gitlabCallbackUrl) => set({ gitlabCallbackUrl }),
+      //added by mya
+      issuePrefix: '',
+      epicPrefix: '',
+      setIssuePrefix: (prefix) => set({ issuePrefix: prefix }),
+      setEpicPrefix: (prefix) => set({ epicPrefix: prefix }),
     }),
     {
       name: 'ease-gitlab-settings',
